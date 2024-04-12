@@ -1,4 +1,3 @@
-import Question from "./Question";
 import Accordion from "./accordion";
 
 const FAQs = () => {
@@ -14,7 +13,7 @@ const FAQs = () => {
       >
         FAQs:
       </h2>
-      <div className="accordion  ">
+      <div className="accordion" id="faq">
         <div className=" p-40 pt-16">
           <Accordion
             title="What would be the first step in getting my CDL?"

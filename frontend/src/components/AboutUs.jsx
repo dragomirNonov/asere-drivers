@@ -2,7 +2,7 @@ import yard from "../assets/yard.jpg";
 
 const AboutUS = () => {
   return (
-    <div className="flex p-4 ">
+    <div className="flex p-4 " id="aboutus">
       <div className="w-1/2 p-4 flex flex-col items-center">
         <div className="w-4/6 flex flex-col items-center">
           <h2
@@ -34,7 +34,7 @@ const AboutUS = () => {
       </div>
 
       <div className="w-1/2 flex justify-center">
-        <img src={yard} className="w-4/6 m-4 rounded-lg" alt="Truck" />
+        <img src={yard} className="w-4/6 m-4 rounded-lg " alt="Truck" />
       </div>
     </div>
   );
