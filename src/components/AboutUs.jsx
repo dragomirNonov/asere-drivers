@@ -4,9 +4,9 @@ const AboutUS = () => {
   return (
     <div className="md:flex p-4 w-auto h-100" id="aboutus">
       <div className="md:w-1/2 p-4 flex flex-col items-center ">
-        <div className="w-4/6 flex flex-col items-center ">
+        <div className="md:w-4/6 flex flex-col items-center ">
           <h2
-            className="text-2xl text-yellow-500 md:text-yellow-500 text-5xl font-bold pb-4"
+            className="text-2xl text-yellow-500 md:text-yellow-500 md:text-5xl font-bold pb-4"
             style={{
               borderBottom: "1px solid",
               borderImage:
