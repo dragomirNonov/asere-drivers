@@ -6,8 +6,8 @@ import workschedule from "../assets/workschedule.png";
 
 const Info = () => {
   return (
-    <div className="flex justify-center bg-cyan-900 p-6">
-      <div className="flex">
+    <div className="flex justify-center bg-gray-800 p-6 ">
+      <div className="flex flex-col md:flex-row ">
         <InfoCard
           img={contract}
           title="FMCSA Certified"

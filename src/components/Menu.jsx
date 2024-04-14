@@ -3,8 +3,8 @@ import logo from "../assets/logo.png";
 
 const Menu = () => {
   return (
-    <nav className="bg-cyan-900 p-4 sticky top-0 ">
-      <div className="max-w-8xl mx-auto">
+    <nav className=" bg-cyan-900 p-4 sticky top-0 flex">
+      <div className=" mx-auto">
         <div className="flex justify-between items-center">
           <div className="flex items-center flex-shrink-0 text-white mr-6">
             <img src={logo} className="h-12 w-auto" alt="Logo" />{" "}

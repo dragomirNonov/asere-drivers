@@ -4,7 +4,7 @@ const FAQs = () => {
   return (
     <div className="bg-cyan-900 flex  flex-col justify-center pt-8" id="faq">
       <h2
-        className="text-yellow-500 text-5xl flex justify-center  pb-4"
+        className="text-2xl text-yellow-500 md:text-5xl flex justify-center  pb-4"
         style={{
           borderBottom: "1px solid",
           borderImage:
@@ -14,7 +14,7 @@ const FAQs = () => {
         FAQs:
       </h2>
       <div className="accordion" id="faq">
-        <div className=" p-40 pt-16">
+        <div className=" p-2 md:p-40 md:pt-16">
           <Accordion
             title="What would be the first step in getting my CDL?"
             answer="A. First would be signing up with a credited FMSCA certified school. The school should show up on the FMSCA training provider registry link. There's thousands of schools find the one that best suits your needs."

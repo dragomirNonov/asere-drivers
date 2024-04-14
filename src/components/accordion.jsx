@@ -4,12 +4,14 @@ const Accordion = ({ title, answer }) => {
   const [accordionOpen, setAccordionOpen] = useState(false);
 
   return (
-    <div className=" w-auto border accordion-item bg-white mb-4 p-4 rounded-lg">
+    <div className=" w-auto border accordion-item bg-white mb-4  p-2 md:p-4 rounded-lg">
       <button
         onClick={() => setAccordionOpen(!accordionOpen)}
         className="flex justify-between w-full"
       >
-        <span className="text-yellow-600 font-bold">{title}</span>
+        <span className="text-sm md:text-lg text-yellow-600 font-bold">
+          {title}
+        </span>
         {/* {accordionOpen ? <span>-</span> : <span>+</span>} */}
         <svg
           className="fill-yellow-600 shrink-0 ml-8"

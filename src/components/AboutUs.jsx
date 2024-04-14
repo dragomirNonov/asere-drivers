@@ -2,11 +2,11 @@ import yard from "../assets/yard.jpg";
 
 const AboutUS = () => {
   return (
-    <div className="flex p-4 " id="aboutus">
-      <div className="w-1/2 p-4 flex flex-col items-center">
-        <div className="w-4/6 flex flex-col items-center">
+    <div className="md:flex p-4 w-auto h-100" id="aboutus">
+      <div className="md:w-1/2 p-4 flex flex-col items-center ">
+        <div className="w-4/6 flex flex-col items-center ">
           <h2
-            className="text-yellow-500 text-5xl font-bold pb-4"
+            className="text-2xl text-yellow-500 md:text-yellow-500 text-5xl font-bold pb-4"
             style={{
               borderBottom: "1px solid",
               borderImage:
@@ -17,8 +17,8 @@ const AboutUS = () => {
           </h2>
 
           <p
-            className="text-yellow-800 text-xl pt-2"
-            style={{ lineHeight: "2" }}
+            className="text-sm text-yellow-600 md:text-yellow-600 md:text-xl pt-2 md:leading-[2] "
+            // style={{ lineHeight: "2" }}
           >
             At ASERE Drivers, we're dedicated to delivering top-notch CDL
             Training services. With a focus on innovation and customer
@@ -33,8 +33,8 @@ const AboutUS = () => {
         </div>
       </div>
 
-      <div className="w-1/2 flex justify-center">
-        <img src={yard} className="w-4/6 m-4 rounded-lg " alt="Truck" />
+      <div className=" md:w-1/2 flex justify-center">
+        <img src={yard} className="flex w-4/6  m-4 rounded-lg " alt="Truck" />
       </div>
     </div>
   );

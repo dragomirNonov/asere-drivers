@@ -6,12 +6,14 @@ import FAQs from "./components/FAQs";
 import ContactUs from "./components/ContactUS";
 import GoogleMap from "./components/GoogleMap";
 import Gallery from "./components/Gallery";
+import Navbar from "./components/Navbar";
 
 export default function App() {
   return (
-    <div className="bg-slate-200">
-      <Menu />
-      <img src={truck} className="w-auto h-100" alt="Truck" id="home" />
+    <div className="bg-slate-200 flex flex-col">
+      {/* <Menu /> */}
+      <Navbar />
+      <img src={truck} className="w-auto h-100 " alt="Truck" id="home" />
       <Info />
       <AboutUS />
       <FAQs />

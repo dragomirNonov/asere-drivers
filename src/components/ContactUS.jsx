@@ -6,9 +6,9 @@ import socials from "../assets/socials.png";
 
 const ContactUs = () => {
   return (
-    <div className="p-4" id="contactus">
+    <div className="md:p-4" id="contactus">
       <h2
-        className="text-yellow-600 text-5xl flex justify-center  mt-6 pb-4"
+        className="text-yellow-600 text-2xl md:text-5xl flex justify-center  mt-6 pb-4"
         style={{
           borderBottom: "1px solid",
           borderImage:
@@ -17,12 +17,11 @@ const ContactUs = () => {
       >
         GET IN TOUCH:
       </h2>
-      <div className="flex mt-10 pb-11">
+      <div className="flex flex-col items-center md:flex-row mt-2 md:mt-10 pb-11">
         <ContactCard
           icon={adress}
           title="Address:"
-          content="21115 I-45"
-          contentline2="Spring TX, 77388"
+          content="21115 I-45 Spring TX, 77388"
         />
         <ContactCard icon={phone} title="Phone:" content="346-812-8390 " />
         <ContactCard
