@@ -2,7 +2,7 @@ import Accordion from "./accordion";
 
 const FAQs = () => {
   return (
-    <div className="bg-cyan-900 flex  flex-col justify-center pt-8" id="faq">
+    <div className="bg-gray-800 flex  flex-col justify-center pt-8" id="faq">
       <h2
         className="text-2xl text-yellow-500 md:text-5xl flex justify-center  pb-4"
         style={{
