@@ -48,7 +48,7 @@ const Navbar = () => {
               {navlinks.map((link, index) => (
                 <a
                   key={index}
-                  className="text-yellow-300 transition-all duration-500 hover:bg-gray-600 hover:text-yelow-500 px-3 py-2 rounded-md text-md font-medium"
+                  className="text-yellow-500 transition-all duration-500 hover:bg-gray-600 hover:text-yelow-500 px-3 py-2 rounded-md text-md font-medium"
                   href={link.link}
                 >
                   {link.title}
@@ -76,7 +76,7 @@ const Navbar = () => {
             {navlinks.map((link, index) => (
               <a
                 key={index}
-                className="text-yellow-400 hover:bg-gray-700 block px-3 py-2 rounded-md text-base font-medium"
+                className="text-yellow-500 hover:bg-gray-700 block px-3 py-2 rounded-md text-base font-medium"
                 href={link.link}
               >
                 {link.title}

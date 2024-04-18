@@ -6,7 +6,7 @@ import socials from "../assets/socials.png";
 
 const ContactUs = () => {
   return (
-    <div className="md:p-4" id="contactus">
+    <div className="md:p-4 bg-gray-800" id="contactus">
       <h2
         className="text-yellow-600 text-2xl md:text-5xl flex justify-center  mt-6 pb-4"
         style={{

@@ -10,7 +10,7 @@ import Navbar from "./components/Navbar";
 
 export default function App() {
   return (
-    <div className="bg-slate-200 flex flex-col">
+    <div className="bg-slate-200 flex flex-col ">
       {/* <Menu /> */}
       <Navbar />
       <img src={truck} className="w-auto h-100 " alt="Truck" id="home" />
