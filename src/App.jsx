@@ -1,4 +1,3 @@
-import Menu from "./components/Menu";
 import truck from "./assets/truck.jpg";
 import Info from "./components/Info";
 import AboutUS from "./components/AboutUs";
