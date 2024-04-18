@@ -38,7 +38,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <img src={logo} className="h-12 w-auto" alt="Logo" />{" "}
-            <a href="/" className="text-yellow-500 ml-2">
+            <a href="/" className="text-yellow-500 ml-2 text-2xl">
               Asere CDL
             </a>
           </div>
