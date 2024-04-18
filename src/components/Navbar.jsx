@@ -23,6 +23,10 @@ const navlinks = [
     title: "Contact Us",
     link: "#contactus",
   },
+  // {
+  //   title: "Login",
+  //   link: "/login",
+  // },
 ];
 
 const Navbar = () => {
@@ -38,7 +42,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <img src={logo} className="h-12 w-auto" alt="Logo" />{" "}
-            <a href="/" className="text-yellow-500 ml-2">
+            <a href="/" className="text-yellow-500 ml-2 text-2xl">
               Asere CDL
             </a>
           </div>
@@ -54,6 +58,12 @@ const Navbar = () => {
                   {link.title}
                 </a>
               ))}
+              <a
+                className="text-yellow-500 transition-all duration-500 hover:bg-gray-600 hover:text-yelow-500 px-3 py-2 rounded-md text-md font-medium border"
+                href="/login"
+              >
+                Login
+              </a>
             </div>
           </div>
           {/* hamburger button */}
@@ -82,6 +92,12 @@ const Navbar = () => {
                 {link.title}
               </a>
             ))}
+            <a
+              className="text-yellow-500 transition-all duration-500 hover:bg-gray-600 hover:text-yelow-500 px-3 py-2 rounded-md text-md font-medium "
+              href="/login"
+            >
+              Login
+            </a>
           </div>
         </div>
       ) : null}
