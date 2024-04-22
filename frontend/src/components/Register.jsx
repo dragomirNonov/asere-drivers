@@ -1,11 +1,11 @@
 import { useState } from "react";
 import arrow from "../assets/arrow.png";
 import { Link } from "react-router-dom";
+import userServices from "../services/users";
 
 const Register = () => {
-  const [username, setUsername] = useState("");
+  const [DLnumber, setDLnumber] = useState("");
   const [password, setPassword] = useState("");
-
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
   const [phone, setPhone] = useState("");
@@ -13,17 +13,32 @@ const Register = () => {
   const [transmission, setTransmission] = useState("");
   const [clas, setClas] = useState("");
 
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("Form submitted:");
-    console.log(firstname);
-    console.log(lastname);
-    console.log(phone);
-    console.log(email);
-    console.log(transmission);
-    console.log(clas);
-    console.log(username);
-    console.log(password);
+    const registerObj = {
+      firstName: firstname,
+      lastName: lastname,
+      phone: phone,
+      email: email,
+      transmission: transmission,
+      clas: clas,
+      DLnumber: DLnumber,
+      password: password,
+    };
+
+    userServices
+      .register(registerObj)
+      .then((res) => {
+        setErrorMessage("");
+        setSuccessMessage(res.data.message);
+      })
+      .catch((err) => {
+        setSuccessMessage("");
+        setErrorMessage(err.response.data.message);
+      });
   };
 
   return (
@@ -119,12 +134,12 @@ const Register = () => {
 
           <div className="md:flex flex-row">
             <div className="p-2 flex flex-col md:w-1/2 text-gray-500 ">
-              <label>Username </label>
+              <label>Driver's License Num. </label>
               <input
                 type="text"
                 id="username"
-                value={username}
-                onChange={(event) => setUsername(event.target.value)}
+                value={DLnumber}
+                onChange={(event) => setDLnumber(event.target.value)}
                 required
                 className="p-1 rounded-md bg-gray-500 text-white"
               />
@@ -159,6 +174,8 @@ const Register = () => {
             Register
           </button>
         </form>
+        <div className="text-green-500">{successMessage}</div>
+        <div className="text-red-500">{errorMessage}</div>
         <Link to="/">
           <img
             src={arrow}

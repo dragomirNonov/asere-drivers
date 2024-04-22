@@ -1,16 +1,28 @@
 import { useState } from "react";
 import arrow from "../assets/arrow.png";
 import { Link } from "react-router-dom";
+import userService from "../services/users";
 
 const Login = () => {
-  const [username, setUsername] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("Form submitted:");
-    console.log(username);
-    console.log(password);
+    const loginObj = { phone: phone, password: password };
+    userService
+      .login(loginObj)
+      .then((res) => {
+        if (res.status == 200) {
+          localStorage.setItem("token", res.data.token);
+
+          console.log("LOGIN SUCCERSS!!");
+        }
+      })
+      .catch((err) => {
+        setErrorMessage(err.response.data.message);
+      });
   };
 
   return (
@@ -19,12 +31,12 @@ const Login = () => {
         <h2 className="text-white font-bold p-2 text-3xl">SIGN IN</h2>
         <form onSubmit={handleSubmit} className=" w-full  p-2">
           <div className="py-2 flex flex-col text-gray-500 ">
-            <label>Username</label>
+            <label>Phone</label>
             <input
               type="text"
-              id="username"
-              value={username}
-              onChange={(event) => setUsername(event.target.value)}
+              id="phone"
+              value={phone}
+              onChange={(event) => setPhone(event.target.value)}
               required
               className="p-1 rounded-md bg-gray-500 text-white"
             />
@@ -57,6 +69,7 @@ const Login = () => {
             Login
           </button>
         </form>
+        <div className="text-red-500">{errorMessage}</div>
         <Link to="/">
           <img
             src={arrow}
