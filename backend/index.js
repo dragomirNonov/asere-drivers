@@ -8,9 +8,11 @@ app.use(express.json());
 
 // Import the route handlers from userRoutes.js
 const userRoutes = require("./routes/userRoutes");
+const appointmentsRoutes = require("./routes/appointmentsRoutes");
 
 // Use the route handlers
 app.use("/", userRoutes);
+app.use("/", appointmentsRoutes);
 
 const url =
   "mongodb+srv://dragomirnonov:D27m03r94%21%40%23@aseredrivers.3tf7st7.mongodb.net/?retryWrites=true&w=majority&appName=AsereDrivers";

@@ -2,11 +2,13 @@ import { useState } from "react";
 import arrow from "../assets/arrow.png";
 import { Link } from "react-router-dom";
 import userService from "../services/users";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -16,8 +18,7 @@ const Login = () => {
       .then((res) => {
         if (res.status == 200) {
           localStorage.setItem("token", res.data.token);
-
-          console.log("LOGIN SUCCERSS!!");
+          navigate("/ui/students");
         }
       })
       .catch((err) => {

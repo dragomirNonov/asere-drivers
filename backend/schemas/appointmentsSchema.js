@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const uuid = require("uuid");
 const Schema = mongoose.Schema;
 
-let userCredentials = new Schema({
+let appointments = new Schema({
   _id: { type: String, default: uuid.v1 },
   firstName: {
     type: String,
@@ -12,7 +12,7 @@ let userCredentials = new Schema({
     type: String,
     require: true,
   },
-  phone: {
+  DOB: {
     type: String,
     require: true,
   },
@@ -20,30 +20,42 @@ let userCredentials = new Schema({
     type: String,
     require: true,
   },
+  phone: {
+    type: String,
+    require: true,
+  },
   email: {
     type: String,
+  },
+  location: {
+    type: String,
+    require: true,
+  },
+  date: {
+    type: String,
+    require: true,
+  },
+  time: {
+    type: String,
+    require: true,
+  },
+  truck: {
+    type: String,
+    require: true,
   },
   transmission: {
     type: String,
   },
-  clas: {
-    type: String,
-  },
-  username: {
+  permitExpiryDate: {
     type: String,
     require: true,
   },
-  password: {
+  checkboxOption: {
     type: String,
-    required: true,
-  },
-  Role: {
-    type: String,
-    required: true,
-    default: "Student",
+    require: true,
   },
 });
 
 // create models from mongoose schemas
-const user = mongoose.model("users", userCredentials);
-module.exports = { user };
+const appointment = mongoose.model("appointments", appointments);
+module.exports = { appointment };
