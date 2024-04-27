@@ -7,14 +7,36 @@ const Appointments = () => {
 
   useEffect(() => {
     appointmentService.getAll().then((res) => {
-      // Sort appointments by date
-      const sortedAppointments = res.data.sort(
+      // Filter appointments older than the current date
+      const currentDate = new Date();
+      const filteredAppointments = res.data.filter(
+        (app) => new Date(app.date) >= currentDate
+      );
+      // Sort filtered appointments by date
+      const sortedAppointments = filteredAppointments.sort(
         (a, b) => new Date(a.date) - new Date(b.date)
       );
       // Set state with sorted appointments
       setArrayOfAppointments(sortedAppointments);
     });
   }, []);
+
+  // Define a function to fetch and update appointments
+  const refreshAppointments = () => {
+    appointmentService.getAll().then((res) => {
+      // Filter appointments older than the current date
+      const currentDate = new Date();
+      const filteredAppointments = res.data.filter(
+        (app) => new Date(app.date) >= currentDate
+      );
+      // Sort filtered appointments by date
+      const sortedAppointments = filteredAppointments.sort(
+        (a, b) => new Date(a.date) - new Date(b.date)
+      );
+      // Set state with sorted appointments
+      setArrayOfAppointments(sortedAppointments);
+    });
+  };
 
   // Group appointments by date
   const groupedAppointments = {};
@@ -51,7 +73,10 @@ const Appointments = () => {
           Make a New Appointment
         </a>
       </div>
-      <div className=" flex flex-col w-full ">
+      <h2 className="text-red-800 font-bold">
+        *Appointments older than the current date are not shown.
+      </h2>
+      <div className=" flex flex-col md:w-4/6 w-full">
         {/* Render appointments grouped by date */}
         {Object.entries(groupedAppointments).map(([date, appointments]) => (
           <div key={date}>
@@ -61,7 +86,8 @@ const Appointments = () => {
             {appointments.map((app, index) => (
               <Appointment
                 key={index}
-                name={app.firstName + " " + app.lastName}
+                firstName={app.firstName}
+                lastName={app.lastName}
                 DOB={app.DOB}
                 DLnumber={app.DLnumber}
                 phone={app.phone}
@@ -73,6 +99,8 @@ const Appointments = () => {
                 transmission={app.transmission}
                 permitExpiryDate={app.permitExpiryDate}
                 pr={app.checkboxOption}
+                id={app._id}
+                refreshAppointments={refreshAppointments}
               />
             ))}
           </div>

@@ -10,7 +10,16 @@ const getAll = () => {
   return axios.get("http://localhost:3001/api/appointments");
 };
 
+//Edit appointment
+const editAppointment = (editedAppointment) => {
+  return axios.put(
+    "http://localhost:3001/api/editappointment",
+    editedAppointment
+  );
+};
+
 export default {
   createNewAppt,
   getAll,
+  editAppointment,
 };
