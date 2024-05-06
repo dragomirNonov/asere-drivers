@@ -2,7 +2,7 @@ import yard from "../assets/yard.jpg";
 
 const AboutUS = () => {
   return (
-    <div className="md:flex p-4 w-auto h-100" id="aboutus">
+    <div className="md:flex p-4 w-auto h-100 bg-slate-100" id="aboutus">
       <div className="md:w-1/2 p-4 flex flex-col items-center ">
         <div className="md:w-4/6 flex flex-col items-center ">
           <h2
@@ -16,10 +16,7 @@ const AboutUS = () => {
             About Us:
           </h2>
 
-          <p
-            className="text-sm text-yellow-600 md:text-yellow-600 md:text-xl pt-2 md:leading-[2] "
-            // style={{ lineHeight: "2" }}
-          >
+          <p className="text-sm text-yellow-600 md:text-yellow-600 md:text-xl pt-2 md:leading-[2] ">
             At ASERE Drivers, we're dedicated to delivering top-notch CDL
             Training services. With a focus on innovation and customer
             satisfaction, we strive to exceed expectations every time. Founded

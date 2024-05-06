@@ -12,7 +12,6 @@ const Accordion = ({ title, answer }) => {
         <span className="text-sm md:text-lg text-yellow-600 font-bold">
           {title}
         </span>
-        {/* {accordionOpen ? <span>-</span> : <span>+</span>} */}
         <svg
           className="fill-yellow-600 shrink-0 ml-8"
           width="16"

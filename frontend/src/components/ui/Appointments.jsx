@@ -1,39 +1,40 @@
 import { useEffect, useState } from "react";
 import Appointment from "./Appointment";
 import appointmentService from "../../services/appointments";
+import AddAppModal from "./AddAppModal";
+import toast, { Toaster } from "react-hot-toast";
 
 const Appointments = () => {
   const [arrayOfAppointments, setArrayOfAppointments] = useState([]);
+  const notify = () => toast.success("Appointment Added Successfully");
+  const deleteApp = () => toast.error("Appointment Deleted Successfully");
 
-  useEffect(() => {
-    appointmentService.getAll().then((res) => {
-      // Filter appointments older than the current date
+  // Define a function to fetch, filter, and sort appointments
+  const fetchSortedAppointments = async () => {
+    try {
+      const allAppointments = await appointmentService.getAllAppointments();
       const currentDate = new Date();
-      const filteredAppointments = res.data.filter(
+      const filteredAppointments = allAppointments.filter(
         (app) => new Date(app.date) >= currentDate
       );
-      // Sort filtered appointments by date
-      const sortedAppointments = filteredAppointments.sort(
+      return filteredAppointments.sort(
         (a, b) => new Date(a.date) - new Date(b.date)
       );
-      // Set state with sorted appointments
+    } catch (error) {
+      throw new Error(
+        `Failed to fetch and sort appointments: ${error.message}`
+      );
+    }
+  };
+
+  useEffect(() => {
+    fetchSortedAppointments().then((sortedAppointments) => {
       setArrayOfAppointments(sortedAppointments);
     });
   }, []);
 
-  // Define a function to fetch and update appointments
   const refreshAppointments = () => {
-    appointmentService.getAll().then((res) => {
-      // Filter appointments older than the current date
-      const currentDate = new Date();
-      const filteredAppointments = res.data.filter(
-        (app) => new Date(app.date) >= currentDate
-      );
-      // Sort filtered appointments by date
-      const sortedAppointments = filteredAppointments.sort(
-        (a, b) => new Date(a.date) - new Date(b.date)
-      );
-      // Set state with sorted appointments
+    fetchSortedAppointments().then((sortedAppointments) => {
       setArrayOfAppointments(sortedAppointments);
     });
   };
@@ -64,15 +65,11 @@ const Appointments = () => {
   };
 
   return (
-    <div className="flex flex-col items-center  mt-4 h-screen">
-      <div className=" m-4">
-        <a
-          className="text-white font-bold p-4 bg-teal-700 w-full  hover:bg-teal-900 rounded-lg mt-4"
-          href="/ui/addappointment"
-        >
-          Make a New Appointment
-        </a>
+    <div className="flex flex-col items-center  mt-4  h-screen">
+      <div className="mr-10">
+        <Toaster position="top-center" reverseOrder={false} />
       </div>
+      <AddAppModal refresh={refreshAppointments} toast={notify} />
       <h2 className="text-red-800 font-bold">
         *Appointments older than the current date are not shown.
       </h2>
@@ -101,6 +98,7 @@ const Appointments = () => {
                 pr={app.checkboxOption}
                 id={app._id}
                 refreshAppointments={refreshAppointments}
+                deleteApp={deleteApp}
               />
             ))}
           </div>

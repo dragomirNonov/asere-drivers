@@ -2,9 +2,15 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
+const path = require("path"); // Import the path module
 
 app.use(cors());
 app.use(express.json());
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Serve static files from the "dist" directory
+app.use(express.static(path.join(__dirname, "dist"))); // deplyiment only
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Import the route handlers from userRoutes.js
 const userRoutes = require("./routes/userRoutes");
@@ -26,7 +32,13 @@ mongoose
     console.error("Mongo Connection Error", err);
   });
 
-const PORT = 3001;
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Serve the index.html file for any route not handled by API routes DEPLOY ONLY
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "dist", "index.html"));
+});
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

@@ -5,3 +5,8 @@
 .flex-item {
   flex: 1;
 }
+
+body {
+  /* background-color: rgb(226 232 240); */
+  background-color: rgb(107 114 128);
+}

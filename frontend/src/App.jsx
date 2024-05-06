@@ -9,11 +9,11 @@ import Gallery from "./components/Gallery";
 import Navbar from "./components/Navbar";
 import Login from "./components/Login";
 import Register from "./components/Register";
-
+// UI Imports
 import UiNavbar from "./components/ui/uiNavbar";
-import Students from "./components/ui/students";
+import Students from "./components/ui/Students";
 import Appointments from "./components/ui/Appointments";
-import AddAppointment from "./components/ui/addAppointment";
+import UserInfo from "./components/ui/UserInfo";
 
 function HomePage() {
   return (
@@ -32,12 +32,12 @@ function HomePage() {
 
 function UI() {
   return (
-    <div className="bg-gray-500 h-full pb-10">
+    <div className="bg-gray-500 pb-10  ">
       <UiNavbar />
+      <UserInfo />
       <Routes>
         <Route path="students" element={<Students />} />
         <Route path="appointments" element={<Appointments />} />
-        <Route path="addappointment" element={<AddAppointment />} />
       </Routes>
     </div>
   );
@@ -46,7 +46,7 @@ function UI() {
 export default function App() {
   return (
     <Router>
-      <div className="bg-slate-200 flex flex-col">
+      <div className="flex flex-col">
         <Routes>
           {/* Route for the HomePage component */}
           <Route path="/" element={<HomePage />} />

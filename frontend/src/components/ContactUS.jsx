@@ -8,7 +8,7 @@ const ContactUs = () => {
   return (
     <div className="md:p-4 bg-gray-800" id="contactus">
       <h2
-        className="text-yellow-600 text-2xl md:text-5xl flex justify-center  mt-6 pb-4"
+        className="text-yellow-600 text-2xl md:text-5xl flex justify-center  pt-6 pb-4"
         style={{
           borderBottom: "1px solid",
           borderImage:

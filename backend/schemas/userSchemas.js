@@ -7,10 +7,12 @@ let userCredentials = new Schema({
   firstName: {
     type: String,
     require: true,
+    set: (value) => value.toUpperCase(),
   },
   lastName: {
     type: String,
     require: true,
+    set: (value) => value.toUpperCase(),
   },
   phone: {
     type: String,
@@ -29,13 +31,21 @@ let userCredentials = new Schema({
   clas: {
     type: String,
   },
+  DOB: {
+    type: String,
+    default: "N/A",
+  },
+  permitExpiryDate: {
+    type: String,
+    default: "N/A",
+  },
   username: {
     type: String,
-    require: true,
+    // require: true,
   },
   password: {
     type: String,
-    required: true,
+    // required: true,
   },
   Role: {
     type: String,

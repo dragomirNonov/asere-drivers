@@ -44,9 +44,9 @@ const picturePaths = [
 
 const Gallery = () => {
   return (
-    <div id="gallery">
+    <div id="gallery" className=" bg-slate-100">
       <h2
-        className="text-yellow-600  text-2xl md:text-5xl flex justify-center  mt-6 pb-4"
+        className="text-yellow-600  text-2xl md:text-5xl flex justify-center pb-4 pt-6"
         style={{
           borderBottom: "1px solid",
           borderImage:

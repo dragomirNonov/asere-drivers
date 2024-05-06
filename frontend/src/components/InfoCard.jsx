@@ -5,7 +5,7 @@ const InfoCard = ({ title, description, img, isLast }) => {
     <div className={`md:bg-cayen-900 p-4 ${borderStyle}`}>
       <img
         src={img}
-        className="h-6 w-auto md:h-8 w-auto filter invert hue-rotate-180 saturate-150"
+        className="h-6 w-auto md:h-8 filter invert hue-rotate-180 saturate-150"
         alt="Logo"
       />{" "}
       <h2 className="text-med md:text-lg text-yellow-500 font-semibold">

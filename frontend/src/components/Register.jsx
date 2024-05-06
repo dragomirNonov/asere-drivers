@@ -109,7 +109,7 @@ const Register = () => {
                   Select transmission
                 </option>
                 <option value="Automatic">Automatic</option>
-                <option value="Manual">Manual</option>
+                <option value="Standard">Standard</option>
               </select>
             </div>
 
