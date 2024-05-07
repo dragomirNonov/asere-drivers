@@ -84,7 +84,7 @@ const AddStudentModal = (props) => {
   return (
     <>
       <button
-        className="text-white font-bold p-4 bg-teal-700 w-1/6  hover:bg-teal-900 rounded-lg my-4"
+        className="text-white font-bold p-4 bg-teal-700 md:w-1/6 w-full hover:bg-teal-900 rounded-lg my-4"
         type="button"
         onClick={() => {
           setErrorMessage("");
@@ -97,7 +97,7 @@ const AddStudentModal = (props) => {
       {showModal ? (
         <>
           <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-            <div className="relative w-2/6 my-6 mx-auto max-w-3xl">
+            <div className="relative lg:w-2/6 my-6 mx-auto max-w-3xl">
               {/*content*/}
               <div className="border-0 bg-slate-300 rounded-lg shadow-lg relative flex flex-col w-full  outline-none focus:outline-none">
                 {/*header*/}
@@ -205,7 +205,7 @@ const AddStudentModal = (props) => {
                         </div>
                       </div>
 
-                      <div className="flex flex-row justify-between ">
+                      <div className="flex md:flex-row justify-between ">
                         <div className="mb-2 flex flex-col w-3/6 p-1">
                           <label className="text-lg">Transmission</label>
                           {/* Replace input with a select element for Transmission */}
@@ -239,7 +239,7 @@ const AddStudentModal = (props) => {
                         </div>
                         <div className="mb-2 flex flex-col w-3/6 p-1">
                           <label className="text-lg" htmlFor="permitExpDate">
-                            Permit Expiry Date:
+                            Permit Exp Date:
                           </label>
                           <input
                             type="date"

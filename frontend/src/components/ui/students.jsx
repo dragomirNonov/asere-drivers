@@ -57,10 +57,10 @@ const Students = () => {
         placeholder="Search by student name..."
         value={searchQuery}
         onChange={handleSearchChange}
-        className="my-4 p-2 border border-gray-300 rounded-md"
+        className="my-4 p-2 md:w-1/6 w-full border border-gray-300 rounded-md"
       />
       <AddStudentModal refresh={fetchStudents} toast={studentAdded} />
-      <div className="flex ">
+      <div className="flex flex-col md:flex-row">
         {/* Div for Standard Transmission Students */}
         <div className="m-4">
           <h2 className="text-xl font-bold bg-gray-800 text-white p-1">

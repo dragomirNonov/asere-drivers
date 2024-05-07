@@ -9,7 +9,7 @@ app.use(express.json());
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Serve static files from the "dist" directory
-app.use(express.static(path.join(__dirname, "dist"))); // deplyiment only
+// app.use(express.static(path.join(__dirname, "dist"))); // deplyiment only
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Import the route handlers from userRoutes.js
@@ -21,7 +21,10 @@ app.use("/", userRoutes);
 app.use("/", appointmentsRoutes);
 
 const url =
-  "mongodb+srv://dragomirnonov:D27m03r94%21%40%23@aseredrivers.3tf7st7.mongodb.net/?retryWrites=true&w=majority&appName=AsereDrivers";
+  "mongodb+srv://dragomirnonov:D27m03r94%21%40%23@aseredrivers.3tf7st7.mongodb.net/?retryWrites=true&w=majority&appName=AsereDrivers"; //test DB
+
+// const url =
+//   "mongodb+srv://dragomirnonov:D27m03r94%21%40%23@aseredrivers.3tf7st7.mongodb.net/AsereDrivers?retryWrites=true&w=majority&appName=AsereDrivers"; //REAL DB
 
 mongoose
   .connect(url)
@@ -34,9 +37,9 @@ mongoose
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Serve the index.html file for any route not handled by API routes DEPLOY ONLY
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "dist", "index.html"));
-});
+// app.get("*", (req, res) => {
+//   res.sendFile(path.join(__dirname, "dist", "index.html"));
+// });
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {

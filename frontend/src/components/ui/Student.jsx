@@ -78,7 +78,7 @@ const Student = ({ student, toast, refresh }) => {
             : "grid-rows-[0fr] opacity-0"
         }`}
       >
-        <div className={`overflow-hidden font-bold `}>
+        <div className={`overflow-hidden font-bold text-sm md:text-xl`}>
           {
             <div className="flex flex-col mt-4">
               <p>DOB: {student.DOB}</p>
