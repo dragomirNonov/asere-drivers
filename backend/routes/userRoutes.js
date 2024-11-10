@@ -30,6 +30,7 @@ router.post("/api/register", async (request, response) => {
       email: request.body.email,
       transmission: request.body.transmission,
       clas: request.body.clas,
+      DOB: request.body.DOB,
       // DLnumber: bcrypt.hashSync(request.body.DLnumber, 10),
       DLnumber: request.body.DLnumber,
       password: bcrypt.hashSync(request.body.password, 10),
@@ -115,7 +116,7 @@ router.post("/api/user", async (req, res) => {
 // Get all students
 router.get("/api/students", (req, res) => {
   // Call authUser middleware with the desired role to check against
-  authUser(req, res, "Manager", async () => {
+  authUser(req, res, ["Instructor", "Manager"], async () => {
     try {
       const students = await user.find({ Role: "Student" });
 

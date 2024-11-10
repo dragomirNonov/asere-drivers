@@ -6,10 +6,21 @@ const userAuthentication = require("../services/userAuth");
 let userAuth = userAuthentication.authUser;
 
 // Addind new appointment
-router.post("/api/newappointment", (req, res) => {
+router.post("/api/newappointment", async (req, res) => {
   // Call authUser middleware with the desired role to check against
   userAuth(req, res, "Manager", async () => {
     try {
+      // Check if an appointment with the same DLnumber already exists
+      const existingAppointment = await appointment.findOne({
+        DLnumber: req.body.DLnumber,
+      });
+      if (existingAppointment) {
+        return res.status(400).json({
+          title: "Appointment exists.",
+          message: "Appointment with that Driver's License already exists.",
+        });
+      }
+
       const newAppointment = new appointment({
         firstName: req.body.firstName,
         lastName: req.body.lastName,
@@ -44,9 +55,25 @@ router.post("/api/newappointment", (req, res) => {
 // Get all appointments
 router.get("/api/appointments", (req, res) => {
   // Call authUser middleware with the desired role to check against
-  userAuth(req, res, "Manager", async () => {
+  userAuth(req, res, ["Instructor", "Manager"], async () => {
     try {
       const appointments = await appointment.find();
+      console.log(appointments);
+
+      res.json(appointments);
+    } catch (error) {
+      res.status(500).json({ error: "An error occurred" });
+    }
+  });
+});
+
+// Get all real appointments
+router.get("/api/realappointments", (req, res) => {
+  // Call authUser middleware with the desired role to check against
+  userAuth(req, res, ["Instructor", "Manager"], async () => {
+    try {
+      // Fetch appointments where checkboxOption is "real"
+      const appointments = await appointment.find({ checkboxOption: "real" });
       res.json(appointments);
     } catch (error) {
       res.status(500).json({ error: "An error occurred" });

@@ -6,18 +6,34 @@ import userServices from "../services/users";
 const Register = () => {
   const [DLnumber, setDLnumber] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
+  const [DOB, setDOB] = useState("");
   const [transmission, setTransmission] = useState("");
   const [clas, setClas] = useState("");
 
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
+  const checkPasswordMatch = () => {
+    if (password !== confirmPassword) {
+      setErrorMessage("Passwords do not match");
+      return false;
+    }
+    setErrorMessage("");
+    return true;
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
+
+    if (!checkPasswordMatch()) {
+      return;
+    }
+
     const registerObj = {
       firstName: firstname,
       lastName: lastname,
@@ -27,6 +43,7 @@ const Register = () => {
       clas: clas,
       DLnumber: DLnumber,
       password: password,
+      DOB: DOB,
     };
 
     userServices
@@ -42,13 +59,13 @@ const Register = () => {
   };
 
   return (
-    <div className="bg-gray-700 flex flex-col items-center w-auto h-screen  ">
-      <div className="bg-gray-900 shadow-md rounded-md p-4 md:mt-20 flex flex-col items-center w-full h-screen md:h-max md:w-2/6">
+    <div className="bg-gray-700 flex flex-col items-center w-full min-h-screen ">
+      <div className="bg-gray-900 shadow-md rounded-md p-4 md:mt-20 flex flex-col items-center w-full  mx-auto md:h-max md:w-2/6">
         <h2 className="text-white font-bold p-2 text-3xl">SIGN UP</h2>
         <form onSubmit={handleSubmit} className=" w-full  p-2">
           <div className="md:flex md:flex-row">
             <div className="p-2 flex flex-col md:w-1/2 text-gray-500 ">
-              <label>Firsst Name </label>
+              <label>First Name </label>
               <input
                 type="text"
                 id="firstname"
@@ -134,7 +151,7 @@ const Register = () => {
 
           <div className="md:flex flex-row">
             <div className="p-2 flex flex-col md:w-1/2 text-gray-500 ">
-              <label>Driver's License Num. </label>
+              <label>Driver's License # </label>
               <input
                 type="text"
                 id="username"
@@ -145,12 +162,37 @@ const Register = () => {
               />
             </div>
             <div className="p-2 flex flex-col md:w-1/2 text-gray-500">
+              <label>Date of Birth</label>
+              <input
+                type="date"
+                id="DOB"
+                value={DOB}
+                onChange={(event) => setDOB(event.target.value)}
+                required
+                className="p-1 rounded-md bg-gray-500 text-white"
+              />
+            </div>
+          </div>
+
+          <div className="md:flex flex-row">
+            <div className="p-2 flex flex-col md:w-1/2 text-gray-500">
               <label>Password</label>
               <input
                 type="password"
                 id="password"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
+                required
+                className="p-1 rounded-md bg-gray-500 text-white"
+              />
+            </div>
+            <div className="p-2 flex flex-col md:w-1/2 text-gray-500">
+              <label>Confirm Password</label>
+              <input
+                type="password"
+                id="confirmPassword"
+                value={confirmPassword}
+                onChange={(event) => setConfirmPassword(event.target.value)}
                 required
                 className="p-1 rounded-md bg-gray-500 text-white"
               />

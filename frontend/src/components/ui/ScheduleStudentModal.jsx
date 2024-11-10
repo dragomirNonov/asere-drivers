@@ -70,7 +70,8 @@ const ScheduleStudent = (props) => {
 
   const handleError = (err) => {
     setSuccessMessage("");
-    setErrorMessage(err.response);
+    setErrorMessage(err.response.data.message);
+    // console.log(err.response.data.message);
   };
 
   const resetFormData = () => {
@@ -94,7 +95,7 @@ const ScheduleStudent = (props) => {
   return (
     <>
       <button
-        className="text-black font-bold p-2 bg-orange-500 hover:bg-orange-700 rounded-lg md:w-3/6 "
+        className="text-black font-bold px-2 bg-orange-500 hover:bg-orange-700 rounded-lg md:w-3/6 "
         type="button"
         onClick={() => {
           setErrorMessage("");
@@ -107,7 +108,7 @@ const ScheduleStudent = (props) => {
       {showModal ? (
         <>
           <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-            <div className="relative lg:w-2/6 my-6 mx-auto max-w-3xl">
+            <div className="relative lg:w-2/6 my-6 mx-auto md:mt-60 w-full h-full max-w-3xl">
               {/*content*/}
               <div className="border-0 bg-slate-300 rounded-lg shadow-lg relative flex flex-col w-full  outline-none focus:outline-none">
                 {/*header*/}
@@ -126,6 +127,7 @@ const ScheduleStudent = (props) => {
                 <div className="relative p-6 flex-auto">
                   <div className="popup">
                     <form className="p-4" onSubmit={handleSubmit}>
+                      <div className="text-red-500 pb-6">{errorMessage}</div>
                       <div className="flex flex-col md:flex-row justify-between">
                         <div className="mb-2 flex flex-col md:w-3/6 p-1">
                           <label className="text-lg" htmlFor="firstName">
@@ -304,7 +306,7 @@ const ScheduleStudent = (props) => {
                       </div>
                       <div className="mb-2 flex flex-col items-center">
                         <div>
-                          <label className="text-lg p-2 font-bold text-yellow-700">
+                          <label className="text-lg p-2 font-bold text-green-700">
                             <input
                               type="checkbox"
                               name="checkboxOption"
@@ -317,7 +319,7 @@ const ScheduleStudent = (props) => {
                             />
                             Placeholder
                           </label>
-                          <label className="text-lg p-2 font-bold text-green-600">
+                          <label className="text-lg p-2 font-bold text-yellow-600">
                             <input
                               type="checkbox"
                               name="checkboxOption"
@@ -344,7 +346,6 @@ const ScheduleStudent = (props) => {
                       </button>
 
                       <div className="text-green-500">{successMessage}</div>
-                      <div className="text-red-500">{errorMessage}</div>
                     </form>
                   </div>
                 </div>

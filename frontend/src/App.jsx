@@ -14,6 +14,14 @@ import UiNavbar from "./components/ui/uiNavbar";
 import Students from "./components/ui/Students";
 import Appointments from "./components/ui/Appointments";
 import UserInfo from "./components/ui/UserInfo";
+//Student UI Imports
+import StudentUiNavbar from "./components/studentUI/studentUiNavbar";
+import Session from "./components/studentUI/Session";
+import StudentHours from "./components/studentUI/StudentHours";
+//Instructor UI Imports
+import InstructorUiNavbar from "./components/instructorUI/instructorUiNavbar";
+import InstructorStudents from "./components/instructorUI/Students";
+import InstructorAppointments from "./components/instructorUI/Appointments";
 
 function HomePage() {
   return (
@@ -43,6 +51,30 @@ function UI() {
   );
 }
 
+function StudentUI() {
+  return (
+    <div className="bg-gray-500 pb-10  ">
+      <StudentUiNavbar />
+      <UserInfo />
+      <Session />
+      {/* <StudentHours /> */}
+    </div>
+  );
+}
+
+function InstructorUI() {
+  return (
+    <div className="bg-gray-500 pb-10">
+      <InstructorUiNavbar />
+      <UserInfo />
+      <Routes>
+        <Route path="students" element={<InstructorStudents />} />
+        <Route path="appointments" element={<InstructorAppointments />} />
+      </Routes>
+    </div>
+  );
+}
+
 export default function App() {
   return (
     <Router>
@@ -56,6 +88,10 @@ export default function App() {
           <Route path="/register" element={<Register />} />
           {/* Route for the Admin page */}
           <Route path="/ui/*" element={<UI />} />
+          {/* Route for the Student page */}
+          <Route path="/studentui/*" element={<StudentUI />} />
+          {/* Route for the Instructor page */}
+          <Route path="/instructorui/*" element={<InstructorUI />} />
         </Routes>
       </div>
     </Router>

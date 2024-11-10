@@ -1,35 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
-import logo from "../assets/logo.png";
+import logo from "../../assets/logo.png";
 
 const navlinks = [
   {
-    title: "Home",
-    link: "/",
+    title: "Students",
+    link: "/instructorui/students",
   },
   {
-    title: "About Us",
-    link: "#aboutus",
+    title: "Appointments",
+    link: "/instructorui/appointments",
   },
-  {
-    title: "FAQs",
-    link: "#faq",
-  },
-  {
-    title: "Gallery",
-    link: "#gallery",
-  },
-  {
-    title: "Contact Us",
-    link: "#contactus",
-  },
-  // {
-  //   title: "Login",
-  //   link: "/login",
-  // },
 ];
 
-const Navbar = () => {
+const UiNavbar = () => {
   const [open, setOpen] = useState(false);
 
   const handleMenu = () => {
@@ -37,10 +21,10 @@ const Navbar = () => {
   };
 
   return (
-    <div className="bg-gray-800 sticky top-0">
+    <div className="bg-gray-800 ">
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <div className="flex items-center ">
+          <div className="flex items-center">
             <img src={logo} className="h-12 w-auto" alt="Logo" />{" "}
             <a href="/" className="text-yellow-500 ml-2 text-2xl">
               Asere CDL
@@ -48,7 +32,7 @@ const Navbar = () => {
           </div>
           {/* Nav Links*/}
           <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-4 ">
+            <div className="ml-10 flex items-baseline space-x-4">
               {navlinks.map((link, index) => (
                 <a
                   key={index}
@@ -62,7 +46,7 @@ const Navbar = () => {
                 className="text-yellow-500 transition-all duration-500 hover:bg-gray-600 hover:text-yelow-500 px-3 py-2 rounded-md text-md font-medium border"
                 href="/login"
               >
-                Login
+                Logout
               </a>
             </div>
           </div>
@@ -74,30 +58,30 @@ const Navbar = () => {
               className="inline-flex items-center justify-center p-2 rounded-md text-yellow-400 hover:bg-gray-700 "
             >
               <span className="sr-only">Open Main Manu</span>
-              {open == true ? <FaTimes /> : <FaBars />}
+              {open ? <FaTimes /> : <FaBars />}
             </button>
           </div>
         </div>
       </div>
-      {/* mpbile-menu */}
+      {/* mobile-menu */}
       {open ? (
         <div className="md:hidden">
-          <div className="ox-2 pt-2 pb-3 space-y-1 sm:px-3">
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 ">
             {navlinks.map((link, index) => (
               <a
                 key={index}
-                className="text-yellow-500 hover:bg-gray-700 flex justify-center px-3 py-2 rounded-md text-base font-medium"
+                className="text-yellow-500 hover:bg-gray-700 block px-3 py-2 rounded-md text-base  font-medium"
                 href={link.link}
               >
                 {link.title}
               </a>
             ))}
-            <div className="py-1 flex justify-center">
+            <div className="px-2 py-2  flex justify-end">
               <a
-                className="text-yellow-500 transition-all duration-500 hover:bg-gray-600 hover:text-yelow-500 px-3 py-2 rounded-md text-md font-medium "
+                className="text-yellow-600 transition-all duration-500 hover:bg-gray-600 hover:text-yelow-500  rounded-md text-md font-medium px-1 "
                 href="/login"
               >
-                Login
+                Logout
               </a>
             </div>
           </div>
@@ -107,4 +91,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default UiNavbar;

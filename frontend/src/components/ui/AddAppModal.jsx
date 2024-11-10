@@ -51,26 +51,21 @@ const AddAppModal = (props) => {
         checkboxOption: formData.checkboxOption,
       };
 
-      const res = await appointmentService.createNewAppt(appointmentObj);
-      handleSuccess(res);
+      await appointmentService
+        .createNewAppt(appointmentObj)
+        .then(() => {
+          resetFormData();
+          setShowModal(false);
+          props.refresh();
+          props.toast();
+        })
+        .catch((err) => {
+          // setErrorMessage(err.response.data.message);
+          // console.log(err.response.data.message);
+        });
     } catch (err) {
-      handleError(err);
+      console.log(err);
     }
-  };
-
-  const handleSuccess = (res) => {
-    setErrorMessage("");
-    setSuccessMessage(res.data.message);
-    // Reset the form fields
-    resetFormData();
-    setShowModal(false);
-    props.refresh();
-    props.toast();
-  };
-
-  const handleError = (err) => {
-    setSuccessMessage("");
-    setErrorMessage(err.response);
   };
 
   const resetFormData = () => {
@@ -94,7 +89,7 @@ const AddAppModal = (props) => {
   return (
     <>
       <button
-        className="text-white font-bold p-4 bg-teal-700 w-1/6  hover:bg-teal-900 rounded-lg mt-4"
+        className="text-white font-bold p-4 bg-teal-700   hover:bg-teal-900 rounded-lg mt-4"
         type="button"
         onClick={() => {
           setErrorMessage("");
@@ -107,7 +102,7 @@ const AddAppModal = (props) => {
       {showModal ? (
         <>
           <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-            <div className="relative w-2/6 my-6 mx-auto max-w-3xl">
+            <div className="relative md:w-2/6 md:mt-60 w-full h-full max-w-3xl">
               {/*content*/}
               <div className="border-0 bg-slate-300 rounded-lg shadow-lg relative flex flex-col w-full  outline-none focus:outline-none">
                 {/*header*/}
@@ -304,7 +299,7 @@ const AddAppModal = (props) => {
                       </div>
                       <div className="mb-2 flex flex-col items-center">
                         <div>
-                          <label className="text-lg p-2 font-bold text-yellow-700">
+                          <label className="text-lg p-2 font-bold text-green-700">
                             <input
                               type="checkbox"
                               name="checkboxOption"
@@ -317,7 +312,7 @@ const AddAppModal = (props) => {
                             />
                             Placeholder
                           </label>
-                          <label className="text-lg p-2 font-bold text-green-600">
+                          <label className="text-lg p-2 font-bold text-yellow-600">
                             <input
                               type="checkbox"
                               name="checkboxOption"

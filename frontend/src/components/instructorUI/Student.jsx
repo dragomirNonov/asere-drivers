@@ -1,9 +1,8 @@
 import { useState } from "react";
-import ScheduleStudent from "./ScheduleStudentModal";
-import EditStudentModal from "./EditStudentModal";
+
 import StudentHoursModal from "./StudentHoursModal";
 
-const Student = ({ student, toast, refresh }) => {
+const Student = ({ student, refresh }) => {
   const [accordionOpen, setAccordionOpen] = useState(false);
 
   // Function to determine the color class based on permitExpiryDate
@@ -81,8 +80,6 @@ const Student = ({ student, toast, refresh }) => {
         <div className={`overflow-hidden font-bold text-sm md:text-xl`}>
           {
             <div className="flex flex-col mt-4">
-              <p>DOB: {student.DOB}</p>
-              <p>Driver's License Number: {student.DLnumber}</p>
               <p>Phone: {student.phone}</p>
               <p>Email: {student.email}</p>
               <p className={getPermitExpiryColor()}>
@@ -90,8 +87,6 @@ const Student = ({ student, toast, refresh }) => {
               </p>
 
               <div className="flex py-2">
-                <ScheduleStudent student={student} toast={toast} />
-                <EditStudentModal info={student} refresh={refresh} />
                 <StudentHoursModal info={student} refresh={refresh} />
               </div>
             </div>

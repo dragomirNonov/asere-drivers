@@ -9,16 +9,18 @@ app.use(express.json());
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Serve static files from the "dist" directory
-// app.use(express.static(path.join(__dirname, "dist"))); // deplyiment only
+// app.use(express.static(path.join(__dirname, "dist"))); // deployment only
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Import the route handlers from userRoutes.js
 const userRoutes = require("./routes/userRoutes");
 const appointmentsRoutes = require("./routes/appointmentsRoutes");
+const sessionsRoutes = require("./routes/sessionsRoutes");
 
 // Use the route handlers
 app.use("/", userRoutes);
 app.use("/", appointmentsRoutes);
+app.use("/", sessionsRoutes);
 
 const url =
   "mongodb+srv://dragomirnonov:D27m03r94%21%40%23@aseredrivers.3tf7st7.mongodb.net/?retryWrites=true&w=majority&appName=AsereDrivers"; //test DB
@@ -37,9 +39,9 @@ mongoose
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Serve the index.html file for any route not handled by API routes DEPLOY ONLY
-// app.get("*", (req, res) => {
-//   res.sendFile(path.join(__dirname, "dist", "index.html"));
-// });
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "dist", "index.html"));
+});
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {

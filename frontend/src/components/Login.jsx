@@ -18,7 +18,27 @@ const Login = () => {
       .then((res) => {
         if (res.status == 200) {
           localStorage.setItem("token", res.data.token);
-          navigate("/ui/students");
+
+          const decodeToken = (token) => {
+            try {
+              const decoded = JSON.parse(atob(token.split(".")[1]));
+              return decoded;
+            } catch (error) {
+              console.error("Error decoding token:", error);
+              return null;
+            }
+          };
+
+          const decodedToken = decodeToken(res.data.token);
+          const role = decodedToken.role;
+
+          if (role === "Student") {
+            navigate("/studentui");
+          } else if (role === "Instructor") {
+            navigate("/instructorui/appointments");
+          } else {
+            navigate("/ui/appointments");
+          }
         }
       })
       .catch((err) => {

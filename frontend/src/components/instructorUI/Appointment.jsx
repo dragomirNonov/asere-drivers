@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import EditAppModal from "./EditAppModal";
 
 const Appointment = (props) => {
   const [accordionOpen, setAccordionOpen] = useState(false);
@@ -11,7 +10,6 @@ const Appointment = (props) => {
         toHide.style.display = "none";
       }
     }
-    // console.log(props);
   }, []);
 
   return (
@@ -86,13 +84,9 @@ const Appointment = (props) => {
         <div className=" overflow-hidden text-black font-bold ">
           {
             <div className="flex flex-col mt-4">
-              <p>DOB: {props.DOB}</p>
-              <p>Driver's License Number: {props.DLnumber}</p>
               <p>Phone: {props.phone}</p>
-              <p>Email: {props.email}</p>
-              <p>Permit Expiry Date: {props.permitExpiryDate}</p>
 
-              <EditAppModal info={props} deleteApp={props.deleteApp} />
+              <p>Permit Expiry Date: {props.permitExpiryDate}</p>
             </div>
           }
         </div>

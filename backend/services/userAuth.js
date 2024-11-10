@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 
-module.exports.authUser = (req, res, roleToCheck, next) => {
+module.exports.authUser = (req, res, rolesToCheck, next) => {
   const token = req.headers.token;
 
   jwt.verify(token, "secretkey", (err, decoded) => {
@@ -11,8 +11,13 @@ module.exports.authUser = (req, res, roleToCheck, next) => {
         error: "Invalid token",
       });
     } else {
-      // Check if decoded role matches the roleToCheck
-      if (decoded.role !== roleToCheck) {
+      // Ensure rolesToCheck is an array
+      if (!Array.isArray(rolesToCheck)) {
+        rolesToCheck = [rolesToCheck];
+      }
+
+      // Check if decoded role matches any of the roles in rolesToCheck
+      if (!rolesToCheck.includes(decoded.role)) {
         return res.status(401).json({
           title: "Unauthorized",
           error: "Role mismatch",

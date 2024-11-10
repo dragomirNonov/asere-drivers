@@ -7,20 +7,27 @@ const baseUrl = "http://localhost:3001/api"; //develop URL
 
 //Create an appointment
 const createNewAppt = (appointmentObj) => {
-  return axios
-    .post(`${baseUrl}/newappointment`, appointmentObj, {
-      headers: { token: localStorage.getItem("token") },
-    })
-    .then((response) => response)
-    .catch((error) => {
-      throw new Error(`Failed to create new appointment: ${error}`);
-    });
+  return axios.post(`${baseUrl}/newappointment`, appointmentObj, {
+    headers: { token: localStorage.getItem("token") },
+  });
 };
 
 //Get all appointments
 const getAllAppointments = () => {
   return axios
     .get(`${baseUrl}/appointments`, {
+      headers: { token: localStorage.getItem("token") },
+    })
+    .then((response) => response.data)
+    .catch((error) => {
+      throw new Error(`Failed to fetch all appointments: ${error}`);
+    });
+};
+
+//Get all real appointments
+const getAllRealAppointments = () => {
+  return axios
+    .get(`${baseUrl}/realappointments`, {
       headers: { token: localStorage.getItem("token") },
     })
     .then((response) => response.data)
@@ -58,4 +65,5 @@ export default {
   getAllAppointments,
   editAppointment,
   deleteAppointment,
+  getAllRealAppointments,
 };

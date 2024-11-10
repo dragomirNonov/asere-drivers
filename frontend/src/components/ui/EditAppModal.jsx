@@ -45,6 +45,7 @@ const EditAppModal = (props) => {
     firstName: props.info.firstName,
     lastName: props.info.lastName,
     date: props.info.date,
+    time: props.info.time,
     location: props.info.location,
     truck: props.info.truck,
     transmission: props.info.transmission,
@@ -71,7 +72,7 @@ const EditAppModal = (props) => {
       {showModal ? (
         <>
           <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-            <div className="relative w-2/6 my-6 mx-auto max-w-3xl">
+            <div className="relative md:w-2/6 md:mt-60 w-full h-full max-w-3xl">
               {/*content*/}
               <div className="border-0 bg-slate-300 rounded-lg shadow-lg relative flex flex-col w-full  outline-none focus:outline-none">
                 {/*header*/}
@@ -120,8 +121,19 @@ const EditAppModal = (props) => {
                           name="date"
                           value={editedInfo.date}
                           onChange={handleChange}
-                          className="p-1"
+                          className="p-1 "
                           htmlFor="date"
+                        />
+                      </label>
+                      <label className="p-1 flex justify-between">
+                        Time:
+                        <input
+                          type="text"
+                          name="time"
+                          value={editedInfo.time}
+                          onChange={handleChange}
+                          className="p-1"
+                          htmlFor="time"
                         />
                       </label>
                       <label className="p-1 flex justify-between">
@@ -209,7 +221,7 @@ const EditAppModal = (props) => {
                         />
                       </label>
                       <div>
-                        <label className="text-lg p-2 font-bold text-yellow-600">
+                        <label className="text-lg p-2 font-bold text-green-600">
                           <input
                             type="checkbox"
                             name="checkboxOption"
@@ -222,7 +234,7 @@ const EditAppModal = (props) => {
                           />
                           Placeholder
                         </label>
-                        <label className="text-lg p-2 font-bold text-green-600">
+                        <label className="text-lg p-2 font-bold text-yellow-600">
                           <input
                             type="checkbox"
                             name="checkboxOption"

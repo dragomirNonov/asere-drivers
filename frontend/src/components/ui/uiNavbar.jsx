@@ -19,6 +19,7 @@ const navlinks = [
 
 const UiNavbar = () => {
   const [open, setOpen] = useState(false);
+  const [userRole, setUserRole] = useState("");
 
   useEffect(() => {
     // Retrieve JWT token from local storage
@@ -35,16 +36,11 @@ const UiNavbar = () => {
       }
     };
 
-    // Decode token to get user ID
+    // Decode token to get user role
     const decodedToken = decodeToken(token);
 
-    if (decodedToken && decodedToken.role === "Student") {
-      const studentsNavLink = document.getElementById("Students");
-      const appointmentsNavLink = document.getElementById("Appointments");
-      if (studentsNavLink && appointmentsNavLink) {
-        studentsNavLink.style.display = "none";
-        appointmentsNavLink.style.display = "none";
-      }
+    if (decodedToken) {
+      setUserRole(decodedToken.role);
     }
   }, []);
 
@@ -52,6 +48,14 @@ const UiNavbar = () => {
     setOpen((prev) => !prev);
   };
 
+  const filteredNavlinks = navlinks.filter((link) => {
+    if (userRole === "Student") {
+      return link.title !== "Students" && link.title !== "Appointments";
+    } else if (userRole === "Instructor") {
+      return link.title !== "Students";
+    }
+    return true;
+  });
   return (
     <div className="bg-gray-800 ">
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
@@ -65,9 +69,8 @@ const UiNavbar = () => {
           {/* Nav Links*/}
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-4">
-              {navlinks.map((link, index) => (
+              {filteredNavlinks.map((link, index) => (
                 <a
-                  id={link.title}
                   key={index}
                   className="text-yellow-500 transition-all duration-500 hover:bg-gray-600 hover:text-yelow-500 px-3 py-2 rounded-md text-md font-medium"
                   href={link.link}
@@ -91,7 +94,7 @@ const UiNavbar = () => {
               className="inline-flex items-center justify-center p-2 rounded-md text-yellow-400 hover:bg-gray-700 "
             >
               <span className="sr-only">Open Main Manu</span>
-              {open == true ? <FaTimes /> : <FaBars />}
+              {open ? <FaTimes /> : <FaBars />}
             </button>
           </div>
         </div>
@@ -99,8 +102,8 @@ const UiNavbar = () => {
       {/* mobile-menu */}
       {open ? (
         <div className="md:hidden">
-          <div className="ox-2 pt-2 pb-3 space-y-1 sm:px-3">
-            {navlinks.map((link, index) => (
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+            {filteredNavlinks.map((link, index) => (
               <a
                 key={index}
                 className="text-yellow-500 hover:bg-gray-700 block px-3 py-2 rounded-md text-base font-medium"
@@ -109,12 +112,14 @@ const UiNavbar = () => {
                 {link.title}
               </a>
             ))}
-            <a
-              className="text-yellow-500 transition-all duration-500 hover:bg-gray-600 hover:text-yelow-500 px-3 py-2 rounded-md text-md font-medium "
-              href="/login"
-            >
-              Logout
-            </a>
+            <div className="px-2 py-2  flex justify-end">
+              <a
+                className="text-yellow-600 transition-all duration-500 hover:bg-gray-600 hover:text-yelow-500  rounded-md text-md font-medium px-1"
+                href="/login"
+              >
+                Logout
+              </a>
+            </div>
           </div>
         </div>
       ) : null}
