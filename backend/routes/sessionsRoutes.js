@@ -30,39 +30,39 @@ router.post("/api/clock-in", async (req, res) => {
   });
 });
 
-// Clock IN
-router.post("/api/clock-i", async (req, res) => {
-  // Call authUser middleware with the desired role to check against
-  userAuth(req, res, "Student", async () => {
-    try {
-      const session = new sessions({
-        user: req.body.userId,
-        clockedIn: new Date(),
-      });
-      await session.save();
-      res.send("Clocked in");
-    } catch (err) {
-      console.log(err);
-      res.status(500).json({
-        title: "Server error",
-        error: err.message,
-      });
-    }
-  });
-});
+// // Clock IN
+// router.post("/api/clock-i", async (req, res) => {
+//   // Call authUser middleware with the desired role to check against
+//   userAuth(req, res, "Student", async () => {
+//     try {
+//       const session = new sessions({
+//         user: req.body.userId,
+//         clockedIn: new Date(),
+//       });
+//       await session.save();
+//       res.send("Clocked in");
+//     } catch (err) {
+//       console.log(err);
+//       res.status(500).json({
+//         title: "Server error",
+//         error: err.message,
+//       });
+//     }
+//   });
+// });
 
-// Clock out
-router.post("/api/clock-out", async (req, res) => {
-  const session = await sessions
-    .findOne({ user: req.body.userId })
-    .sort({ clockedIn: -1 });
-  if (!session || session.clockedOut) {
-    return res.status(400).send("No active clock-in found");
-  }
-  session.clockedOut = new Date();
-  await session.save();
-  res.send("Clocked out");
-});
+// // Clock out
+// router.post("/api/clock-out", async (req, res) => {
+//   const session = await sessions
+//     .findOne({ user: req.body.userId })
+//     .sort({ clockedIn: -1 });
+//   if (!session || session.clockedOut) {
+//     return res.status(400).send("No active clock-in found");
+//   }
+//   session.clockedOut = new Date();
+//   await session.save();
+//   res.send("Clocked out");
+// });
 
 // Get sessions by student ID
 router.get("/api/sessions/:studentId", async (req, res) => {
