@@ -4,6 +4,7 @@
   },
   "scripts": {
     "dev": "concurrently \"npm run dev --prefix frontend\" \"npm run dev --prefix backend\"",
-    "prettier": "concurrently \"npm run prettier:write --prefix frontend\" \"npm run lint --prefix backend\""
+    "prettier": "concurrently \"npm run prettier:write --prefix frontend\" \"npm run lint --prefix backend\"",
+    "install-all":"npm install && cd frontend && npm install && cd.. && cd backend && npm install"
   }
 }
