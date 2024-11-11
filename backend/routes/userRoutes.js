@@ -36,9 +36,7 @@ router.post("/api/register", async (request, response) => {
       password: bcrypt.hashSync(request.body.password, 10),
     });
     const savedUser = await newUser.save();
-    return response
-      .status(200)
-      .json({ savedUser: savedUser, message: "User added successfully." });
+    return response.status(200).json({ savedUser: savedUser, message: "User added successfully." });
   } catch (err) {
     console.log(err);
     response.status(500).json({
@@ -67,13 +65,9 @@ router.post("/api/login", async (req, res) => {
       });
     }
 
-    let token = jwt.sign(
-      { userId: userExists._id, role: userExists.Role },
-      "secretkey",
-      {
-        expiresIn: "480min",
-      }
-    );
+    let token = jwt.sign({ userId: userExists._id, role: userExists.Role }, "secretkey", {
+      expiresIn: "480min",
+    });
 
     return res.status(200).json({
       message: "Login success",
@@ -146,11 +140,7 @@ router.put("/api/editstudent", async (req, res) => {
     const updatedData = req.body;
     console.log(updatedData);
 
-    const updatedStudent = await user.findByIdAndUpdate(
-      studentId,
-      updatedData,
-      { new: true }
-    );
+    const updatedStudent = await user.findByIdAndUpdate(studentId, updatedData, { new: true });
 
     if (!updatedStudent) {
       return res.status(404).json({
@@ -224,9 +214,7 @@ router.post("/api/addstudent", async (request, response) => {
       permitExpiryDate: request.body.permitExpDate,
     });
     const savedUser = await newUser.save();
-    return response
-      .status(200)
-      .json({ savedUser: savedUser, message: "User added successfully." });
+    return response.status(200).json({ savedUser: savedUser, message: "User added successfully." });
   } catch (err) {
     console.log(err);
     response.status(500).json({
