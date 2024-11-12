@@ -22,51 +22,51 @@ import Pic19 from '../assets/studentPictures/PHOTO-2022-05-04-14-19-07.jpg';
 // import Pic10 from "../assets/studentPictures/PHOTO-2022-04-20-16-48-20.jpg";
 
 const picturePaths = [
-    Pic1,
-    Pic3,
-    Pic4,
-    Pic5,
-    Pic6,
-    Pic7,
-    Pic8,
-    Pic9,
-    Pic11,
-    Pic12,
-    Pic13,
-    Pic14,
-    Pic15,
-    Pic16,
-    Pic17,
-    Pic18,
-    Pic19,
-    Pic20,
+  Pic1,
+  Pic3,
+  Pic4,
+  Pic5,
+  Pic6,
+  Pic7,
+  Pic8,
+  Pic9,
+  Pic11,
+  Pic12,
+  Pic13,
+  Pic14,
+  Pic15,
+  Pic16,
+  Pic17,
+  Pic18,
+  Pic19,
+  Pic20,
 ];
 
 const Gallery = () => {
-    return (
-        <div id="gallery" className=" bg-slate-100">
-            <h2
-                className="text-yellow-600  text-2xl md:text-5xl flex justify-center pb-4 pt-6"
-                style={{
-                    borderBottom: '1px solid',
-                    borderImage:
-                        'linear-gradient(to right, transparent, rgb(234, 179, 8), transparent) 1',
-                }}
-            >
-                GALLERY:
-            </h2>
-            <div className="flex">
-                {picturePaths.slice(0, 8).map((image, index) => (
-                    <Picture key={index} pic={image} />
-                ))}
-            </div>
-            <div className="flex">
-                {picturePaths.slice(9, 17).map((image, index) => (
-                    <Picture key={index} pic={image} />
-                ))}
-            </div>
-        </div>
-    );
+  return (
+    <div id="gallery" className=" bg-slate-100">
+      <h2
+        className="text-yellow-600  text-2xl md:text-5xl flex justify-center pb-4 pt-6"
+        style={{
+          borderBottom: '1px solid',
+          borderImage:
+            'linear-gradient(to right, transparent, rgb(234, 179, 8), transparent) 1',
+        }}
+      >
+        GALLERY:
+      </h2>
+      <div className="flex">
+        {picturePaths.slice(0, 8).map((image, index) => (
+          <Picture key={index} pic={image} />
+        ))}
+      </div>
+      <div className="flex">
+        {picturePaths.slice(9, 17).map((image, index) => (
+          <Picture key={index} pic={image} />
+        ))}
+      </div>
+    </div>
+  );
 };
 
 export default Gallery;

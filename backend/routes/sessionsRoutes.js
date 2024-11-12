@@ -30,6 +30,7 @@ router.post("/api/clock-in", async (req, res) => {
   });
 });
 
+//#region ClockIn/ClockOut
 // // Clock IN
 // router.post("/api/clock-i", async (req, res) => {
 //   // Call authUser middleware with the desired role to check against
@@ -63,6 +64,8 @@ router.post("/api/clock-in", async (req, res) => {
 //   await session.save();
 //   res.send("Clocked out");
 // });
+
+//#endregion
 
 // Get sessions by student ID
 router.get("/api/sessions/:studentId", async (req, res) => {

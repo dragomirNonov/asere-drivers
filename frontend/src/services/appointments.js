@@ -7,63 +7,63 @@ const baseUrl = 'http://localhost:3001/api'; //develop URL
 
 //Create an appointment
 const createNewAppt = (appointmentObj) => {
-    return axios.post(`${baseUrl}/newappointment`, appointmentObj, {
-        headers: { token: localStorage.getItem('token') },
-    });
+  return axios.post(`${baseUrl}/newappointment`, appointmentObj, {
+    headers: { token: localStorage.getItem('token') },
+  });
 };
 
 //Get all appointments
 const getAllAppointments = () => {
-    return axios
-        .get(`${baseUrl}/appointments`, {
-            headers: { token: localStorage.getItem('token') },
-        })
-        .then((response) => response.data)
-        .catch((error) => {
-            throw new Error(`Failed to fetch all appointments: ${error}`);
-        });
+  return axios
+    .get(`${baseUrl}/appointments`, {
+      headers: { token: localStorage.getItem('token') },
+    })
+    .then((response) => response.data)
+    .catch((error) => {
+      throw new Error(`Failed to fetch all appointments: ${error}`);
+    });
 };
 
 //Get all real appointments
 const getAllRealAppointments = () => {
-    return axios
-        .get(`${baseUrl}/realappointments`, {
-            headers: { token: localStorage.getItem('token') },
-        })
-        .then((response) => response.data)
-        .catch((error) => {
-            throw new Error(`Failed to fetch all appointments: ${error}`);
-        });
+  return axios
+    .get(`${baseUrl}/realappointments`, {
+      headers: { token: localStorage.getItem('token') },
+    })
+    .then((response) => response.data)
+    .catch((error) => {
+      throw new Error(`Failed to fetch all appointments: ${error}`);
+    });
 };
 
 //Edit appointment
 const editAppointment = (editedAppointment) => {
-    return axios
-        .put(`${baseUrl}/editappointment`, editedAppointment, {
-            headers: { token: localStorage.getItem('token') },
-        })
-        .then((response) => response.data)
-        .catch((error) => {
-            throw new Error(`Failed to edit appointment: ${error}`);
-        });
+  return axios
+    .put(`${baseUrl}/editappointment`, editedAppointment, {
+      headers: { token: localStorage.getItem('token') },
+    })
+    .then((response) => response.data)
+    .catch((error) => {
+      throw new Error(`Failed to edit appointment: ${error}`);
+    });
 };
 
 // Delete appointment
 const deleteAppointment = (appointmentId) => {
-    return axios
-        .delete(`${baseUrl}/deleteappointment/${appointmentId}`, {
-            headers: { token: localStorage.getItem('token') },
-        })
-        .then((response) => response.data)
-        .catch((error) => {
-            throw new Error(`Failed to delete appointment: ${error}`);
-        });
+  return axios
+    .delete(`${baseUrl}/deleteappointment/${appointmentId}`, {
+      headers: { token: localStorage.getItem('token') },
+    })
+    .then((response) => response.data)
+    .catch((error) => {
+      throw new Error(`Failed to delete appointment: ${error}`);
+    });
 };
 
 export default {
-    createNewAppt,
-    getAllAppointments,
-    editAppointment,
-    deleteAppointment,
-    getAllRealAppointments,
+  createNewAppt,
+  getAllAppointments,
+  editAppointment,
+  deleteAppointment,
+  getAllRealAppointments,
 };
