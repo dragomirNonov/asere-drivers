@@ -24,78 +24,75 @@ import UserInfo from './components/ui/UserInfo';
 import UiNavbar from './components/ui/uiNavbar';
 
 function HomePage() {
-    return (
-        <div>
-            <Navbar />
-            <img src={truck} className="w-auto h-100" alt="Truck" id="home" />
-            <Info />
-            <AboutUS />
-            <FAQs />
-            <Gallery />
-            <ContactUs />
-            <GoogleMap />
-        </div>
-    );
+  return (
+    <div>
+      <Navbar />
+      <img src={truck} className="w-auto h-100" alt="Truck" id="home" />
+      <Info />
+      <AboutUS />
+      <FAQs />
+      <Gallery />
+      <ContactUs />
+      <GoogleMap />
+    </div>
+  );
 }
 
 function UI() {
-    return (
-        <div className="bg-gray-500 pb-10  ">
-            <UiNavbar />
-            <UserInfo />
-            <Routes>
-                <Route path="students" element={<Students />} />
-                <Route path="appointments" element={<Appointments />} />
-            </Routes>
-        </div>
-    );
+  return (
+    <div className="bg-gray-500 pb-10  ">
+      <UiNavbar />
+      <UserInfo />
+      <Routes>
+        <Route path="students" element={<Students />} />
+        <Route path="appointments" element={<Appointments />} />
+      </Routes>
+    </div>
+  );
 }
 
 function StudentUI() {
-    return (
-        <div className="bg-gray-500 pb-10  ">
-            <StudentUiNavbar />
-            <UserInfo />
-            <Session />
-        </div>
-    );
+  return (
+    <div className="bg-gray-500 pb-10  ">
+      <StudentUiNavbar />
+      <UserInfo />
+      <Session />
+    </div>
+  );
 }
 
 function InstructorUI() {
-    return (
-        <div className="bg-gray-500 pb-10">
-            <InstructorUiNavbar />
-            <UserInfo />
-            <Routes>
-                <Route path="students" element={<InstructorStudents />} />
-                <Route
-                    path="appointments"
-                    element={<InstructorAppointments />}
-                />
-            </Routes>
-        </div>
-    );
+  return (
+    <div className="bg-gray-500 pb-10">
+      <InstructorUiNavbar />
+      <UserInfo />
+      <Routes>
+        <Route path="students" element={<InstructorStudents />} />
+        <Route path="appointments" element={<InstructorAppointments />} />
+      </Routes>
+    </div>
+  );
 }
 
 export default function App() {
-    return (
-        <Router>
-            <div className="flex flex-col">
-                <Routes>
-                    {/* Route for the HomePage component */}
-                    <Route path="/" element={<HomePage />} />
-                    {/* Route for the Login page */}
-                    <Route path="/login" element={<Login />} />
-                    {/* Route for the Register page */}
-                    <Route path="/register" element={<Register />} />
-                    {/* Route for the Admin page */}
-                    <Route path="/ui/*" element={<UI />} />
-                    {/* Route for the Student page */}
-                    <Route path="/studentui/*" element={<StudentUI />} />
-                    {/* Route for the Instructor page */}
-                    <Route path="/instructorui/*" element={<InstructorUI />} />
-                </Routes>
-            </div>
-        </Router>
-    );
+  return (
+    <Router>
+      <div className="flex flex-col">
+        <Routes>
+          {/* Route for the HomePage component */}
+          <Route path="/" element={<HomePage />} />
+          {/* Route for the Login page */}
+          <Route path="/login" element={<Login />} />
+          {/* Route for the Register page */}
+          <Route path="/register" element={<Register />} />
+          {/* Route for the Admin page */}
+          <Route path="/ui/*" element={<UI />} />
+          {/* Route for the Student page */}
+          <Route path="/studentui/*" element={<StudentUI />} />
+          {/* Route for the Instructor page */}
+          <Route path="/instructorui/*" element={<InstructorUI />} />
+        </Routes>
+      </div>
+    </Router>
+  );
 }
