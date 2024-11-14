@@ -30,6 +30,38 @@ router.post("/api/clock-in", async (req, res) => {
   });
 });
 
+// Edit
+router.put("/api/session/:id", async (req, res) => {
+  userAuth(req, res, ["Instructor", "Manager", "Student"], async () => {
+    try {
+      debugger;
+      const updatedSession = await sessions.findByIdAndUpdate(
+        req.params.id,
+        {
+          date: req.body.date,
+          clockedIn: req.body.clockedIn,
+          clockedOut: req.body.clockedOut,
+          maneuver: req.body.maneuver,
+          duration: req.body.duration,
+        },
+        { new: true }
+      );
+
+      if (!updatedSession) {
+        return res.status(404).json({ error: "Session not found" });
+      }
+
+      res.json({ message: "Session updated", session: updatedSession });
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({
+        title: "Server error",
+        error: err.message,
+      });
+    }
+  });
+});
+
 //#region ClockIn/ClockOut
 // // Clock IN
 // router.post("/api/clock-i", async (req, res) => {
@@ -69,12 +101,40 @@ router.post("/api/clock-in", async (req, res) => {
 
 // Get sessions by student ID
 router.get("/api/sessions/:studentId", async (req, res) => {
-  // Call authUser middleware with the desired role to check against
   userAuth(req, res, ["Instructor", "Manager", "Student"], async () => {
     try {
-      const studentId = req.params.studentId;
-      const studentSessions = await sessions.find({ user: studentId });
+      const { studentId } = req.params;
+      let studentSessions = await sessions.find({ user: studentId });
+
+      // Sort sessions by date, latest first
+      studentSessions = studentSessions.sort(
+        (a, b) => new Date(b.date || 0) - new Date(a.date || 0)
+      );
+
       res.json(studentSessions);
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({
+        title: "Server error",
+        error: err.message,
+      });
+    }
+  });
+});
+
+router.delete("/api/sessions/:sessionId", async (req, res) => {
+  userAuth(req, res, ["Instructor", "Manager", "Student"], async () => {
+    try {
+      const { sessionId } = req.params;
+
+      const deletedSession = await sessions.findByIdAndDelete(sessionId);
+
+      // If session not found, return a 404 error
+      if (!deletedSession) {
+        return res.status(404).json({ message: "Session not found" });
+      }
+
+      res.json(deletedSession);
     } catch (err) {
       console.log(err);
       res.status(500).json({

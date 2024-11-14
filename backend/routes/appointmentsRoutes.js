@@ -58,7 +58,6 @@ router.get("/api/appointments", (req, res) => {
   userAuth(req, res, ["Instructor", "Manager"], async () => {
     try {
       const appointments = await appointment.find();
-      console.log(appointments);
 
       res.json(appointments);
     } catch (error) {

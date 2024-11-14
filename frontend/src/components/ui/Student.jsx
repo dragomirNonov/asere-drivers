@@ -34,8 +34,7 @@ const Student = ({ student, toast, refresh }) => {
         onClick={() => {
           setAccordionOpen(!accordionOpen);
         }}
-        className="flex justify-between w-full"
-      >
+        className="flex justify-between w-full">
         <span className="text-sm md:text-2xl text-black font-bold ">
           {student.firstName +
             ' ' +
@@ -50,8 +49,7 @@ const Student = ({ student, toast, refresh }) => {
           className="fill-black shrink-0 ml-8"
           width="16"
           height="16"
-          xmlns="http://www.w3.org/2000/svg"
-        >
+          xmlns="http://www.w3.org/2000/svg">
           <rect
             y="7"
             width="16"
@@ -72,15 +70,10 @@ const Student = ({ student, toast, refresh }) => {
           />
         </svg>
       </button>
-      <div
-        className={`grid overflow-hidden transition-all duration-300 ease-in-out ${
-          accordionOpen
-            ? 'grid-rows-[1fr] opacity-100'
-            : 'grid-rows-[0fr] opacity-0'
-        }`}
-      >
-        <div className={`overflow-hidden font-bold text-sm md:text-xl`}>
-          {
+      {accordionOpen && (
+        <div
+          className={`grid overflow-hidden transition-all duration-300 ease-in-out`}>
+          <div className={`overflow-hidden font-bold text-sm md:text-xl`}>
             <div className="flex flex-col mt-4">
               <p>DOB: {student.DOB}</p>
               <p>Driver&#39;s License Number: {student.DLnumber}</p>
@@ -96,9 +89,9 @@ const Student = ({ student, toast, refresh }) => {
                 <StudentHoursModal info={student} refresh={refresh} />
               </div>
             </div>
-          }
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
