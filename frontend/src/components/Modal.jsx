@@ -1,4 +1,3 @@
-// src/components/Modal.js
 import React, { useEffect, useRef } from 'react';
 
 const Modal = ({
@@ -7,6 +6,7 @@ const Modal = ({
   onConfirm = () => {},
   title,
   children,
+  footer,
   showConfirm = false,
   confirmLabel = 'OK',
   size = 'md',
@@ -24,9 +24,9 @@ const Modal = ({
       case 'xl':
         return 'max-w-4xl';
       case 'full':
-        return 'max-w-full'; // Full width for larger screens
+        return 'max-w-full';
       default:
-        return 'max-w-lg'; // Default to medium size if no match
+        return 'max-w-lg';
     }
   };
 
@@ -71,31 +71,39 @@ const Modal = ({
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title">
-        <div className="flex justify-between items-center p-4 border-b border-gray-300">
+        <div className="flex justify-between p-4 rounded border border-slate-800 bg-slate-800 text-white">
           <h3 id="modal-title" className="text-xl font-semibold">
             {title}
           </h3>
           <button
             onClick={onClose}
             aria-label="Close modal"
-            className="text-gray-400 hover:text-gray-600 focus:outline-none">
+            className="text-white hover:text-gray-300 focus:outline-none">
             &times;
           </button>
         </div>
         <div className="p-4 space-y-4 max-h-96 overflow-y-auto">{children}</div>
-        <div className="flex justify-end p-4 border-t border-gray-300">
-          {showConfirm && (
-            <button
-              onClick={onConfirm}
-              className="px-3 py-1 me-2 text-sm text-white bg-blue-500 rounded hover:bg-blue-600">
-              {confirmLabel}
-            </button>
+        <div className="border-t border-gray-300 bg-gray-20 p-3">
+          {footer ? (
+            footer
+          ) : (
+            <div className="flex justify-end">
+              {showConfirm && (
+                <button
+                  type="button"
+                  onClick={onConfirm}
+                  className="px-3 py-1 text-sm text-white bg-blue-500 rounded hover:bg-blue-600">
+                  {confirmLabel}
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={onClose}
+                className="ms-2 px-3 py-1 text-sm text-white bg-gray-600 rounded hover:bg-gray-400">
+                Cancel
+              </button>
+            </div>
           )}
-          <button
-            onClick={onClose}
-            className="px-3 py-1 text-sm text-gray-600 bg-gray-200 rounded hover:bg-gray-300">
-            Cancel
-          </button>
         </div>
       </div>
     </div>

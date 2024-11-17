@@ -1,8 +1,13 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
+import { formatDate } from '../../utils/utils.js';
 import Modal from '../Modal';
+import TimePicker from '../studentUI/TimePicker.jsx';
 import sessionServices from '../../services/sessions';
 import SessionTable from './SessionTable';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck, faClose } from '@fortawesome/free-solid-svg-icons';
 
 const StudentHoursModal = (props) => {
   const userId = props.info._id;
@@ -10,6 +15,13 @@ const StudentHoursModal = (props) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [createItem, setCreateItem] = useState({
+    userId: userId,
+    date: null,
+    startTime: null,
+    endTime: null,
+    maneuver: '',
+  });
 
   const [preTripSessions, setPreTripSessions] = useState([]);
   const [straightBackSessions, setStraightBackSessions] = useState([]);
@@ -42,9 +54,9 @@ const StudentHoursModal = (props) => {
             duration: x.duration,
             userId: x.user,
             clockedIn: x.clockedIn,
-            displayClockedIn: formatTime(x.clockedIn),
+            displayClockedIn: x.clockedIn,
             clockedOut: x.clockedOut,
-            displayClockedOut: formatTime(x.clockedOut),
+            displayClockedOut: x.clockedOut,
           };
 
           return item;
@@ -58,49 +70,25 @@ const StudentHoursModal = (props) => {
         setPreTripSessions(
           sortedSessions.filter((session) => session.maneuver === 'Pre Trip'),
         );
+
         setStraightBackSessions(
           sortedSessions.filter(
             (session) => session.maneuver === 'Straight Back',
           ),
         );
+
         setOffSetSessions(
           sortedSessions.filter((session) => session.maneuver === 'Off Set'),
         );
+
         setRoadSessions(
           sortedSessions.filter((session) => session.maneuver === 'Road'),
         );
       })
       .catch((error) => {
+        toast.error(error.message);
         console.error('Error fetching sessions:', error);
       });
-  };
-
-  // Function to format dates in MM/DD/YYYY format
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const year = date.getUTCFullYear();
-    const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Month is zero-based
-    const day = String(date.getUTCDate()).padStart(2, '0');
-
-    return `${month}/${day}/${year}`;
-  };
-
-  // Function to format time from 24-hour to 12-hour AM/PM format
-  const formatTime = (timeString) => {
-    const [hours, minutes] = timeString.split(':');
-    let formattedTime = '';
-
-    if (parseInt(hours, 10) === 0) {
-      formattedTime = `12:${minutes} `; // Midnight case
-    } else if (parseInt(hours, 10) === 12) {
-      formattedTime = `12:${minutes} `; // Noon case
-    } else if (parseInt(hours, 10) > 12) {
-      formattedTime = `${parseInt(hours, 10) - 12}:${minutes} `; // PM case
-    } else {
-      formattedTime = `${hours}:${minutes} `; // AM case
-    }
-
-    return formattedTime;
   };
 
   // Function to calculate total hours across all sessions
@@ -140,11 +128,12 @@ const StudentHoursModal = (props) => {
   const onDeleteConfirmation = () => {
     sessionServices
       .deleteSessionById(selectedItem.id)
-      .then((response) => {
+      .then(() => {
         populateSessions();
-        console.log(response.data);
+        toast.success('Session deleted successfuly.');
       })
       .catch((error) => {
+        toast.error(error.message);
         console.error('Error fetching sessions:', error);
       })
       .finally(setShowDeleteConfirm(false));
@@ -163,22 +152,41 @@ const StudentHoursModal = (props) => {
       .editSession(editedSession.id, item)
       .then((response) => {
         populateSessions();
+        toast.success('Session edited successfuly.');
       })
       .catch((error) => {
+        toast.error(error.message);
         console.error('Error fetching sessions:', error);
       })
       .finally(setShowDeleteConfirm(false));
   };
 
-  const onCreate = (session) => {
-    debugger;
+  const onCreate = (event) => {
+    event.preventDefault();
+
+    sessionServices
+      .createSession(createItem)
+      .then((response) => {
+        toast.success('Session added successfuly.');
+        populateSessions();
+        setShowCreate(false);
+      })
+      .catch((error) => {
+        toast.error(error.response.data.error);
+        console.error('Error fetching sessions:', error.response.data.error);
+      });
+  };
+
+  const handleChange = (field, value) => {
+    setCreateItem({ ...createItem, [field]: value });
   };
 
   return (
     <>
       <button
-        className="bg-orange-500 text-black active:bg-blue-600 font-bold uppercase text-sm px-2 py-2 rounded-lg shadow
-         hover:shadow-lg hover:bg-orange-700 outline-none focus:outline-none ml-auto mr-1 mb-1 ease-linear transition-all duration-150 md:w-1/6"
+        className="bg-orange-500 text-black active:bg-blue-600 uppercase text-sm px-2 py-2 rounded-lg shadow
+         hover:shadow-lg hover:bg-orange-700 outline-none focus:outline-none ml-auto mr-1 mb-1 ease-linear transition-all 
+         duration-150 md:w-1/6"
         type="button"
         onClick={() => setShowModal(true)}>
         Hours
@@ -189,10 +197,117 @@ const StudentHoursModal = (props) => {
         onConfirm={null}
         title="User Hours"
         showConfirm={false}
+        footer={
+          <div className="flex justify-between">
+            <button
+              className="px-3 py-1 text-sm text-white bg-green-600 rounded hover:bg-green-700"
+              type="button"
+              onClick={() => setShowCreate(true)}>
+              Add
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowCreate(false)}
+              className="ms-2 px-3 py-1 text-sm text-white bg-gray-600 rounded hover:bg-gray-400">
+              Cancel
+            </button>
+          </div>
+        }
         size="xl">
         <div>
-          <span>Total: {hours.preTrip}</span>
+          {showCreate && (
+            <form className="bg-white border border-gray-200 rounded-lg shadow-lg p-4">
+              {/* First Row: Date and Maneuver */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                {/* Date Field */}
+                <div className="flex flex-col">
+                  <label
+                    htmlFor="date"
+                    className="text-gray-600 text-sm font-medium mb-1">
+                    Date
+                  </label>
+                  <input
+                    type="date"
+                    id="date"
+                    name="date"
+                    value={createItem.date}
+                    onChange={(e) => handleChange('date', e.target.value)}
+                    className="p-2 border border-gray-300 rounded-md text-sm"
+                    required
+                  />
+                </div>
 
+                {/* Maneuver Dropdown */}
+                <div className="flex flex-col">
+                  <label
+                    htmlFor="maneuver"
+                    className="text-gray-600 text-sm font-medium mb-1">
+                    Maneuver
+                  </label>
+                  <select
+                    className="p-2 border border-gray-300 rounded-md text-sm"
+                    name="maneuver"
+                    value={createItem.maneuver}
+                    onChange={(e) => handleChange('maneuver', e.target.value)}
+                    required>
+                    <option value="" disabled>
+                      Select Maneuver
+                    </option>
+                    <option value="Pre Trip">Pre Trip</option>
+                    <option value="Straight Back">Straight Back</option>
+                    <option value="Off Set">Off Set</option>
+                    <option value="Road">Road</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Second Row: Start and End Times */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                {/* Start Time Field */}
+                <div className="flex flex-col">
+                  <label
+                    htmlFor="startTime"
+                    className="text-gray-600 text-sm font-medium mb-1">
+                    Start Time
+                  </label>
+                  <TimePicker
+                    name="startTime"
+                    value={createItem.startTime}
+                    onChange={(e) => handleChange('startTime', e.target.value)}
+                    className="border border-gray-300 rounded-md text-sm"
+                  />
+                </div>
+
+                {/* End Time Field */}
+                <div className="flex flex-col">
+                  <label
+                    htmlFor="endTime"
+                    className="text-gray-600 text-sm font-medium mb-1">
+                    End Time
+                  </label>
+                  <TimePicker
+                    name="endTime"
+                    value={createItem.endTime}
+                    onChange={(e) => handleChange('endTime', e.target.value)}
+                    className="border border-gray-300 rounded-md text-sm"
+                  />
+                </div>
+              </div>
+
+              {/* Third Row: Actions */}
+              <div className="flex items-center gap-4">
+                <button type="submit" className="" onSubmit={onCreate}>
+                  <FontAwesomeIcon icon={faCheck} color="green" />
+                </button>
+                <button
+                  type="button"
+                  className=""
+                  onClick={() => setShowCreate(false)}>
+                  <FontAwesomeIcon icon={faClose} color="red" />
+                </button>
+              </div>
+            </form>
+          )}
           <SessionTable
             title="Pre Trip Sessions"
             sessions={preTripSessions}
@@ -217,6 +332,27 @@ const StudentHoursModal = (props) => {
             onEdit={onEditItem}
             onDelete={onDeleteItemClick}
           />
+
+          <div className="flex flex-row items-center gap-4">
+            <div>
+              <label htmlFor="date" className="">
+                Pre-Trip:
+              </label>
+              <span className="font-light"> {hours.preTrip}</span>
+            </div>
+            <div>
+              <label htmlFor="date" className="">
+                Driving:
+              </label>
+              <span className="font-light"> {hours.driving}</span>
+            </div>
+            <div>
+              <label htmlFor="date" className="">
+                Total:
+              </label>
+              <span className="font-light"> {hours.total}</span>
+            </div>
+          </div>
         </div>
       </Modal>
 
@@ -230,16 +366,6 @@ const StudentHoursModal = (props) => {
         <p className="text-center text-sm text-red-600">
           Are you shure you want to delete this record?
         </p>
-      </Modal>
-
-      <Modal
-        isOpen={showCreate}
-        onClose={() => setShowCreate(false)}
-        onConfirm={onCreate}
-        title="Create new session"
-        showConfirm={true}
-        size="sm">
-        <p className="text-center text-sm text-red-600">session</p>
       </Modal>
     </>
   );

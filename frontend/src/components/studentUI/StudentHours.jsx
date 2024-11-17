@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-
 import sessionServices from '../../services/sessions';
 
 const StudentHours = ({ formSubmitted, userId }) => {
@@ -104,8 +103,7 @@ const StudentHours = ({ formSubmitted, userId }) => {
                     .map((session) => (
                       <li
                         key={session._id}
-                        className="md:text-lg text-sm font-bold"
-                      >
+                        className="md:text-lg text-sm font-bold">
                         {formatDate(session.date)}
                       </li>
                     ))}
@@ -120,8 +118,7 @@ const StudentHours = ({ formSubmitted, userId }) => {
                     .map((session) => (
                       <li
                         key={session._id}
-                        className="md:text-lg text-sm font-bold"
-                      >
+                        className="md:text-lg text-sm font-bold">
                         {formatTime(session.clockedIn)}
                       </li>
                     ))}
@@ -136,8 +133,7 @@ const StudentHours = ({ formSubmitted, userId }) => {
                     .map((session) => (
                       <li
                         key={session._id}
-                        className="md:text-lg text-sm font-bold"
-                      >
+                        className="md:text-lg text-sm font-bold">
                         {formatTime(session.clockedOut)}
                       </li>
                     ))}
@@ -152,8 +148,7 @@ const StudentHours = ({ formSubmitted, userId }) => {
                     .map((session) => (
                       <li
                         key={session._id}
-                        className="text-sm md:text-lg font-bold"
-                      >
+                        className="text-sm md:text-lg font-bold">
                         {session.duration}
                       </li>
                     ))}
@@ -175,8 +170,7 @@ const StudentHours = ({ formSubmitted, userId }) => {
                     .map((session) => (
                       <li
                         key={session._id}
-                        className="md:text-lg text-sm font-bold"
-                      >
+                        className="md:text-lg text-sm font-bold">
                         {formatDate(session.date)}
                       </li>
                     ))}
@@ -191,8 +185,7 @@ const StudentHours = ({ formSubmitted, userId }) => {
                     .map((session) => (
                       <li
                         key={session._id}
-                        className="md:text-lg text-sm font-bold"
-                      >
+                        className="md:text-lg text-sm font-bold">
                         {formatTime(session.clockedIn)}
                       </li>
                     ))}
@@ -207,8 +200,7 @@ const StudentHours = ({ formSubmitted, userId }) => {
                     .map((session) => (
                       <li
                         key={session._id}
-                        className="md:text-lg text-sm font-bold"
-                      >
+                        className="md:text-lg text-sm font-bold">
                         {formatTime(session.clockedOut)}
                       </li>
                     ))}
@@ -223,8 +215,7 @@ const StudentHours = ({ formSubmitted, userId }) => {
                     .map((session) => (
                       <li
                         key={session._id}
-                        className="text-sm md:text-lg font-bold"
-                      >
+                        className="text-sm md:text-lg font-bold">
                         {session.duration}
                       </li>
                     ))}
@@ -245,8 +236,7 @@ const StudentHours = ({ formSubmitted, userId }) => {
                     .map((session) => (
                       <li
                         key={session._id}
-                        className="md:text-lg text-sm font-bold"
-                      >
+                        className="md:text-lg text-sm font-bold">
                         {formatDate(session.date)}
                       </li>
                     ))}
@@ -261,8 +251,7 @@ const StudentHours = ({ formSubmitted, userId }) => {
                     .map((session) => (
                       <li
                         key={session._id}
-                        className="md:text-lg text-sm font-bold"
-                      >
+                        className="md:text-lg text-sm font-bold">
                         {formatTime(session.clockedIn)}
                       </li>
                     ))}
@@ -277,8 +266,7 @@ const StudentHours = ({ formSubmitted, userId }) => {
                     .map((session) => (
                       <li
                         key={session._id}
-                        className="md:text-lg text-sm font-bold"
-                      >
+                        className="md:text-lg text-sm font-bold">
                         {formatTime(session.clockedOut)}
                       </li>
                     ))}
@@ -293,8 +281,7 @@ const StudentHours = ({ formSubmitted, userId }) => {
                     .map((session) => (
                       <li
                         key={session._id}
-                        className="text-sm md:text-lg font-bold"
-                      >
+                        className="text-sm md:text-lg font-bold">
                         {session.duration}
                       </li>
                     ))}
@@ -315,8 +302,7 @@ const StudentHours = ({ formSubmitted, userId }) => {
                     .map((session) => (
                       <li
                         key={session._id}
-                        className="md:text-lg text-sm font-bold"
-                      >
+                        className="md:text-lg text-sm font-bold">
                         {formatDate(session.date)}
                       </li>
                     ))}
@@ -331,8 +317,7 @@ const StudentHours = ({ formSubmitted, userId }) => {
                     .map((session) => (
                       <li
                         key={session._id}
-                        className="md:text-lg text-sm font-bold"
-                      >
+                        className="md:text-lg text-sm font-bold">
                         {formatTime(session.clockedIn)}
                       </li>
                     ))}
@@ -347,8 +332,7 @@ const StudentHours = ({ formSubmitted, userId }) => {
                     .map((session) => (
                       <li
                         key={session._id}
-                        className="md:text-lg text-sm font-bold"
-                      >
+                        className="md:text-lg text-sm font-bold">
                         {formatTime(session.clockedOut)}
                       </li>
                     ))}
@@ -363,8 +347,7 @@ const StudentHours = ({ formSubmitted, userId }) => {
                     .map((session) => (
                       <li
                         key={session._id}
-                        className="text-sm md:text-lg font-bold"
-                      >
+                        className="text-sm md:text-lg font-bold">
                         {session.duration}
                       </li>
                     ))}

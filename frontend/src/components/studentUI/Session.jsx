@@ -42,7 +42,6 @@ const Session = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Form Data Submitted:', formData);
 
     const startDateTime = new Date(`${formData.date}T${formData.startTime}`);
     const endDateTime = new Date(`${formData.date}T${formData.endTime}`);
@@ -65,8 +64,6 @@ const Session = () => {
       setFormData(initialFormData);
       setFormSubmitted((prev) => !prev);
     });
-
-    console.log(`Duration: ${duration} Hours`);
   };
 
   return (
@@ -121,8 +118,7 @@ const Session = () => {
                 name="maneuver"
                 value={formData.maneuver || ''}
                 onChange={handleChange}
-                required
-              >
+                required>
                 <option value="" disabled>
                   Maneuver
                 </option>
@@ -137,8 +133,7 @@ const Session = () => {
           <div className="w-full flex justify-center p-2">
             <button
               type="submit"
-              className="w-4/6 p-1 font-bold text-lg bg-blue-600 rounded-md text-white hover:bg-blue-800 "
-            >
+              className="w-4/6 p-1 font-bold text-lg bg-blue-600 rounded-md text-white hover:bg-blue-800 ">
               Submit
             </button>
           </div>
