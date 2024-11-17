@@ -17,9 +17,9 @@ const StudentHoursModal = (props) => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [createItem, setCreateItem] = useState({
     userId: userId,
-    date: null,
-    startTime: null,
-    endTime: null,
+    date: '',
+    startTime: '',
+    endTime: '',
     maneuver: '',
   });
 
@@ -161,8 +161,8 @@ const StudentHoursModal = (props) => {
       .finally(setShowDeleteConfirm(false));
   };
 
-  const onCreate = (event) => {
-    event.preventDefault();
+  const onCreate = (e) => {
+    e.preventDefault();
 
     sessionServices
       .createSession(createItem)
@@ -216,7 +216,9 @@ const StudentHoursModal = (props) => {
         size="xl">
         <div>
           {showCreate && (
-            <form className="bg-white border border-gray-200 rounded-lg shadow-lg p-4">
+            <form
+              onSubmit={onCreate}
+              className="bg-white border border-gray-200 rounded-lg shadow-lg p-4">
               {/* First Row: Date and Maneuver */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 {/* Date Field */}
@@ -296,7 +298,7 @@ const StudentHoursModal = (props) => {
 
               {/* Third Row: Actions */}
               <div className="flex items-center gap-4">
-                <button type="submit" className="" onSubmit={onCreate}>
+                <button type="submit" className="">
                   <FontAwesomeIcon icon={faCheck} color="green" />
                 </button>
                 <button
