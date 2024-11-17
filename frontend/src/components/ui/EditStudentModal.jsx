@@ -3,10 +3,10 @@ import { useState } from 'react';
 
 import userService from '../../services/users';
 
-const EditStudentModal = props => {
+const EditStudentModal = (props) => {
   const [showModal, setShowModal] = React.useState(false);
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setEditedInfo({
       ...editedInfo,
@@ -14,7 +14,7 @@ const EditStudentModal = props => {
     });
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
@@ -88,7 +88,10 @@ const EditStudentModal = props => {
                 {/*body*/}
                 <div className="relative p-6 flex-auto">
                   <div className="popup">
-                    <form onSubmit={handleSubmit} className="flex flex-col  mb-2">
+                    <form
+                      onSubmit={handleSubmit}
+                      className="flex flex-col  mb-2"
+                    >
                       <label className="p-1 flex justify-between">
                         First Name:
                         <input

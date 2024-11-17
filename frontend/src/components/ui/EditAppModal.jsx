@@ -3,10 +3,10 @@ import { useState } from 'react';
 
 import appointmentService from '../../services/appointments';
 
-const EditAppModal = props => {
+const EditAppModal = (props) => {
   const [showModal, setShowModal] = React.useState(false);
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setEditedInfo({
       ...editedInfo,
@@ -14,7 +14,7 @@ const EditAppModal = props => {
     });
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
@@ -91,7 +91,10 @@ const EditAppModal = props => {
                 {/*body*/}
                 <div className="relative p-6 flex-auto">
                   <div className="popup">
-                    <form onSubmit={handleSubmit} className="flex flex-col  mb-2">
+                    <form
+                      onSubmit={handleSubmit}
+                      className="flex flex-col  mb-2"
+                    >
                       <label className="p-1 flex justify-between">
                         First Name:
                         <input
@@ -224,7 +227,9 @@ const EditAppModal = props => {
                             type="checkbox"
                             name="checkboxOption"
                             value="placeholder"
-                            checked={editedInfo.checkboxOption === 'placeholder'}
+                            checked={
+                              editedInfo.checkboxOption === 'placeholder'
+                            }
                             onChange={handleChange}
                             className="mr-2 h-4 w-4"
                           />

@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-
 import sessionServices from '../../services/sessions';
 
 const StudentHours = ({ formSubmitted, userId }) => {
@@ -10,19 +9,21 @@ const StudentHours = ({ formSubmitted, userId }) => {
       // Fetch sessions for the given user ID
       sessionServices
         .getSessionsByStudentId(userId)
-        .then(response => {
+        .then((response) => {
           // Sort sessions by date (most recent to least recent)
-          const sortedSessions = response.data.sort((a, b) => new Date(b.date) - new Date(a.date));
+          const sortedSessions = response.data.sort(
+            (a, b) => new Date(b.date) - new Date(a.date),
+          );
           setSessions(sortedSessions);
         })
-        .catch(error => {
+        .catch((error) => {
           console.error('Error fetching sessions:', error);
         });
     }
   }, [userId, formSubmitted]); // Re-fetch sessions every time userId or formSubmitted changes
 
   // Function to format dates in MM/DD/YYYY format
-  const formatDate = dateString => {
+  const formatDate = (dateString) => {
     const date = new Date(dateString);
     const year = date.getUTCFullYear();
     const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Month is zero-based
@@ -32,7 +33,7 @@ const StudentHours = ({ formSubmitted, userId }) => {
   };
 
   // Function to format time from 24-hour to 12-hour AM/PM format
-  const formatTime = timeString => {
+  const formatTime = (timeString) => {
     const [hours, minutes] = timeString.split(':');
     let formattedTime = '';
 
@@ -54,12 +55,14 @@ const StudentHours = ({ formSubmitted, userId }) => {
     let preTrip = 0;
     let driving = 0;
 
-    sessions.forEach(session => {
+    sessions.forEach((session) => {
       if (session.duration) {
         const duration = parseFloat(session.duration);
         if (session.maneuver === 'Pre Trip') {
           preTrip += duration;
-        } else if (['Straight Back', 'Off Set', 'Road'].includes(session.maneuver)) {
+        } else if (
+          ['Straight Back', 'Off Set', 'Road'].includes(session.maneuver)
+        ) {
           driving += duration;
         }
       }
@@ -96,9 +99,11 @@ const StudentHours = ({ formSubmitted, userId }) => {
                 <ul>
                   <div className="md:text-xl font-bold">Date: </div>
                   {sessions
-                    .filter(session => session.maneuver === 'Pre Trip')
-                    .map(session => (
-                      <li key={session._id} className="md:text-lg text-sm font-bold">
+                    .filter((session) => session.maneuver === 'Pre Trip')
+                    .map((session) => (
+                      <li
+                        key={session._id}
+                        className="md:text-lg text-sm font-bold">
                         {formatDate(session.date)}
                       </li>
                     ))}
@@ -109,9 +114,11 @@ const StudentHours = ({ formSubmitted, userId }) => {
                 <ul>
                   <div className="md:text-xl font-bold">Start: </div>
                   {sessions
-                    .filter(session => session.maneuver === 'Pre Trip')
-                    .map(session => (
-                      <li key={session._id} className="md:text-lg text-sm font-bold">
+                    .filter((session) => session.maneuver === 'Pre Trip')
+                    .map((session) => (
+                      <li
+                        key={session._id}
+                        className="md:text-lg text-sm font-bold">
                         {formatTime(session.clockedIn)}
                       </li>
                     ))}
@@ -122,9 +129,11 @@ const StudentHours = ({ formSubmitted, userId }) => {
                 <ul>
                   <div className="md:text-xl font-bold">End: </div>
                   {sessions
-                    .filter(session => session.maneuver === 'Pre Trip')
-                    .map(session => (
-                      <li key={session._id} className="md:text-lg text-sm font-bold">
+                    .filter((session) => session.maneuver === 'Pre Trip')
+                    .map((session) => (
+                      <li
+                        key={session._id}
+                        className="md:text-lg text-sm font-bold">
                         {formatTime(session.clockedOut)}
                       </li>
                     ))}
@@ -135,9 +144,11 @@ const StudentHours = ({ formSubmitted, userId }) => {
                 <ul>
                   <div className="md:text-xl font-bold">Duration: </div>
                   {sessions
-                    .filter(session => session.maneuver === 'Pre Trip')
-                    .map(session => (
-                      <li key={session._id} className="text-sm md:text-lg font-bold">
+                    .filter((session) => session.maneuver === 'Pre Trip')
+                    .map((session) => (
+                      <li
+                        key={session._id}
+                        className="text-sm md:text-lg font-bold">
                         {session.duration}
                       </li>
                     ))}
@@ -155,9 +166,11 @@ const StudentHours = ({ formSubmitted, userId }) => {
                 <ul>
                   <div className="md:text-xl font-bold">Date: </div>
                   {sessions
-                    .filter(session => session.maneuver === 'Straight Back')
-                    .map(session => (
-                      <li key={session._id} className="md:text-lg text-sm font-bold">
+                    .filter((session) => session.maneuver === 'Straight Back')
+                    .map((session) => (
+                      <li
+                        key={session._id}
+                        className="md:text-lg text-sm font-bold">
                         {formatDate(session.date)}
                       </li>
                     ))}
@@ -168,9 +181,11 @@ const StudentHours = ({ formSubmitted, userId }) => {
                 <ul>
                   <div className="md:text-xl font-bold">Start: </div>
                   {sessions
-                    .filter(session => session.maneuver === 'Straight Back')
-                    .map(session => (
-                      <li key={session._id} className="md:text-lg text-sm font-bold">
+                    .filter((session) => session.maneuver === 'Straight Back')
+                    .map((session) => (
+                      <li
+                        key={session._id}
+                        className="md:text-lg text-sm font-bold">
                         {formatTime(session.clockedIn)}
                       </li>
                     ))}
@@ -181,9 +196,11 @@ const StudentHours = ({ formSubmitted, userId }) => {
                 <ul>
                   <div className="md:text-xl font-bold">End: </div>
                   {sessions
-                    .filter(session => session.maneuver === 'Straight Back')
-                    .map(session => (
-                      <li key={session._id} className="md:text-lg text-sm font-bold">
+                    .filter((session) => session.maneuver === 'Straight Back')
+                    .map((session) => (
+                      <li
+                        key={session._id}
+                        className="md:text-lg text-sm font-bold">
                         {formatTime(session.clockedOut)}
                       </li>
                     ))}
@@ -194,9 +211,11 @@ const StudentHours = ({ formSubmitted, userId }) => {
                 <ul>
                   <div className="md:text-xl font-bold">Duration: </div>
                   {sessions
-                    .filter(session => session.maneuver === 'Straight Back')
-                    .map(session => (
-                      <li key={session._id} className="text-sm md:text-lg font-bold">
+                    .filter((session) => session.maneuver === 'Straight Back')
+                    .map((session) => (
+                      <li
+                        key={session._id}
+                        className="text-sm md:text-lg font-bold">
                         {session.duration}
                       </li>
                     ))}
@@ -213,9 +232,11 @@ const StudentHours = ({ formSubmitted, userId }) => {
                 <ul>
                   <div className="md:text-xl font-bold">Date: </div>
                   {sessions
-                    .filter(session => session.maneuver === 'Off Set')
-                    .map(session => (
-                      <li key={session._id} className="md:text-lg text-sm font-bold">
+                    .filter((session) => session.maneuver === 'Off Set')
+                    .map((session) => (
+                      <li
+                        key={session._id}
+                        className="md:text-lg text-sm font-bold">
                         {formatDate(session.date)}
                       </li>
                     ))}
@@ -226,9 +247,11 @@ const StudentHours = ({ formSubmitted, userId }) => {
                 <ul>
                   <div className="md:text-xl font-bold">Start: </div>
                   {sessions
-                    .filter(session => session.maneuver === 'Off Set')
-                    .map(session => (
-                      <li key={session._id} className="md:text-lg text-sm font-bold">
+                    .filter((session) => session.maneuver === 'Off Set')
+                    .map((session) => (
+                      <li
+                        key={session._id}
+                        className="md:text-lg text-sm font-bold">
                         {formatTime(session.clockedIn)}
                       </li>
                     ))}
@@ -239,9 +262,11 @@ const StudentHours = ({ formSubmitted, userId }) => {
                 <ul>
                   <div className="md:text-xl font-bold">End: </div>
                   {sessions
-                    .filter(session => session.maneuver === 'Off Set')
-                    .map(session => (
-                      <li key={session._id} className="md:text-lg text-sm font-bold">
+                    .filter((session) => session.maneuver === 'Off Set')
+                    .map((session) => (
+                      <li
+                        key={session._id}
+                        className="md:text-lg text-sm font-bold">
                         {formatTime(session.clockedOut)}
                       </li>
                     ))}
@@ -252,9 +277,11 @@ const StudentHours = ({ formSubmitted, userId }) => {
                 <ul>
                   <div className="md:text-xl font-bold">Duration: </div>
                   {sessions
-                    .filter(session => session.maneuver === 'Off Set')
-                    .map(session => (
-                      <li key={session._id} className="text-sm md:text-lg font-bold">
+                    .filter((session) => session.maneuver === 'Off Set')
+                    .map((session) => (
+                      <li
+                        key={session._id}
+                        className="text-sm md:text-lg font-bold">
                         {session.duration}
                       </li>
                     ))}
@@ -271,9 +298,11 @@ const StudentHours = ({ formSubmitted, userId }) => {
                 <ul>
                   <div className="md:text-xl font-bold">Date: </div>
                   {sessions
-                    .filter(session => session.maneuver === 'Road')
-                    .map(session => (
-                      <li key={session._id} className="md:text-lg text-sm font-bold">
+                    .filter((session) => session.maneuver === 'Road')
+                    .map((session) => (
+                      <li
+                        key={session._id}
+                        className="md:text-lg text-sm font-bold">
                         {formatDate(session.date)}
                       </li>
                     ))}
@@ -284,9 +313,11 @@ const StudentHours = ({ formSubmitted, userId }) => {
                 <ul>
                   <div className="md:text-xl font-bold">Start: </div>
                   {sessions
-                    .filter(session => session.maneuver === 'Road')
-                    .map(session => (
-                      <li key={session._id} className="md:text-lg text-sm font-bold">
+                    .filter((session) => session.maneuver === 'Road')
+                    .map((session) => (
+                      <li
+                        key={session._id}
+                        className="md:text-lg text-sm font-bold">
                         {formatTime(session.clockedIn)}
                       </li>
                     ))}
@@ -297,9 +328,11 @@ const StudentHours = ({ formSubmitted, userId }) => {
                 <ul>
                   <div className="md:text-xl font-bold">End: </div>
                   {sessions
-                    .filter(session => session.maneuver === 'Road')
-                    .map(session => (
-                      <li key={session._id} className="md:text-lg text-sm font-bold">
+                    .filter((session) => session.maneuver === 'Road')
+                    .map((session) => (
+                      <li
+                        key={session._id}
+                        className="md:text-lg text-sm font-bold">
                         {formatTime(session.clockedOut)}
                       </li>
                     ))}
@@ -310,9 +343,11 @@ const StudentHours = ({ formSubmitted, userId }) => {
                 <ul>
                   <div className="md:text-xl font-bold">Duration: </div>
                   {sessions
-                    .filter(session => session.maneuver === 'Road')
-                    .map(session => (
-                      <li key={session._id} className="text-sm md:text-lg font-bold">
+                    .filter((session) => session.maneuver === 'Road')
+                    .map((session) => (
+                      <li
+                        key={session._id}
+                        className="text-sm md:text-lg font-bold">
                         {session.duration}
                       </li>
                     ))}

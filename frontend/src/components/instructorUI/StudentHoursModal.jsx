@@ -1,32 +1,31 @@
-import React from 'react';
 import { useState, useEffect } from 'react';
-
 import sessionServices from '../../services/sessions';
 
-const StudentHoursModal = props => {
+const StudentHoursModal = (props) => {
   const userId = props.info._id;
-  const [showModal, setShowModal] = React.useState(false);
 
+  const [showModal, setShowModal] = useState(false);
   const [sessions, setSessions] = useState([]);
 
   useEffect(() => {
     if (userId) {
-      // Fetch sessions for the given user ID
       sessionServices
         .getSessionsByStudentId(userId)
-        .then(response => {
+        .then((response) => {
           // Sort sessions by date (most recent to least recent)
-          const sortedSessions = response.data.sort((a, b) => new Date(b.date) - new Date(a.date));
+          const sortedSessions = response.data.sort(
+            (a, b) => new Date(b.date) - new Date(a.date),
+          );
           setSessions(sortedSessions);
         })
-        .catch(error => {
+        .catch((error) => {
           console.error('Error fetching sessions:', error);
         });
     }
-  }, [userId]); // Re-fetch sessions every time userId or formSubmitted changes
+  }, [userId]);
 
   // Function to format dates in MM/DD/YYYY format
-  const formatDate = dateString => {
+  const formatDate = (dateString) => {
     const date = new Date(dateString);
     const year = date.getUTCFullYear();
     const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Month is zero-based
@@ -36,7 +35,7 @@ const StudentHoursModal = props => {
   };
 
   // Function to format time from 24-hour to 12-hour AM/PM format
-  const formatTime = timeString => {
+  const formatTime = (timeString) => {
     const [hours, minutes] = timeString.split(':');
     let formattedTime = '';
 
@@ -54,17 +53,18 @@ const StudentHoursModal = props => {
   };
 
   // Function to calculate total hours across all sessions
-
   const calculateHours = () => {
     let preTrip = 0;
     let driving = 0;
 
-    sessions.forEach(session => {
+    sessions.forEach((session) => {
       if (session.duration) {
         const duration = parseFloat(session.duration);
         if (session.maneuver === 'Pre Trip') {
           preTrip += duration;
-        } else if (['Straight Back', 'Off Set', 'Road'].includes(session.maneuver)) {
+        } else if (
+          ['Straight Back', 'Off Set', 'Road'].includes(session.maneuver)
+        ) {
           driving += duration;
         }
       }
@@ -84,8 +84,9 @@ const StudentHoursModal = props => {
   return (
     <>
       <button
-        // className="edit-button ml-auto px-4 py-1  bg-blue-600  hover:bg-yellow-600 hover:text-white rounded-lg hover:border-collapse"
-        className="bg-orange-500 text-black active:bg-blue-600 font-bold uppercase text-sm px-2 py-2 rounded-lg shadow hover:shadow-lg hover:bg-orange-700 outline-none focus:outline-none ml-auto mr-1 mb-1 ease-linear transition-all duration-150 md:w-1/6"
+        className="bg-orange-500 text-black active:bg-blue-600 font-bold uppercase text-sm px-2 py-2 rounded-lg 
+                shadow hover:shadow-lg hover:bg-orange-700 outline-none focus:outline-none ml-auto mr-1 mb-1 ease-linear 
+                transition-all duration-150 md:w-1/6"
         type="button"
         onClick={() => setShowModal(true)}
       >
@@ -99,9 +100,12 @@ const StudentHoursModal = props => {
               <div className="border-0 bg-slate-300 rounded-lg shadow-lg relative flex flex-col w-full outline-none focus:outline-none ">
                 {/*header*/}
                 <div className="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t bg-slate-800 text-white">
-                  <h3 className="text-3xl font-semibold">Student Hours</h3>
+                  <h3 className="text-3xl font-semibold">
+                    Student Hours aaasadasd
+                  </h3>
                   <button
-                    className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                    className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold 
+                                        outline-none focus:outline-none"
                     onClick={() => setShowModal(false)}
                   >
                     <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
@@ -124,10 +128,15 @@ const StudentHoursModal = props => {
                               {/* Date Column */}
                               <div className="m-2">
                                 <ul>
-                                  <div className="md:text-xl font-bold">Date: </div>
+                                  <div className="md:text-xl font-bold">
+                                    Date:{' '}
+                                  </div>
                                   {sessions
-                                    .filter(session => session.maneuver === 'Pre Trip')
-                                    .map(session => (
+                                    .filter(
+                                      (session) =>
+                                        session.maneuver === 'Pre Trip',
+                                    )
+                                    .map((session) => (
                                       <li
                                         key={session._id}
                                         className="md:text-lg text-sm font-bold"
@@ -140,10 +149,15 @@ const StudentHoursModal = props => {
                               {/* Start Time Column */}
                               <div className="m-2">
                                 <ul>
-                                  <div className="md:text-xl font-bold">Start: </div>
+                                  <div className="md:text-xl font-bold">
+                                    Start:{' '}
+                                  </div>
                                   {sessions
-                                    .filter(session => session.maneuver === 'Pre Trip')
-                                    .map(session => (
+                                    .filter(
+                                      (session) =>
+                                        session.maneuver === 'Pre Trip',
+                                    )
+                                    .map((session) => (
                                       <li
                                         key={session._id}
                                         className="md:text-lg text-sm font-bold"
@@ -156,10 +170,15 @@ const StudentHoursModal = props => {
                               {/* End Time Column */}
                               <div className="m-2">
                                 <ul>
-                                  <div className="md:text-xl font-bold">End: </div>
+                                  <div className="md:text-xl font-bold">
+                                    End:{' '}
+                                  </div>
                                   {sessions
-                                    .filter(session => session.maneuver === 'Pre Trip')
-                                    .map(session => (
+                                    .filter(
+                                      (session) =>
+                                        session.maneuver === 'Pre Trip',
+                                    )
+                                    .map((session) => (
                                       <li
                                         key={session._id}
                                         className="md:text-lg text-sm font-bold"
@@ -172,10 +191,15 @@ const StudentHoursModal = props => {
 
                               <div className="m-2">
                                 <ul>
-                                  <div className="md:text-xl font-bold">Duration: </div>
+                                  <div className="md:text-xl font-bold">
+                                    Duration:{' '}
+                                  </div>
                                   {sessions
-                                    .filter(session => session.maneuver === 'Pre Trip')
-                                    .map(session => (
+                                    .filter(
+                                      (session) =>
+                                        session.maneuver === 'Pre Trip',
+                                    )
+                                    .map((session) => (
                                       <li
                                         key={session._id}
                                         className="text-sm md:text-lg font-bold"
@@ -195,10 +219,15 @@ const StudentHoursModal = props => {
                               {/* Date Column */}
                               <div className="m-2">
                                 <ul>
-                                  <div className="md:text-xl font-bold">Date: </div>
+                                  <div className="md:text-xl font-bold">
+                                    Date:{' '}
+                                  </div>
                                   {sessions
-                                    .filter(session => session.maneuver === 'Straight Back')
-                                    .map(session => (
+                                    .filter(
+                                      (session) =>
+                                        session.maneuver === 'Straight Back',
+                                    )
+                                    .map((session) => (
                                       <li
                                         key={session._id}
                                         className="md:text-lg text-sm font-bold"
@@ -211,10 +240,15 @@ const StudentHoursModal = props => {
                               {/* Start Time Column */}
                               <div className="m-2">
                                 <ul>
-                                  <div className="md:text-xl font-bold">Start: </div>
+                                  <div className="md:text-xl font-bold">
+                                    Start:{' '}
+                                  </div>
                                   {sessions
-                                    .filter(session => session.maneuver === 'Straight Back')
-                                    .map(session => (
+                                    .filter(
+                                      (session) =>
+                                        session.maneuver === 'Straight Back',
+                                    )
+                                    .map((session) => (
                                       <li
                                         key={session._id}
                                         className="md:text-lg text-sm font-bold"
@@ -227,10 +261,15 @@ const StudentHoursModal = props => {
                               {/* End Time Column */}
                               <div className="m-2">
                                 <ul>
-                                  <div className="md:text-xl font-bold">End: </div>
+                                  <div className="md:text-xl font-bold">
+                                    End:{' '}
+                                  </div>
                                   {sessions
-                                    .filter(session => session.maneuver === 'Straight Back')
-                                    .map(session => (
+                                    .filter(
+                                      (session) =>
+                                        session.maneuver === 'Straight Back',
+                                    )
+                                    .map((session) => (
                                       <li
                                         key={session._id}
                                         className="md:text-lg text-sm font-bold"
@@ -243,10 +282,15 @@ const StudentHoursModal = props => {
 
                               <div className="m-2">
                                 <ul>
-                                  <div className="md:text-xl font-bold">Duration: </div>
+                                  <div className="md:text-xl font-bold">
+                                    Duration:{' '}
+                                  </div>
                                   {sessions
-                                    .filter(session => session.maneuver === 'Straight Back')
-                                    .map(session => (
+                                    .filter(
+                                      (session) =>
+                                        session.maneuver === 'Straight Back',
+                                    )
+                                    .map((session) => (
                                       <li
                                         key={session._id}
                                         className="text-sm md:text-lg font-bold"
@@ -265,10 +309,15 @@ const StudentHoursModal = props => {
                               {/* Date Column */}
                               <div className="m-2">
                                 <ul>
-                                  <div className="md:text-xl font-bold">Date: </div>
+                                  <div className="md:text-xl font-bold">
+                                    Date:{' '}
+                                  </div>
                                   {sessions
-                                    .filter(session => session.maneuver === 'Off Set')
-                                    .map(session => (
+                                    .filter(
+                                      (session) =>
+                                        session.maneuver === 'Off Set',
+                                    )
+                                    .map((session) => (
                                       <li
                                         key={session._id}
                                         className="md:text-lg text-sm font-bold"
@@ -281,10 +330,15 @@ const StudentHoursModal = props => {
                               {/* Start Time Column */}
                               <div className="m-2">
                                 <ul>
-                                  <div className="md:text-xl font-bold">Start: </div>
+                                  <div className="md:text-xl font-bold">
+                                    Start:{' '}
+                                  </div>
                                   {sessions
-                                    .filter(session => session.maneuver === 'Off Set')
-                                    .map(session => (
+                                    .filter(
+                                      (session) =>
+                                        session.maneuver === 'Off Set',
+                                    )
+                                    .map((session) => (
                                       <li
                                         key={session._id}
                                         className="md:text-lg text-sm font-bold"
@@ -297,10 +351,15 @@ const StudentHoursModal = props => {
                               {/* End Time Column */}
                               <div className="m-2">
                                 <ul>
-                                  <div className="md:text-xl font-bold">End: </div>
+                                  <div className="md:text-xl font-bold">
+                                    End:{' '}
+                                  </div>
                                   {sessions
-                                    .filter(session => session.maneuver === 'Off Set')
-                                    .map(session => (
+                                    .filter(
+                                      (session) =>
+                                        session.maneuver === 'Off Set',
+                                    )
+                                    .map((session) => (
                                       <li
                                         key={session._id}
                                         className="md:text-lg text-sm font-bold"
@@ -313,10 +372,15 @@ const StudentHoursModal = props => {
 
                               <div className="m-2">
                                 <ul>
-                                  <div className="md:text-xl font-bold">Duration: </div>
+                                  <div className="md:text-xl font-bold">
+                                    Duration:{' '}
+                                  </div>
                                   {sessions
-                                    .filter(session => session.maneuver === 'Off Set')
-                                    .map(session => (
+                                    .filter(
+                                      (session) =>
+                                        session.maneuver === 'Off Set',
+                                    )
+                                    .map((session) => (
                                       <li
                                         key={session._id}
                                         className="text-sm md:text-lg font-bold"
@@ -335,10 +399,14 @@ const StudentHoursModal = props => {
                               {/* Date Column */}
                               <div className="m-2">
                                 <ul>
-                                  <div className="md:text-xl font-bold">Date: </div>
+                                  <div className="md:text-xl font-bold">
+                                    Date:{' '}
+                                  </div>
                                   {sessions
-                                    .filter(session => session.maneuver === 'Road')
-                                    .map(session => (
+                                    .filter(
+                                      (session) => session.maneuver === 'Road',
+                                    )
+                                    .map((session) => (
                                       <li
                                         key={session._id}
                                         className="md:text-lg text-sm font-bold"
@@ -351,10 +419,14 @@ const StudentHoursModal = props => {
                               {/* Start Time Column */}
                               <div className="m-2">
                                 <ul>
-                                  <div className="md:text-xl font-bold">Start: </div>
+                                  <div className="md:text-xl font-bold">
+                                    Start:{' '}
+                                  </div>
                                   {sessions
-                                    .filter(session => session.maneuver === 'Road')
-                                    .map(session => (
+                                    .filter(
+                                      (session) => session.maneuver === 'Road',
+                                    )
+                                    .map((session) => (
                                       <li
                                         key={session._id}
                                         className="md:text-lg text-sm font-bold"
@@ -367,10 +439,14 @@ const StudentHoursModal = props => {
                               {/* End Time Column */}
                               <div className="m-2">
                                 <ul>
-                                  <div className="md:text-xl font-bold">End: </div>
+                                  <div className="md:text-xl font-bold">
+                                    End:{' '}
+                                  </div>
                                   {sessions
-                                    .filter(session => session.maneuver === 'Road')
-                                    .map(session => (
+                                    .filter(
+                                      (session) => session.maneuver === 'Road',
+                                    )
+                                    .map((session) => (
                                       <li
                                         key={session._id}
                                         className="md:text-lg text-sm font-bold"
@@ -383,10 +459,14 @@ const StudentHoursModal = props => {
 
                               <div className="m-2">
                                 <ul>
-                                  <div className="md:text-xl font-bold">Duration: </div>
+                                  <div className="md:text-xl font-bold">
+                                    Duration:{' '}
+                                  </div>
                                   {sessions
-                                    .filter(session => session.maneuver === 'Road')
-                                    .map(session => (
+                                    .filter(
+                                      (session) => session.maneuver === 'Road',
+                                    )
+                                    .map((session) => (
                                       <li
                                         key={session._id}
                                         className="text-sm md:text-lg font-bold"

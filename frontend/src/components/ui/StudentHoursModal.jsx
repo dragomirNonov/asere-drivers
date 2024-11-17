@@ -1,69 +1,109 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-
+import toast, { Toaster } from 'react-hot-toast';
+import { formatDate } from '../../utils/utils.js';
+import Modal from '../Modal';
+import TimePicker from '../studentUI/TimePicker.jsx';
 import sessionServices from '../../services/sessions';
+import SessionTable from './SessionTable';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck, faClose } from '@fortawesome/free-solid-svg-icons';
 
-const StudentHoursModal = props => {
+const StudentHoursModal = (props) => {
   const userId = props.info._id;
-  const [showModal, setShowModal] = React.useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showCreate, setShowCreate] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [createItem, setCreateItem] = useState({
+    userId: userId,
+    date: null,
+    startTime: null,
+    endTime: null,
+    maneuver: '',
+  });
 
-  const [sessions, setSessions] = useState([]);
+  const [preTripSessions, setPreTripSessions] = useState([]);
+  const [straightBackSessions, setStraightBackSessions] = useState([]);
+  const [offSetSessions, setOffSetSessions] = useState([]);
+  const [roadSessions, setRoadSessions] = useState([]);
+  const [hours, setTotalHours] = useState({
+    preTrip: 0,
+    driving: 0,
+    total: 0,
+  });
 
   useEffect(() => {
     if (userId) {
-      // Fetch sessions for the given user ID
-      sessionServices
-        .getSessionsByStudentId(userId)
-        .then(response => {
-          // Sort sessions by date (most recent to least recent)
-          const sortedSessions = response.data.sort((a, b) => new Date(b.date) - new Date(a.date));
-          setSessions(sortedSessions);
-        })
-        .catch(error => {
-          console.error('Error fetching sessions:', error);
+      populateSessions();
+    }
+  }, []);
+
+  const populateSessions = () => {
+    sessionServices
+      .getSessionsByStudentId(userId)
+      .then((response) => {
+        console.log('sessions', response.data);
+
+        const sortedSessions = response.data?.map((x) => {
+          const item = {
+            id: x._id,
+            displayDate: formatDate(x.date),
+            date: x.date.split('T')[0],
+            maneuver: x.maneuver,
+            duration: x.duration,
+            userId: x.user,
+            clockedIn: x.clockedIn,
+            displayClockedIn: x.clockedIn,
+            clockedOut: x.clockedOut,
+            displayClockedOut: x.clockedOut,
+          };
+
+          return item;
         });
-    }
-  }, [userId]); // Re-fetch sessions every time userId or formSubmitted changes
 
-  // Function to format dates in MM/DD/YYYY format
-  const formatDate = dateString => {
-    const date = new Date(dateString);
-    const year = date.getUTCFullYear();
-    const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Month is zero-based
-    const day = String(date.getUTCDate()).padStart(2, '0');
+        if (sortedSessions.length > 0) {
+          var calculatedHours = calculateHours(sortedSessions);
+          setTotalHours(calculatedHours);
+        }
 
-    return `${month}/${day}/${year}`;
-  };
+        setPreTripSessions(
+          sortedSessions.filter((session) => session.maneuver === 'Pre Trip'),
+        );
 
-  // Function to format time from 24-hour to 12-hour AM/PM format
-  const formatTime = timeString => {
-    const [hours, minutes] = timeString.split(':');
-    let formattedTime = '';
+        setStraightBackSessions(
+          sortedSessions.filter(
+            (session) => session.maneuver === 'Straight Back',
+          ),
+        );
 
-    if (parseInt(hours, 10) === 0) {
-      formattedTime = `12:${minutes} `; // Midnight case
-    } else if (parseInt(hours, 10) === 12) {
-      formattedTime = `12:${minutes} `; // Noon case
-    } else if (parseInt(hours, 10) > 12) {
-      formattedTime = `${parseInt(hours, 10) - 12}:${minutes} `; // PM case
-    } else {
-      formattedTime = `${hours}:${minutes} `; // AM case
-    }
+        setOffSetSessions(
+          sortedSessions.filter((session) => session.maneuver === 'Off Set'),
+        );
 
-    return formattedTime;
+        setRoadSessions(
+          sortedSessions.filter((session) => session.maneuver === 'Road'),
+        );
+      })
+      .catch((error) => {
+        toast.error(error.message);
+        console.error('Error fetching sessions:', error);
+      });
   };
 
   // Function to calculate total hours across all sessions
-  const calculateHours = () => {
+  const calculateHours = (sessions) => {
     let preTrip = 0;
     let driving = 0;
 
-    sessions.forEach(session => {
+    sessions.forEach((session) => {
       if (session.duration) {
         const duration = parseFloat(session.duration);
         if (session.maneuver === 'Pre Trip') {
           preTrip += duration;
-        } else if (['Straight Back', 'Off Set', 'Road'].includes(session.maneuver)) {
+        } else if (
+          ['Straight Back', 'Off Set', 'Road'].includes(session.maneuver)
+        ) {
           driving += duration;
         }
       }
@@ -78,356 +118,255 @@ const StudentHoursModal = props => {
     };
   };
 
-  const hours = calculateHours();
+  //#region Delete
+
+  const onDeleteItemClick = (session) => {
+    setSelectedItem(session);
+    setShowDeleteConfirm(true);
+  };
+
+  const onDeleteConfirmation = () => {
+    sessionServices
+      .deleteSessionById(selectedItem.id)
+      .then(() => {
+        populateSessions();
+        toast.success('Session deleted successfuly.');
+      })
+      .catch((error) => {
+        toast.error(error.message);
+        console.error('Error fetching sessions:', error);
+      })
+      .finally(setShowDeleteConfirm(false));
+  };
+
+  //#endregion
+
+  const onEditItem = (editedSession) => {
+    const item = {
+      date: editedSession.date,
+      clockedIn: editedSession.clockedIn,
+      clockedOut: editedSession.clockedOut,
+    };
+
+    sessionServices
+      .editSession(editedSession.id, item)
+      .then((response) => {
+        populateSessions();
+        toast.success('Session edited successfuly.');
+      })
+      .catch((error) => {
+        toast.error(error.message);
+        console.error('Error fetching sessions:', error);
+      })
+      .finally(setShowDeleteConfirm(false));
+  };
+
+  const onCreate = (event) => {
+    event.preventDefault();
+
+    sessionServices
+      .createSession(createItem)
+      .then((response) => {
+        toast.success('Session added successfuly.');
+        populateSessions();
+        setShowCreate(false);
+      })
+      .catch((error) => {
+        toast.error(error.response.data.error);
+        console.error('Error fetching sessions:', error.response.data.error);
+      });
+  };
+
+  const handleChange = (field, value) => {
+    setCreateItem({ ...createItem, [field]: value });
+  };
+
   return (
     <>
       <button
-        // className="edit-button ml-auto px-4 py-1  bg-blue-600  hover:bg-yellow-600 hover:text-white rounded-lg hover:border-collapse"
-        className="bg-orange-500 text-black active:bg-blue-600 font-bold uppercase text-sm px-2 py-2 rounded-lg shadow hover:shadow-lg hover:bg-orange-700 outline-none focus:outline-none ml-auto mr-1 mb-1 ease-linear transition-all duration-150 md:w-1/6"
+        className="bg-orange-500 text-black active:bg-blue-600 uppercase text-sm px-2 py-2 rounded-lg shadow
+         hover:shadow-lg hover:bg-orange-700 outline-none focus:outline-none ml-auto mr-1 mb-1 ease-linear transition-all 
+         duration-150 md:w-1/6"
         type="button"
-        onClick={() => setShowModal(true)}
-      >
+        onClick={() => setShowModal(true)}>
         Hours
       </button>
-      {showModal ? (
-        <>
-          <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-            <div className="relative md:w-2/6 my-6 mx-auto max-w-3xl">
-              {/*content*/}
-              <div className="border-0 bg-slate-300 rounded-lg shadow-lg relative flex flex-col w-full  outline-none focus:outline-none">
-                {/*header*/}
-                <div className="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t bg-slate-800 text-white">
-                  <h3 className="text-3xl font-semibold">Student Hours</h3>
-                  <button
-                    className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                    onClick={() => setShowModal(false)}
-                  >
-                    <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
-                      ×
-                    </span>
-                  </button>
+      <Modal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        onConfirm={null}
+        title="User Hours"
+        showConfirm={false}
+        footer={
+          <div className="flex justify-between">
+            <button
+              className="px-3 py-1 text-sm text-white bg-green-600 rounded hover:bg-green-700"
+              type="button"
+              onClick={() => setShowCreate(true)}>
+              Add
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowCreate(false)}
+              className="ms-2 px-3 py-1 text-sm text-white bg-gray-600 rounded hover:bg-gray-400">
+              Cancel
+            </button>
+          </div>
+        }
+        size="xl">
+        <div>
+          {showCreate && (
+            <form className="bg-white border border-gray-200 rounded-lg shadow-lg p-4">
+              {/* First Row: Date and Maneuver */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                {/* Date Field */}
+                <div className="flex flex-col">
+                  <label
+                    htmlFor="date"
+                    className="text-gray-600 text-sm font-medium mb-1">
+                    Date
+                  </label>
+                  <input
+                    type="date"
+                    id="date"
+                    name="date"
+                    value={createItem.date}
+                    onChange={(e) => handleChange('date', e.target.value)}
+                    className="p-2 border border-gray-300 rounded-md text-sm"
+                    required
+                  />
                 </div>
-                {/*body*/}
-                <div className="relative flex-auto overflow-y-auto max-h-[70vh]">
-                  <div className="popup">
-                    <div className="p-5">
-                      {sessions.length === 0 ? (
-                        <p>No sessions found.</p>
-                      ) : (
-                        <div className="">
-                          <div className="">
-                            <p className="text-xl font-bold">Pre Trip</p>
-                            {/* Pre Trip */}
-                            <div className="flex flex-row ">
-                              {/* Date Column */}
-                              <div className="m-2">
-                                <ul>
-                                  <div className="md:text-xl font-bold">Date: </div>
-                                  {sessions
-                                    .filter(session => session.maneuver === 'Pre Trip')
-                                    .map(session => (
-                                      <li
-                                        key={session._id}
-                                        className="md:text-lg text-sm font-bold"
-                                      >
-                                        {formatDate(session.date)}
-                                      </li>
-                                    ))}
-                                </ul>
-                              </div>
-                              {/* Start Time Column */}
-                              <div className="m-2">
-                                <ul>
-                                  <div className="md:text-xl font-bold">Start: </div>
-                                  {sessions
-                                    .filter(session => session.maneuver === 'Pre Trip')
-                                    .map(session => (
-                                      <li
-                                        key={session._id}
-                                        className="md:text-lg text-sm font-bold"
-                                      >
-                                        {formatTime(session.clockedIn)}
-                                      </li>
-                                    ))}
-                                </ul>
-                              </div>
-                              {/* End Time Column */}
-                              <div className="m-2">
-                                <ul>
-                                  <div className="md:text-xl font-bold">End: </div>
-                                  {sessions
-                                    .filter(session => session.maneuver === 'Pre Trip')
-                                    .map(session => (
-                                      <li
-                                        key={session._id}
-                                        className="md:text-lg text-sm font-bold"
-                                      >
-                                        {formatTime(session.clockedOut)}
-                                      </li>
-                                    ))}
-                                </ul>
-                              </div>
 
-                              <div className="m-2">
-                                <ul>
-                                  <div className="md:text-xl font-bold">Duration: </div>
-                                  {sessions
-                                    .filter(session => session.maneuver === 'Pre Trip')
-                                    .map(session => (
-                                      <li
-                                        key={session._id}
-                                        className="text-sm md:text-lg font-bold"
-                                      >
-                                        {session.duration}
-                                      </li>
-                                    ))}
-                                </ul>
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="">
-                            <p className="text-xl font-bold">Straight Back</p>
-                            {/* Straight Back */}
-                            <div className="flex flex-row ">
-                              {/* Date Column */}
-                              <div className="m-2">
-                                <ul>
-                                  <div className="md:text-xl font-bold">Date: </div>
-                                  {sessions
-                                    .filter(session => session.maneuver === 'Straight Back')
-                                    .map(session => (
-                                      <li
-                                        key={session._id}
-                                        className="md:text-lg text-sm font-bold"
-                                      >
-                                        {formatDate(session.date)}
-                                      </li>
-                                    ))}
-                                </ul>
-                              </div>
-                              {/* Start Time Column */}
-                              <div className="m-2">
-                                <ul>
-                                  <div className="md:text-xl font-bold">Start: </div>
-                                  {sessions
-                                    .filter(session => session.maneuver === 'Straight Back')
-                                    .map(session => (
-                                      <li
-                                        key={session._id}
-                                        className="md:text-lg text-sm font-bold"
-                                      >
-                                        {formatTime(session.clockedIn)}
-                                      </li>
-                                    ))}
-                                </ul>
-                              </div>
-                              {/* End Time Column */}
-                              <div className="m-2">
-                                <ul>
-                                  <div className="md:text-xl font-bold">End: </div>
-                                  {sessions
-                                    .filter(session => session.maneuver === 'Straight Back')
-                                    .map(session => (
-                                      <li
-                                        key={session._id}
-                                        className="md:text-lg text-sm font-bold"
-                                      >
-                                        {formatTime(session.clockedOut)}
-                                      </li>
-                                    ))}
-                                </ul>
-                              </div>
-
-                              <div className="m-2">
-                                <ul>
-                                  <div className="md:text-xl font-bold">Duration: </div>
-                                  {sessions
-                                    .filter(session => session.maneuver === 'Straight Back')
-                                    .map(session => (
-                                      <li
-                                        key={session._id}
-                                        className="text-sm md:text-lg font-bold"
-                                      >
-                                        {session.duration}
-                                      </li>
-                                    ))}
-                                </ul>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="">
-                            <p className="text-xl font-bold">Off Set</p>
-                            {/* Off Set */}
-                            <div className="flex flex-row ">
-                              {/* Date Column */}
-                              <div className="m-2">
-                                <ul>
-                                  <div className="md:text-xl font-bold">Date: </div>
-                                  {sessions
-                                    .filter(session => session.maneuver === 'Off Set')
-                                    .map(session => (
-                                      <li
-                                        key={session._id}
-                                        className="md:text-lg text-sm font-bold"
-                                      >
-                                        {formatDate(session.date)}
-                                      </li>
-                                    ))}
-                                </ul>
-                              </div>
-                              {/* Start Time Column */}
-                              <div className="m-2">
-                                <ul>
-                                  <div className="md:text-xl font-bold">Start: </div>
-                                  {sessions
-                                    .filter(session => session.maneuver === 'Off Set')
-                                    .map(session => (
-                                      <li
-                                        key={session._id}
-                                        className="md:text-lg text-sm font-bold"
-                                      >
-                                        {formatTime(session.clockedIn)}
-                                      </li>
-                                    ))}
-                                </ul>
-                              </div>
-                              {/* End Time Column */}
-                              <div className="m-2">
-                                <ul>
-                                  <div className="md:text-xl font-bold">End: </div>
-                                  {sessions
-                                    .filter(session => session.maneuver === 'Off Set')
-                                    .map(session => (
-                                      <li
-                                        key={session._id}
-                                        className="md:text-lg text-sm font-bold"
-                                      >
-                                        {formatTime(session.clockedOut)}
-                                      </li>
-                                    ))}
-                                </ul>
-                              </div>
-
-                              <div className="m-2">
-                                <ul>
-                                  <div className="md:text-xl font-bold">Duration: </div>
-                                  {sessions
-                                    .filter(session => session.maneuver === 'Off Set')
-                                    .map(session => (
-                                      <li
-                                        key={session._id}
-                                        className="text-sm md:text-lg font-bold"
-                                      >
-                                        {session.duration}
-                                      </li>
-                                    ))}
-                                </ul>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="">
-                            <p className="text-xl font-bold">Road</p>
-                            {/* Road */}
-                            <div className="flex flex-row ">
-                              {/* Date Column */}
-                              <div className="m-2">
-                                <ul>
-                                  <div className="md:text-xl font-bold">Date: </div>
-                                  {sessions
-                                    .filter(session => session.maneuver === 'Road')
-                                    .map(session => (
-                                      <li
-                                        key={session._id}
-                                        className="md:text-lg text-sm font-bold"
-                                      >
-                                        {formatDate(session.date)}
-                                      </li>
-                                    ))}
-                                </ul>
-                              </div>
-                              {/* Start Time Column */}
-                              <div className="m-2">
-                                <ul>
-                                  <div className="md:text-xl font-bold">Start: </div>
-                                  {sessions
-                                    .filter(session => session.maneuver === 'Road')
-                                    .map(session => (
-                                      <li
-                                        key={session._id}
-                                        className="md:text-lg text-sm font-bold"
-                                      >
-                                        {formatTime(session.clockedIn)}
-                                      </li>
-                                    ))}
-                                </ul>
-                              </div>
-                              {/* End Time Column */}
-                              <div className="m-2">
-                                <ul>
-                                  <div className="md:text-xl font-bold">End: </div>
-                                  {sessions
-                                    .filter(session => session.maneuver === 'Road')
-                                    .map(session => (
-                                      <li
-                                        key={session._id}
-                                        className="md:text-lg text-sm font-bold"
-                                      >
-                                        {formatTime(session.clockedOut)}
-                                      </li>
-                                    ))}
-                                </ul>
-                              </div>
-
-                              <div className="m-2">
-                                <ul>
-                                  <div className="md:text-xl font-bold">Duration: </div>
-                                  {sessions
-                                    .filter(session => session.maneuver === 'Road')
-                                    .map(session => (
-                                      <li
-                                        key={session._id}
-                                        className="text-sm md:text-lg font-bold"
-                                      >
-                                        {session.duration}
-                                      </li>
-                                    ))}
-                                </ul>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Total Hours */}
-                      <p>
-                        <strong>Pre Trip Hours:</strong> {hours.preTrip}
-                      </p>
-                      <p>
-                        <strong>Driving Hours:</strong> {hours.driving}
-                      </p>
-                      <p>
-                        <strong>Total Hours :</strong> {hours.total}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                {/*footer*/}
-                <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
-                  <button
-                    className="text-white bg-red-500 rounded-md font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 hover:bg-red-700"
-                    type="button"
-                    onClick={() => setShowModal(false)}
-                  >
-                    Close
-                  </button>
+                {/* Maneuver Dropdown */}
+                <div className="flex flex-col">
+                  <label
+                    htmlFor="maneuver"
+                    className="text-gray-600 text-sm font-medium mb-1">
+                    Maneuver
+                  </label>
+                  <select
+                    className="p-2 border border-gray-300 rounded-md text-sm"
+                    name="maneuver"
+                    value={createItem.maneuver}
+                    onChange={(e) => handleChange('maneuver', e.target.value)}
+                    required>
+                    <option value="" disabled>
+                      Select Maneuver
+                    </option>
+                    <option value="Pre Trip">Pre Trip</option>
+                    <option value="Straight Back">Straight Back</option>
+                    <option value="Off Set">Off Set</option>
+                    <option value="Road">Road</option>
+                  </select>
                 </div>
               </div>
+
+              {/* Second Row: Start and End Times */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                {/* Start Time Field */}
+                <div className="flex flex-col">
+                  <label
+                    htmlFor="startTime"
+                    className="text-gray-600 text-sm font-medium mb-1">
+                    Start Time
+                  </label>
+                  <TimePicker
+                    name="startTime"
+                    value={createItem.startTime}
+                    onChange={(e) => handleChange('startTime', e.target.value)}
+                    className="border border-gray-300 rounded-md text-sm"
+                  />
+                </div>
+
+                {/* End Time Field */}
+                <div className="flex flex-col">
+                  <label
+                    htmlFor="endTime"
+                    className="text-gray-600 text-sm font-medium mb-1">
+                    End Time
+                  </label>
+                  <TimePicker
+                    name="endTime"
+                    value={createItem.endTime}
+                    onChange={(e) => handleChange('endTime', e.target.value)}
+                    className="border border-gray-300 rounded-md text-sm"
+                  />
+                </div>
+              </div>
+
+              {/* Third Row: Actions */}
+              <div className="flex items-center gap-4">
+                <button type="submit" className="" onSubmit={onCreate}>
+                  <FontAwesomeIcon icon={faCheck} color="green" />
+                </button>
+                <button
+                  type="button"
+                  className=""
+                  onClick={() => setShowCreate(false)}>
+                  <FontAwesomeIcon icon={faClose} color="red" />
+                </button>
+              </div>
+            </form>
+          )}
+          <SessionTable
+            title="Pre Trip Sessions"
+            sessions={preTripSessions}
+            onEdit={onEditItem}
+            onDelete={onDeleteItemClick}
+          />
+          <SessionTable
+            title="Straight Back Sessions"
+            sessions={straightBackSessions}
+            onEdit={onEditItem}
+            onDelete={onDeleteItemClick}
+          />
+          <SessionTable
+            title="Off Set Sessions"
+            sessions={offSetSessions}
+            onEdit={onEditItem}
+            onDelete={onDeleteItemClick}
+          />
+          <SessionTable
+            title="Road Sessions"
+            sessions={roadSessions}
+            onEdit={onEditItem}
+            onDelete={onDeleteItemClick}
+          />
+
+          <div className="flex flex-row items-center gap-4">
+            <div>
+              <label htmlFor="date" className="">
+                Pre-Trip:
+              </label>
+              <span className="font-light"> {hours.preTrip}</span>
+            </div>
+            <div>
+              <label htmlFor="date" className="">
+                Driving:
+              </label>
+              <span className="font-light"> {hours.driving}</span>
+            </div>
+            <div>
+              <label htmlFor="date" className="">
+                Total:
+              </label>
+              <span className="font-light"> {hours.total}</span>
             </div>
           </div>
-          <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
-        </>
-      ) : null}
+        </div>
+      </Modal>
+
+      <Modal
+        isOpen={showDeleteConfirm}
+        onClose={() => setShowDeleteConfirm(false)}
+        onConfirm={onDeleteConfirmation}
+        title="Delete Confirmation"
+        showConfirm={true}
+        size="sm">
+        <p className="text-center text-sm text-red-600">
+          Are you shure you want to delete this record?
+        </p>
+      </Modal>
     </>
   );
 };

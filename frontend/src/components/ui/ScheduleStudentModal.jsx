@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import appointmentService from '../../services/appointments';
 
-const ScheduleStudent = props => {
+const ScheduleStudent = (props) => {
   const [showModal, setShowModal] = React.useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
@@ -24,7 +24,7 @@ const ScheduleStudent = props => {
     transmission: props.student.transmission,
   });
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -32,7 +32,7 @@ const ScheduleStudent = props => {
     });
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
@@ -59,7 +59,7 @@ const ScheduleStudent = props => {
     }
   };
 
-  const handleSuccess = res => {
+  const handleSuccess = (res) => {
     setErrorMessage('');
     setSuccessMessage(res.data.message);
     // Reset the form fields
@@ -69,10 +69,9 @@ const ScheduleStudent = props => {
     props.toast();
   };
 
-  const handleError = err => {
+  const handleError = (err) => {
     setSuccessMessage('');
     setErrorMessage(err.response.data.message);
-    // console.log(err.response.data.message);
   };
 
   const resetFormData = () => {
@@ -102,8 +101,7 @@ const ScheduleStudent = props => {
           setErrorMessage('');
           setSuccessMessage('');
           setShowModal(true);
-        }}
-      >
+        }}>
         Schedule For Exam
       </button>
       {showModal ? (
@@ -117,8 +115,7 @@ const ScheduleStudent = props => {
                   <h3 className="text-3xl font-semibold">Add Appointment</h3>
                   <button
                     className="p-1 ml-auto bg-transparent border-0 text-black  float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                    onClick={() => setShowModal(false)}
-                  >
+                    onClick={() => setShowModal(false)}>
                     <span className="bg-transparent text-white  h-6 w-6 text-2xl block outline-none focus:outline-none">
                       ×
                     </span>
@@ -281,8 +278,7 @@ const ScheduleStudent = props => {
                             name="transmission"
                             value={formData.transmission}
                             onChange={handleChange}
-                            className="p-1 "
-                          >
+                            className="p-1 ">
                             <option value="" disabled>
                               Select transmission
                             </option>
@@ -312,7 +308,9 @@ const ScheduleStudent = props => {
                               type="checkbox"
                               name="checkboxOption"
                               value="placeholder"
-                              checked={formData.checkboxOption === 'placeholder'}
+                              checked={
+                                formData.checkboxOption === 'placeholder'
+                              }
                               onChange={handleChange}
                               className="mr-2 h-4 w-4"
                             />
@@ -333,14 +331,12 @@ const ScheduleStudent = props => {
                       </div>
                       <button
                         className="text-white font-bold p-4 bg-teal-700 w-full  hover:bg-teal-900 rounded-lg my-4"
-                        type="submit"
-                      >
+                        type="submit">
                         Submit
                       </button>
                       <button
                         className="text-white font-bold p-4 bg-red-500 w-full  hover:bg-red-900 rounded-lg my-4 md:hidden"
-                        onClick={() => setShowModal(false)}
-                      >
+                        onClick={() => setShowModal(false)}>
                         Close
                       </button>
 

@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import userService from '../../services/users';
 
-const AddStudentModal = props => {
+const AddStudentModal = (props) => {
   const [showModal, setShowModal] = React.useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
@@ -48,7 +48,7 @@ const AddStudentModal = props => {
   //   }
   // }, []);
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -56,7 +56,7 @@ const AddStudentModal = props => {
     });
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
@@ -71,7 +71,7 @@ const AddStudentModal = props => {
         permitExpDate: formData.permitExpDate,
         clas: formData.clas,
       };
-      console.log(studentObj);
+
       const res = await userService.addStudent(studentObj);
       handleSuccess(res);
     } catch (err) {
@@ -89,9 +89,10 @@ const AddStudentModal = props => {
     props.toast();
   };
 
-  const handleError = err => {
+  const handleError = (err) => {
     setSuccessMessage('');
-    const errorMessage = err.response?.data?.message || 'Unknown error occurred';
+    const errorMessage =
+      err.response?.data?.message || 'Unknown error occurred';
     setErrorMessage(errorMessage);
   };
 
@@ -119,8 +120,7 @@ const AddStudentModal = props => {
           setErrorMessage('');
           setSuccessMessage('');
           setShowModal(true);
-        }}
-      >
+        }}>
         Add a New Student
       </button>
       {showModal ? (
@@ -137,8 +137,7 @@ const AddStudentModal = props => {
                     onClick={() => {
                       setShowModal(false);
                       resetFormData();
-                    }}
-                  >
+                    }}>
                     <span className="bg-transparent text-white  h-6 w-6 text-2xl block outline-none focus:outline-none">
                       ×
                     </span>
@@ -243,8 +242,7 @@ const AddStudentModal = props => {
                             name="transmission"
                             value={formData.transmission}
                             onChange={handleChange}
-                            className="p-1 "
-                          >
+                            className="p-1 ">
                             <option value="" disabled>
                               Select transmission
                             </option>
@@ -260,8 +258,7 @@ const AddStudentModal = props => {
                             name="clas"
                             value={formData.clas}
                             onChange={handleChange}
-                            className="p-1 "
-                          >
+                            className="p-1 ">
                             <option value="A">A</option>
                             <option value="B">B</option>
                           </select>
@@ -283,8 +280,7 @@ const AddStudentModal = props => {
 
                       <button
                         className="text-white font-bold p-4 bg-teal-700 w-full  hover:bg-teal-900 rounded-lg my-4"
-                        type="submit"
-                      >
+                        type="submit">
                         Submit
                       </button>
                       <div className="text-green-500">{successMessage}</div>

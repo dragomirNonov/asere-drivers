@@ -17,13 +17,15 @@ const AboutUS = () => {
           </h2>
 
           <p className="text-sm text-yellow-600 md:text-yellow-600 md:text-xl pt-2 md:leading-[2] ">
-            At ASERE Drivers, we&#39;re dedicated to delivering top-notch CDL Training services.
-            With a focus on innovation and customer satisfaction, we strive to exceed expectations
-            every time. Founded in 2008, we&#39;ve quickly become a trusted industry provider, known
-            for our excelent service and high graduation rate. Our team is passionate about
-            providing the best training possible. From CLP to becoming your own boss, we&#39;re
-            committed to providing exceptional results. Thank you for choosing Asere Drivers. We
-            look forward to serving you!
+            At ASERE Drivers, we&#39;re dedicated to delivering top-notch CDL
+            Training services. With a focus on innovation and customer
+            satisfaction, we strive to exceed expectations every time. Founded
+            in 2008, we&#39;ve quickly become a trusted industry provider, known
+            for our excelent service and high graduation rate. Our team is
+            passionate about providing the best training possible. From CLP to
+            becoming your own boss, we&#39;re committed to providing exceptional
+            results. Thank you for choosing Asere Drivers. We look forward to
+            serving you!
           </p>
         </div>
       </div>

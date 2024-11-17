@@ -28,7 +28,7 @@ const Register = () => {
     return true;
   };
 
-  const handleSubmit = event => {
+  const handleSubmit = (event) => {
     event.preventDefault();
 
     if (!checkPasswordMatch()) {
@@ -49,11 +49,11 @@ const Register = () => {
 
     userServices
       .register(registerObj)
-      .then(res => {
+      .then((res) => {
         setErrorMessage('');
         setSuccessMessage(res.data.message);
       })
-      .catch(err => {
+      .catch((err) => {
         setSuccessMessage('');
         setErrorMessage(err.response.data.message);
       });
@@ -71,7 +71,7 @@ const Register = () => {
                 type="text"
                 id="firstname"
                 value={firstname}
-                onChange={event => setFirstname(event.target.value)}
+                onChange={(event) => setFirstname(event.target.value)}
                 required
                 className="p-1 rounded-md bg-gray-500 text-white"
               />
@@ -82,7 +82,7 @@ const Register = () => {
                 type="text"
                 id="lastname"
                 value={lastname}
-                onChange={event => setLastname(event.target.value)}
+                onChange={(event) => setLastname(event.target.value)}
                 required
                 className="p-1 rounded-md bg-gray-500 text-white"
               />
@@ -95,7 +95,7 @@ const Register = () => {
                 type="text"
                 id="phone"
                 value={phone}
-                onChange={event => setPhone(event.target.value)}
+                onChange={(event) => setPhone(event.target.value)}
                 required
                 className="p-1 rounded-md bg-gray-500 text-white"
               />
@@ -106,7 +106,7 @@ const Register = () => {
                 type="email"
                 id="email"
                 value={email}
-                onChange={event => setEmail(event.target.value)}
+                onChange={(event) => setEmail(event.target.value)}
                 required
                 className="p-1 rounded-md bg-gray-500 text-white"
               />
@@ -119,7 +119,7 @@ const Register = () => {
               <select
                 id="transmission"
                 value={transmission}
-                onChange={event => setTransmission(event.target.value)}
+                onChange={(event) => setTransmission(event.target.value)}
                 required
                 className="p-1 rounded-md bg-gray-500 text-white"
               >
@@ -137,7 +137,7 @@ const Register = () => {
               <select
                 id="class"
                 value={clas}
-                onChange={event => setClas(event.target.value)}
+                onChange={(event) => setClas(event.target.value)}
                 required
                 className="p-1 rounded-md bg-gray-500 text-white"
               >
@@ -157,7 +157,7 @@ const Register = () => {
                 type="text"
                 id="username"
                 value={DLnumber}
-                onChange={event => setDLnumber(event.target.value)}
+                onChange={(event) => setDLnumber(event.target.value)}
                 required
                 className="p-1 rounded-md bg-gray-500 text-white"
               />
@@ -168,7 +168,7 @@ const Register = () => {
                 type="date"
                 id="DOB"
                 value={DOB}
-                onChange={event => setDOB(event.target.value)}
+                onChange={(event) => setDOB(event.target.value)}
                 required
                 className="p-1 rounded-md bg-gray-500 text-white"
               />
@@ -182,7 +182,7 @@ const Register = () => {
                 type="password"
                 id="password"
                 value={password}
-                onChange={event => setPassword(event.target.value)}
+                onChange={(event) => setPassword(event.target.value)}
                 required
                 className="p-1 rounded-md bg-gray-500 text-white"
               />
@@ -193,7 +193,7 @@ const Register = () => {
                 type="password"
                 id="confirmPassword"
                 value={confirmPassword}
-                onChange={event => setConfirmPassword(event.target.value)}
+                onChange={(event) => setConfirmPassword(event.target.value)}
                 required
                 className="p-1 rounded-md bg-gray-500 text-white"
               />
@@ -225,9 +225,7 @@ const Register = () => {
             className="w-10 mt-2 hover:p-3 p-2 rounded"
             alt="Arrow"
             id="home"
-            style={{
-              filter: 'invert(1)',
-            }}
+            style={{ filter: 'invert(1)' }}
           />
         </Link>
       </div>

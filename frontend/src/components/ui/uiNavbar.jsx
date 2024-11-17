@@ -26,7 +26,7 @@ const UiNavbar = () => {
     // Retrieve JWT token from local storage
     const token = localStorage.getItem('token');
 
-    const decodeToken = token => {
+    const decodeToken = (token) => {
       try {
         // Decode token
         const decoded = JSON.parse(atob(token.split('.')[1]));
@@ -46,10 +46,10 @@ const UiNavbar = () => {
   }, []);
 
   const handleMenu = () => {
-    setOpen(prev => !prev);
+    setOpen((prev) => !prev);
   };
 
-  const filteredNavlinks = navlinks.filter(link => {
+  const filteredNavlinks = navlinks.filter((link) => {
     if (userRole === 'Student') {
       return link.title !== 'Students' && link.title !== 'Appointments';
     } else if (userRole === 'Instructor') {

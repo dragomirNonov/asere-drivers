@@ -72,7 +72,9 @@ const Student = ({ student, refresh }) => {
       </button>
       <div
         className={`grid overflow-hidden transition-all duration-300 ease-in-out ${
-          accordionOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
+          accordionOpen
+            ? 'grid-rows-[1fr] opacity-100'
+            : 'grid-rows-[0fr] opacity-0'
         }`}
       >
         <div className={`overflow-hidden font-bold text-sm md:text-xl`}>

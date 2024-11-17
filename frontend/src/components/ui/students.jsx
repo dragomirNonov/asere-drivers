@@ -20,33 +20,34 @@ const Students = () => {
     // Call the getAllStudents function from the studentServices
     studentServices
       .getAllStudents()
-      .then(response => {
+      .then((response) => {
         // Set the fetched students to state
         setStudents(response.data.students);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error('Error fetching students:', error);
       });
   };
 
   // Function to handle changes in the search query
-  const handleSearchChange = event => {
+  const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
   };
 
   // Filter students based on the search query
   const filteredStudents = students.filter(
-    student =>
-      student.firstName && student.firstName.toLowerCase().includes(searchQuery.toLowerCase())
+    (student) =>
+      student.firstName &&
+      student.firstName.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   // Filter students based on transmission type and sort alphabetically
   const standardStudents = filteredStudents
-    .filter(student => student.transmission === 'Standard')
+    .filter((student) => student.transmission === 'Standard')
     .sort((a, b) => a.firstName.localeCompare(b.firstName));
 
   const automaticStudents = filteredStudents
-    .filter(student => student.transmission === 'Automatic')
+    .filter((student) => student.transmission === 'Automatic')
     .sort((a, b) => a.firstName.localeCompare(b.firstName));
 
   return (
@@ -66,8 +67,13 @@ const Students = () => {
           <h2 className="text-xl font-bold bg-gray-800 text-white p-1">
             Standard Transmission Students
           </h2>
-          {standardStudents.map(student => (
-            <Student key={student._id} student={student} toast={notify} refresh={fetchStudents} />
+          {standardStudents.map((student) => (
+            <Student
+              key={student._id}
+              student={student}
+              toast={notify}
+              refresh={fetchStudents}
+            />
           ))}
         </div>
 
@@ -76,8 +82,13 @@ const Students = () => {
           <h2 className="text-xl font-bold  bg-gray-800 text-white p-1">
             Automatic Transmission Students
           </h2>
-          {automaticStudents.map(student => (
-            <Student key={student._id} student={student} toast={notify} refresh={fetchStudents} />
+          {automaticStudents.map((student) => (
+            <Student
+              key={student._id}
+              student={student}
+              toast={notify}
+              refresh={fetchStudents}
+            />
           ))}
         </div>
       </div>

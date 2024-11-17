@@ -31,7 +31,7 @@ const UiNavbar = () => {
   // }, []);
 
   const handleMenu = () => {
-    setOpen(prev => !prev);
+    setOpen((prev) => !prev);
   };
 
   return (

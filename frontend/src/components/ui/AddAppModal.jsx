@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import appointmentService from '../../services/appointments';
 
-const AddAppModal = props => {
+const AddAppModal = (props) => {
   const [showModal, setShowModal] = React.useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
@@ -24,7 +24,7 @@ const AddAppModal = props => {
     transmission: '',
   });
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -32,7 +32,7 @@ const AddAppModal = props => {
     });
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
@@ -305,7 +305,9 @@ const AddAppModal = props => {
                               type="checkbox"
                               name="checkboxOption"
                               value="placeholder"
-                              checked={formData.checkboxOption === 'placeholder'}
+                              checked={
+                                formData.checkboxOption === 'placeholder'
+                              }
                               onChange={handleChange}
                               className="mr-2 h-4 w-4"
                             />

@@ -17,9 +17,7 @@ export default [
         sourceType: 'module',
       },
     },
-    settings: {
-      react: { version: '18.3' },
-    },
+    settings: { react: { version: '18.3' } },
     plugins: {
       react,
       'react-hooks': reactHooks,
@@ -31,7 +29,10 @@ export default [
       ...react.configs['jsx-runtime'].rules,
       ...reactHooks.configs.recommended.rules,
       'react/jsx-no-target-blank': 'off',
-      'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+      'react-refresh/only-export-components': [
+        'warn',
+        { allowConstantExport: true },
+      ],
       'react/prop-types': 'off',
     },
   },

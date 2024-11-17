@@ -2,8 +2,7 @@ const TimePicker = ({ value, name, onChange }) => {
   const times = [];
   const formatTime = (hour, minute) => {
     const displayHour = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour;
-    const period = hour >= 12 ? 'PM' : 'AM';
-    return `${displayHour}:${minute.toString().padStart(2, '0')} ${period}`;
+    return `${displayHour}:${minute.toString().padStart(2, '0')}`;
   };
 
   for (let hour = 9; hour <= 17; hour++) {
@@ -16,13 +15,15 @@ const TimePicker = ({ value, name, onChange }) => {
         display: formatTime(hour, minute),
         value: timeValue,
       });
+
+      console.log(times);
     }
   }
 
   return (
-    <select name={name} value={value} onChange={onChange} className="w-3/6 p-1">
+    <select name={name} value={value} onChange={onChange} className="w-3/8 p-1">
       <option value="">Time</option> {/* Placeholder for "Time" */}
-      {times.map(time => (
+      {times.map((time) => (
         <option key={time.value} value={time.value}>
           {time.display}
         </option>

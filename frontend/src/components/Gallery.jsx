@@ -49,7 +49,8 @@ const Gallery = () => {
         className="text-yellow-600  text-2xl md:text-5xl flex justify-center pb-4 pt-6"
         style={{
           borderBottom: '1px solid',
-          borderImage: 'linear-gradient(to right, transparent, rgb(234, 179, 8), transparent) 1',
+          borderImage:
+            'linear-gradient(to right, transparent, rgb(234, 179, 8), transparent) 1',
         }}
       >
         GALLERY:

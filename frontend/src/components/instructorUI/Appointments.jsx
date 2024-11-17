@@ -12,9 +12,11 @@ const Appointments = () => {
   const deleteApp = () => toast.error('Appointment Deleted Successfully');
 
   useEffect(() => {
-    fetchSortedAppointments(showAllAppointments, searchDate).then(sortedAppointments => {
-      setArrayOfAppointments(sortedAppointments);
-    });
+    fetchSortedAppointments(showAllAppointments, searchDate).then(
+      (sortedAppointments) => {
+        setArrayOfAppointments(sortedAppointments);
+      },
+    );
   }, [showAllAppointments, searchDate]); // Add showAllAppointments and searchDate to the dependency array
 
   const fetchSortedAppointments = async (showAll, date) => {
@@ -26,39 +28,48 @@ const Appointments = () => {
 
       if (!showAll) {
         // Only show appointments that are today or in the future
-        filteredAppointments = allAppointments.filter(app => app.date >= currentDate);
+        filteredAppointments = allAppointments.filter(
+          (app) => app.date >= currentDate,
+        );
       }
 
       if (date) {
         // Filter by the search date if provided
         filteredAppointments = filteredAppointments.filter(
-          app => new Date(app.date).toDateString() === new Date(date).toDateString()
+          (app) =>
+            new Date(app.date).toDateString() === new Date(date).toDateString(),
         );
       }
 
-      return filteredAppointments.sort((a, b) => new Date(a.date) - new Date(b.date));
+      return filteredAppointments.sort(
+        (a, b) => new Date(a.date) - new Date(b.date),
+      );
     } catch (error) {
-      throw new Error(`Failed to fetch and sort appointments: ${error.message}`);
+      throw new Error(
+        `Failed to fetch and sort appointments: ${error.message}`,
+      );
     }
   };
 
   const refreshAppointments = () => {
-    fetchSortedAppointments(showAllAppointments, searchDate).then(sortedAppointments => {
-      setArrayOfAppointments(sortedAppointments);
-    });
+    fetchSortedAppointments(showAllAppointments, searchDate).then(
+      (sortedAppointments) => {
+        setArrayOfAppointments(sortedAppointments);
+      },
+    );
   };
 
-  const handleDateChange = event => {
+  const handleDateChange = (event) => {
     setSearchDate(event.target.value);
   };
 
   // Toggle between showing all appointments or only future appointments
   const toggleShowAll = () => {
-    setShowAllAppointments(prev => !prev);
+    setShowAllAppointments((prev) => !prev);
   };
 
   const groupedAppointments = {};
-  arrayOfAppointments.forEach(app => {
+  arrayOfAppointments.forEach((app) => {
     const date = app.date;
     if (!groupedAppointments[date]) {
       groupedAppointments[date] = [];
@@ -66,8 +77,16 @@ const Appointments = () => {
     groupedAppointments[date].push(app);
   });
 
-  const getDayOfWeek = dateString => {
-    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  const getDayOfWeek = (dateString) => {
+    const days = [
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday',
+    ];
     const date = new Date(dateString);
     return days[date.getDay()];
   };

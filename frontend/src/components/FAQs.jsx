@@ -7,7 +7,8 @@ const FAQs = () => {
         className="text-2xl text-yellow-500 md:text-5xl flex justify-center  pb-4"
         style={{
           borderBottom: '1px solid',
-          borderImage: 'linear-gradient(to right, transparent, rgb(234, 179, 8), transparent) 1',
+          borderImage:
+            'linear-gradient(to right, transparent, rgb(234, 179, 8), transparent) 1',
         }}
       >
         FAQs:

@@ -11,15 +11,24 @@ const ContactUs = () => {
         className="text-yellow-600 text-2xl md:text-5xl flex justify-center  pt-6 pb-4"
         style={{
           borderBottom: '1px solid',
-          borderImage: 'linear-gradient(to right, transparent, rgb(234, 179, 8), transparent) 1',
+          borderImage:
+            'linear-gradient(to right, transparent, rgb(234, 179, 8), transparent) 1',
         }}
       >
         GET IN TOUCH:
       </h2>
       <div className="flex flex-col items-center md:flex-row mt-2 md:mt-10 pb-11">
-        <ContactCard icon={adress} title="Address:" content="21115 I-45 Spring TX, 77388" />
+        <ContactCard
+          icon={adress}
+          title="Address:"
+          content="21115 I-45 Spring TX, 77388"
+        />
         <ContactCard icon={phone} title="Phone:" content="346-812-8390 " />
-        <ContactCard icon={email} title="Email:" content="asere.drivers@gmail.com" />
+        <ContactCard
+          icon={email}
+          title="Email:"
+          content="asere.drivers@gmail.com"
+        />
         <ContactCard
           icon={socials}
           title="Socials:"

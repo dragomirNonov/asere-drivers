@@ -18,7 +18,7 @@ const UiNavbar = () => {
   const [open, setOpen] = useState(false);
 
   const handleMenu = () => {
-    setOpen(prev => !prev);
+    setOpen((prev) => !prev);
   };
 
   return (

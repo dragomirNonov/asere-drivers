@@ -11,19 +11,16 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = event => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-    const loginObj = {
-      phone: phone,
-      password: password,
-    };
+    const loginObj = { phone: phone, password: password };
     userService
       .login(loginObj)
-      .then(res => {
+      .then((res) => {
         if (res.status === 200) {
           localStorage.setItem('token', res.data.token);
 
-          const decodeToken = token => {
+          const decodeToken = (token) => {
             try {
               const decoded = JSON.parse(atob(token.split('.')[1]));
               return decoded;
@@ -45,7 +42,7 @@ const Login = () => {
           }
         }
       })
-      .catch(err => {
+      .catch((err) => {
         setErrorMessage(err.response.data.message);
       });
   };
@@ -61,7 +58,7 @@ const Login = () => {
               type="text"
               id="phone"
               value={phone}
-              onChange={event => setPhone(event.target.value)}
+              onChange={(event) => setPhone(event.target.value)}
               required
               className="p-1 rounded-md bg-gray-500 text-white"
             />
@@ -72,7 +69,7 @@ const Login = () => {
               type="password"
               id="password"
               value={password}
-              onChange={event => setPassword(event.target.value)}
+              onChange={(event) => setPassword(event.target.value)}
               required
               className="p-1 rounded-md bg-gray-500 text-white"
             />
@@ -101,9 +98,7 @@ const Login = () => {
             className="w-10 mt-2 hover:p-3 p-2 rounded"
             alt="Arrow"
             id="home"
-            style={{
-              filter: 'invert(1)',
-            }}
+            style={{ filter: 'invert(1)' }}
           />
         </Link>
       </div>

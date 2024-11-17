@@ -17,7 +17,7 @@ const Appointments = () => {
   useEffect(() => {
     const token = localStorage.getItem('token');
 
-    const decodeToken = token => {
+    const decodeToken = (token) => {
       try {
         const decoded = JSON.parse(atob(token.split('.')[1]));
         return decoded;
@@ -44,11 +44,13 @@ const Appointments = () => {
       }
     }
 
-    fetchSortedAppointments(decodedToken?.role, showAllAppointments, searchDate).then(
-      sortedAppointments => {
-        setArrayOfAppointments(sortedAppointments);
-      }
-    );
+    fetchSortedAppointments(
+      decodedToken?.role,
+      showAllAppointments,
+      searchDate,
+    ).then((sortedAppointments) => {
+      setArrayOfAppointments(sortedAppointments);
+    });
   }, [showAllAppointments, searchDate]); // Add showAllAppointments and searchDate to the dependency array
 
   const fetchSortedAppointments = async (role, showAll, date) => {
@@ -62,7 +64,7 @@ const Appointments = () => {
       let filteredAppointments = allAppointments;
 
       if (!showAll) {
-        filteredAppointments = allAppointments.filter(app => {
+        filteredAppointments = allAppointments.filter((app) => {
           const appDate = app.date; // Use the date string directly (e.g., '2024-09-23')
           const currentDate = new Date().toISOString().slice(0, 10); // Get current date in YYYY-MM-DD format
           return appDate >= currentDate;
@@ -70,32 +72,41 @@ const Appointments = () => {
       }
 
       if (role === 'Instructor') {
-        filteredAppointments = filteredAppointments.filter(app => app.checkboxOption === 'real');
+        filteredAppointments = filteredAppointments.filter(
+          (app) => app.checkboxOption === 'real',
+        );
       }
 
       if (date) {
         filteredAppointments = filteredAppointments.filter(
-          app => new Date(app.date).toDateString() === new Date(date).toDateString()
+          (app) =>
+            new Date(app.date).toDateString() === new Date(date).toDateString(),
         );
       }
 
-      return filteredAppointments.sort((a, b) => new Date(a.date) - new Date(b.date));
+      return filteredAppointments.sort(
+        (a, b) => new Date(a.date) - new Date(b.date),
+      );
     } catch (error) {
-      throw new Error(`Failed to fetch and sort appointments: ${error.message}`);
+      throw new Error(
+        `Failed to fetch and sort appointments: ${error.message}`,
+      );
     }
   };
   const refreshAppointments = () => {
-    fetchSortedAppointments(userRole, showAllAppointments, searchDate).then(sortedAppointments => {
-      setArrayOfAppointments(sortedAppointments);
-    });
+    fetchSortedAppointments(userRole, showAllAppointments, searchDate).then(
+      (sortedAppointments) => {
+        setArrayOfAppointments(sortedAppointments);
+      },
+    );
   };
 
-  const handleDateChange = event => {
+  const handleDateChange = (event) => {
     setSearchDate(event.target.value);
   };
 
   const groupedAppointments = {};
-  arrayOfAppointments.forEach(app => {
+  arrayOfAppointments.forEach((app) => {
     const date = app.date;
     if (!groupedAppointments[date]) {
       groupedAppointments[date] = [];
@@ -103,8 +114,16 @@ const Appointments = () => {
     groupedAppointments[date].push(app);
   });
 
-  const getDayOfWeek = dateString => {
-    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  const getDayOfWeek = (dateString) => {
+    const days = [
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday',
+    ];
     const date = new Date(dateString);
     return days[date.getDay()];
   };

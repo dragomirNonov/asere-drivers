@@ -25,7 +25,7 @@ const Session = () => {
     setUser(decodedToken);
   }, []);
 
-  const decodeToken = token => {
+  const decodeToken = (token) => {
     try {
       const decoded = JSON.parse(atob(token.split('.')[1]));
       return decoded;
@@ -35,17 +35,13 @@ const Session = () => {
     }
   };
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Form Data Submitted:', formData);
 
     const startDateTime = new Date(`${formData.date}T${formData.startTime}`);
     const endDateTime = new Date(`${formData.date}T${formData.endTime}`);
@@ -66,10 +62,8 @@ const Session = () => {
     sessionServices.createSession(sessionObj).then(() => {
       clockedIn();
       setFormData(initialFormData);
-      setFormSubmitted(prev => !prev);
+      setFormSubmitted((prev) => !prev);
     });
-
-    console.log(`Duration: ${duration} Hours`);
   };
 
   return (
@@ -97,14 +91,22 @@ const Session = () => {
           <div className="p-2 px-5 font-bold text-lg">
             <label className="flex justify-between">
               Start Time:
-              <TimePicker name="startTime" value={formData.startTime} onChange={handleChange} />
+              <TimePicker
+                name="startTime"
+                value={formData.startTime}
+                onChange={handleChange}
+              />
             </label>
           </div>
 
           <div className="p-2 px-5 font-bold text-lg">
             <label className="flex justify-between">
               End Time:
-              <TimePicker name="endTime" value={formData.endTime} onChange={handleChange} />
+              <TimePicker
+                name="endTime"
+                value={formData.endTime}
+                onChange={handleChange}
+              />
             </label>
           </div>
 
@@ -116,8 +118,7 @@ const Session = () => {
                 name="maneuver"
                 value={formData.maneuver || ''}
                 onChange={handleChange}
-                required
-              >
+                required>
                 <option value="" disabled>
                   Maneuver
                 </option>
@@ -132,8 +133,7 @@ const Session = () => {
           <div className="w-full flex justify-center p-2">
             <button
               type="submit"
-              className="w-4/6 p-1 font-bold text-lg bg-blue-600 rounded-md text-white hover:bg-blue-800 "
-            >
+              className="w-4/6 p-1 font-bold text-lg bg-blue-600 rounded-md text-white hover:bg-blue-800 ">
               Submit
             </button>
           </div>
@@ -142,7 +142,9 @@ const Session = () => {
 
       <Toaster position="top-center" reverseOrder={false} />
 
-      {user && <StudentHours userId={user.userId} formSubmitted={formSubmitted} />}
+      {user && (
+        <StudentHours userId={user.userId} formSubmitted={formSubmitted} />
+      )}
     </div>
   );
 };

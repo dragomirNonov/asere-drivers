@@ -16,16 +16,16 @@ const UserInfo = () => {
     if (decodedToken && decodedToken.userId) {
       userService
         .getUserById(decodedToken.userId)
-        .then(response => {
+        .then((response) => {
           setUser(response.data.user);
         })
-        .catch(error => {
+        .catch((error) => {
           console.error('Error fetching user:', error);
         });
     }
   }, []);
 
-  const decodeToken = token => {
+  const decodeToken = (token) => {
     try {
       // Decode token
       const decoded = JSON.parse(atob(token.split('.')[1]));
