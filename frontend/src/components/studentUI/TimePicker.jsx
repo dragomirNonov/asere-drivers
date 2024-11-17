@@ -15,8 +15,6 @@ const TimePicker = ({ value, name, onChange }) => {
         display: formatTime(hour, minute),
         value: timeValue,
       });
-
-      console.log(times);
     }
   }
 
