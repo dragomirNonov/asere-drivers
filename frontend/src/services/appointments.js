@@ -1,5 +1,6 @@
 import axios from 'axios';
-const baseUrl = 'http://localhost:3001/api'; //develop URL
+// const baseUrl = 'http://localhost:3001/api'; //develop URL
+const baseUrl = import.meta.env.VITE_BASE_URL;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // const baseUrl = "/api"; //deployment URL
