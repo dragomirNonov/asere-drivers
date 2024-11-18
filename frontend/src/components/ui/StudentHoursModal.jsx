@@ -184,8 +184,8 @@ const StudentHoursModal = (props) => {
   return (
     <>
       <button
-        className="bg-orange-500 text-black active:bg-blue-600 uppercase text-sm px-2 py-2 rounded-lg shadow
-         hover:shadow-lg hover:bg-orange-700 outline-none focus:outline-none ml-auto mr-1 mb-1 ease-linear transition-all 
+        className="bg-gray-800 text-white  uppercase text-sm px-2 py-2 rounded-lg shadow
+         hover:shadow-lg hover:bg-gray-700 outline-none focus:outline-none ml-auto mr-1  ease-linear transition-all 
          duration-150 md:w-1/6"
         type="button"
         onClick={() => setShowModal(true)}>

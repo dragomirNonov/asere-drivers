@@ -61,10 +61,9 @@ const EditStudentModal = (props) => {
     <>
       <button
         // className="edit-button ml-auto px-4 py-1  bg-blue-600  hover:bg-yellow-600 hover:text-white rounded-lg hover:border-collapse"
-        className="bg-orange-500 text-black active:bg-blue-600 font-bold uppercase text-sm px-4 py-2 rounded-lg shadow hover:shadow-lg hover:bg-orange-700 outline-none focus:outline-none ml-auto mr-1 mb-1 ease-linear transition-all duration-150 md:w-1/6"
+        className="bg-gray-800 text-white  font-bold uppercase text-sm px-2 py-2 rounded-lg shadow hover:shadow-lg hover:bg-gray-700 outline-none focus:outline-none ml-auto mr-1  ease-linear transition-all duration-150 md:w-1/6"
         type="button"
-        onClick={() => setShowModal(true)}
-      >
+        onClick={() => setShowModal(true)}>
         Edit
       </button>
       {showModal ? (
@@ -78,8 +77,7 @@ const EditStudentModal = (props) => {
                   <h3 className="text-3xl font-semibold">Edit Student Info</h3>
                   <button
                     className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                    onClick={() => setShowModal(false)}
-                  >
+                    onClick={() => setShowModal(false)}>
                     <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
                       ×
                     </span>
@@ -90,8 +88,7 @@ const EditStudentModal = (props) => {
                   <div className="popup">
                     <form
                       onSubmit={handleSubmit}
-                      className="flex flex-col  mb-2"
-                    >
+                      className="flex flex-col  mb-2">
                       <label className="p-1 flex justify-between">
                         First Name:
                         <input
@@ -119,8 +116,7 @@ const EditStudentModal = (props) => {
                           name="transmission"
                           value={editedInfo.transmission}
                           onChange={handleChange}
-                          className="p-1"
-                        >
+                          className="p-1">
                           <option value="Automatic">Automatic</option>
                           <option value="Standard">Standard</option>
                         </select>
@@ -132,8 +128,7 @@ const EditStudentModal = (props) => {
                           name="clas"
                           value={editedInfo.clas}
                           onChange={handleChange}
-                          className="p-1"
-                        >
+                          className="p-1">
                           <option value="A">A</option>
                           <option value="B">B</option>
                         </select>
@@ -198,22 +193,19 @@ const EditStudentModal = (props) => {
                   <button
                     className="bg-red-500 text-white active:bg-red-600 hover:bg-red-700 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-auto mb-1 ease-linear transition-all duration-150"
                     type="button"
-                    onClick={handleDelete}
-                  >
+                    onClick={handleDelete}>
                     Delete
                   </button>
                   <button
                     className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                     type="button"
-                    onClick={() => setShowModal(false)}
-                  >
+                    onClick={() => setShowModal(false)}>
                     Close
                   </button>
                   <button
                     className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                     type="button"
-                    onClick={handleSubmit}
-                  >
+                    onClick={handleSubmit}>
                     Save Changes
                   </button>
                 </div>
