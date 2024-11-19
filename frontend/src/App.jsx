@@ -23,6 +23,8 @@ import UserInfo from './components/ui/UserInfo';
 //Instructor UI Imports
 import UiNavbar from './components/ui/uiNavbar';
 
+import DynamicBackgroundDiv from '../src/components/DynamicBackgroundDiv';
+
 function HomePage() {
   return (
     <div>
@@ -40,50 +42,37 @@ function HomePage() {
 
 function UI() {
   return (
-    // <div className="bg-gray-500 pb-10  ">
-    <div
-      className="bg-cover bg-center bg-no-repeat bg-fixed"
-      style={{
-        backgroundImage: `url(${truckImage})`,
-      }}>
+    <DynamicBackgroundDiv backgroundImage={truckImage}>
       <UiNavbar />
       <UserInfo />
       <Routes>
         <Route path="students" element={<Students />} />
         <Route path="appointments" element={<Appointments />} />
       </Routes>
-    </div>
+    </DynamicBackgroundDiv>
   );
 }
 
 function StudentUI() {
   return (
-    <div
-      className="bg-cover bg-center bg-no-repeat bg-fixed"
-      style={{
-        backgroundImage: `url(${truckImage})`,
-      }}>
+    <DynamicBackgroundDiv backgroundImage={truckImage}>
       <StudentUiNavbar />
       <UserInfo />
       <Session />
-    </div>
+    </DynamicBackgroundDiv>
   );
 }
 
 function InstructorUI() {
   return (
-    <div
-      className="bg-cover bg-center bg-no-repeat bg-fixed"
-      style={{
-        backgroundImage: `url(${truckImage})`,
-      }}>
+    <DynamicBackgroundDiv backgroundImage={truckImage}>
       <InstructorUiNavbar />
       <UserInfo />
       <Routes>
         <Route path="students" element={<InstructorStudents />} />
         <Route path="appointments" element={<InstructorAppointments />} />
       </Routes>
-    </div>
+    </DynamicBackgroundDiv>
   );
 }
 

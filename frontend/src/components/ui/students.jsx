@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
-
 import AddStudentModal from './AddStudentModal';
 import Student from './Student';
 import studentServices from '../../services/users';
