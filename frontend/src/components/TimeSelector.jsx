@@ -36,7 +36,7 @@ const TimeSelector = ({
 
   return (
     <div className="max-w-full overflow-x-auto scrollbar-thin">
-      <div className="inline-flex flex-col sm:flex-row items-center gap-2 bg-white rounded-lg shadow-sm p-2 min-w-max">
+      <div className="inline-flex flex-col sm:flex-row items-center gap-2 bg-white rounded-lg shadow-sm p-1 min-w-max">
         <select
           value={clockIn}
           onChange={(e) => handleClockInChange(e.target.value)}

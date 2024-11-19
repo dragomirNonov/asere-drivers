@@ -3,11 +3,11 @@ import { useState, useEffect, useRef } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { formatDate } from '../../utils/utils.js';
 import Modal from '../Modal';
-import TimePicker from '../studentUI/TimePicker.jsx';
+import TimeSelector from '../TimeSelector.jsx';
 import sessionServices from '../../services/sessions';
 import SessionTable from './SessionTable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faClose } from '@fortawesome/free-solid-svg-icons';
+import { faCancel, faCheck, faClose } from '@fortawesome/free-solid-svg-icons';
 import Spinner from '../Spinner.jsx';
 
 const StudentHoursModal = ({
@@ -237,9 +237,7 @@ const StudentHoursModal = ({
               ref={topContentRef}
               onSubmit={onCreate}
               className="bg-white border border-gray-200 rounded-lg shadow-lg p-4">
-              {/* First Row: Date and Maneuver */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                {/* Date Field */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                 <div className="flex flex-col">
                   <label
                     htmlFor="date"
@@ -252,12 +250,11 @@ const StudentHoursModal = ({
                     name="date"
                     value={createItem.date}
                     onChange={(e) => handleChange('date', e.target.value)}
-                    className="p-2 border border-gray-300 rounded-md text-sm"
+                    className="p-1 border border-gray-300 rounded-md text-sm"
                     required
                   />
                 </div>
 
-                {/* Maneuver Dropdown */}
                 <div className="flex flex-col">
                   <label
                     htmlFor="maneuver"
@@ -265,7 +262,7 @@ const StudentHoursModal = ({
                     Maneuver
                   </label>
                   <select
-                    className="p-2 border border-gray-300 rounded-md text-sm"
+                    className="p-1 border border-gray-300 rounded-md text-sm"
                     name="maneuver"
                     value={createItem.maneuver}
                     onChange={(e) => handleChange('maneuver', e.target.value)}
@@ -279,52 +276,38 @@ const StudentHoursModal = ({
                     <option value="Road">Road</option>
                   </select>
                 </div>
-              </div>
-
-              {/* Second Row: Start and End Times */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                {/* Start Time Field */}
                 <div className="flex flex-col">
                   <label
                     htmlFor="startTime"
-                    className="text-gray-600 text-sm font-medium mb-1">
-                    Start Time
+                    className="text-gray-600 text-sm font-medium">
+                    Start/End time
                   </label>
-                  <TimePicker
-                    name="startTime"
-                    value={createItem.startTime}
-                    onChange={(e) => handleChange('startTime', e.target.value)}
-                    className="border border-gray-300 rounded-md text-sm"
+                  <TimeSelector
+                    clockIn={createItem.startTime}
+                    clockOut={createItem.endTime}
+                    onClockInChange={(value) =>
+                      handleChange('startTime', value)
+                    }
+                    onClockOutChange={(value) => handleChange('endTime', value)}
                   />
                 </div>
 
-                {/* End Time Field */}
-                <div className="flex flex-col">
-                  <label
-                    htmlFor="endTime"
-                    className="text-gray-600 text-sm font-medium mb-1">
-                    End Time
-                  </label>
-                  <TimePicker
-                    name="endTime"
-                    value={createItem.endTime}
-                    onChange={(e) => handleChange('endTime', e.target.value)}
-                    className="border border-gray-300 rounded-md text-sm"
-                  />
+                <div className="flex justify-end gap-3 mt-5">
+                  <button type="submit">
+                    <FontAwesomeIcon
+                      icon={faCheck}
+                      color="green"
+                      className="px-2 py-2 bg-green-600 text-white rounded-full hover:bg-green-700"
+                    />
+                  </button>
+                  <button type="button" onClick={() => setShowCreate(false)}>
+                    <FontAwesomeIcon
+                      icon={faCancel}
+                      color="white"
+                      className="px-2 py-2 bg-gray-600 text-white rounded-full hover:bg-gray-700"
+                    />
+                  </button>
                 </div>
-              </div>
-
-              {/* Third Row: Actions */}
-              <div className="flex items-center gap-4">
-                <button type="submit" className="">
-                  <FontAwesomeIcon icon={faCheck} color="green" />
-                </button>
-                <button
-                  type="button"
-                  className=""
-                  onClick={() => setShowCreate(false)}>
-                  <FontAwesomeIcon icon={faClose} color="red" />
-                </button>
               </div>
             </form>
           )}
