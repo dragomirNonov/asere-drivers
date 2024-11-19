@@ -1,14 +1,16 @@
 import { useState } from 'react';
-import TimePicker from '../studentUI/TimePicker.jsx';
+import TimeSelector from '../TimeSelector.jsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faSave,
   faCancel,
   faEdit,
   faTrashAlt,
+  faClock,
 } from '@fortawesome/free-solid-svg-icons';
 
-const SessionRow = ({ session, onEdit, isEditing, setIsEditing, onDelete }) => {
+const SessionRow = ({ session, onEdit, onDelete }) => {
+  const [isEditing, setIsEditing] = useState(false);
   const [editedSession, setEditedSession] = useState(session);
 
   const onEditClick = () => {
@@ -30,7 +32,7 @@ const SessionRow = ({ session, onEdit, isEditing, setIsEditing, onDelete }) => {
 
   return (
     <tr className="border-b border-gray-200">
-      <td className="py-1 md:px-2">
+      <td className="py-1 text-center">
         {isEditing ? (
           <input
             type="date"
@@ -38,36 +40,30 @@ const SessionRow = ({ session, onEdit, isEditing, setIsEditing, onDelete }) => {
             name="date"
             value={editedSession.date}
             onChange={(e) => handleChange('date', e.target.value)}
-            className="p-1 max-w-[85%]"
+            className="max-w-[85%]"
           />
         ) : (
           session.displayDate
         )}
       </td>
-      <td className="py-1 md:px-2">
+      <td className="py-1 text-center">
         {isEditing ? (
-          <TimePicker
-            name="clockedIn"
-            value={editedSession.clockedIn}
-            onChange={(e) => handleChange('clockedIn', e.target.value)}
+          <TimeSelector
+            clockIn={editedSession.clockedIn}
+            clockOut={editedSession.clockedOut}
+            onClockInChange={(value) => handleChange('clockedIn', value)}
+            onClockOutChange={(value) => handleChange('clockedOut', value)}
           />
         ) : (
-          session.displayClockedIn
+          <div className="inline-flex flex-col sm:flex-row items-center gap-2 bg-white rounded-lg shadow-sm p-2 min-w-max">
+            <p>{session.displayClockedIn}</p>{' '}
+            <FontAwesomeIcon icon={faClock} color="darkblue" />
+            <p>{session.displayClockedOut}</p>
+          </div>
         )}
       </td>
-      <td className="py-1 md:px-2">
-        {isEditing ? (
-          <TimePicker
-            name="clockedOut"
-            value={editedSession.clockedOut}
-            onChange={(e) => handleChange('clockedOut', e.target.value)}
-          />
-        ) : (
-          session.displayClockedOut
-        )}
-      </td>
-      {!isEditing && <td className="py-1 md:px-2">{session.duration} hr(s)</td>}
-      <td className="py-1 md:px-2">
+      <td className="py-1 text-center">{session.duration} hr(s)</td>
+      <td className="py-1 text-center">
         {isEditing ? (
           <>
             <button onClick={handleSaveClick}>

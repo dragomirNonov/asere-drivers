@@ -201,7 +201,7 @@ const StudentHoursModal = ({
           setShowModal(false);
         }}
         onConfirm={null}
-        title={studentHeading ? `User Hours: ${studentHeading}` : 'User Hours'}
+        title={studentHeading ? `${studentHeading}` : 'User Hours'}
         showConfirm={false}
         footer={
           <div className="flex items-center justify-between">
