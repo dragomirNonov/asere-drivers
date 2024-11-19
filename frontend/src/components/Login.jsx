@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-
+import truckImage from '../assets/truck3.png';
 import arrow from '../assets/arrow.png';
 import userService from '../services/users';
 
@@ -48,7 +48,12 @@ const Login = () => {
   };
 
   return (
-    <div className="bg-gray-700 flex flex-col items-center w-auto h-screen  ">
+    // <div className="bg-gray-700 flex flex-col items-center w-auto h-screen  ">
+    <div
+      className="bg-cover bg-center bg-no-repeat bg-fixed flex flex-col items-center w-auto h-screen"
+      style={{
+        backgroundImage: `url(${truckImage})`,
+      }}>
       <div className="bg-gray-900 shadow-md rounded-md p-4 md:mt-20 flex flex-col items-center w-full h-screen md:h-max md:w-1/3">
         <h2 className="text-white font-bold p-2 text-3xl">SIGN IN</h2>
         <form onSubmit={handleSubmit} className=" w-full  p-2">
@@ -78,16 +83,14 @@ const Login = () => {
             <p className="text-gray-500 p-1">Dont have an account? </p>
             <a
               href="/register"
-              className="text-gray-500 ml-auto hover:text-white hover:rounded-md p-1"
-            >
+              className="text-gray-500 ml-auto hover:text-white hover:rounded-md p-1">
               Register{' '}
             </a>
           </div>
 
           <button
             type="submit"
-            className="text-white font-bold p-2 bg-teal-700 w-full  hover:bg-teal-900 rounded-lg mt-4"
-          >
+            className="text-white font-bold p-2 bg-teal-700 w-full  hover:bg-teal-900 rounded-lg mt-4">
             Login
           </button>
         </form>
