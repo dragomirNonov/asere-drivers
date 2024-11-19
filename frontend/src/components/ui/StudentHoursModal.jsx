@@ -8,6 +8,7 @@ import sessionServices from '../../services/sessions';
 import SessionTable from './SessionTable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faClose } from '@fortawesome/free-solid-svg-icons';
+import Spinner from '../Spinner.jsx';
 
 const StudentHoursModal = ({
   info,
@@ -18,6 +19,7 @@ const StudentHoursModal = ({
   const userId = info._id;
   const topContentRef = useRef(null);
 
+  const [isLoading, setIsLoading] = useState(true);
   const [showModal, setShowModal] = useState(true);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
@@ -53,6 +55,7 @@ const StudentHoursModal = ({
   }, [showCreate]);
 
   const populateSessions = () => {
+    setIsLoading(true);
     sessionServices
       .getSessionsByStudentId(userId)
       .then((response) => {
@@ -99,7 +102,8 @@ const StudentHoursModal = ({
       .catch((error) => {
         toast.error(error.message);
         console.error('Error fetching sessions:', error);
-      });
+      })
+      .finally(() => setIsLoading(false));
   };
 
   // Function to calculate total hours across all sessions
@@ -227,6 +231,7 @@ const StudentHoursModal = ({
         }
         size="xl">
         <div>
+          {isLoading && <Spinner />}
           {showCreate && (
             <form
               ref={topContentRef}

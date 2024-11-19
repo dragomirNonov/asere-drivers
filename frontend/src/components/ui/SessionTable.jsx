@@ -25,7 +25,6 @@ const SessionTable = ({ title = 'Sessions', sessions, onEdit, onDelete }) => {
               </td>
             </tr>
           ) : (
-            // Render the session rows as usual
             sessions.map((session) => (
               <SessionRow
                 key={session.id}
