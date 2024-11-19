@@ -95,7 +95,7 @@ const ScheduleStudent = (props) => {
   return (
     <>
       <button
-        className="text-white font-bold px-1 bg-gray-800 hover:bg-gray-700 rounded-lg text-md md:w-3/6 "
+        className="text-white font-bold md:px-1 px-4 bg-gray-800 hover:bg-gray-700 rounded-lg text-md md:w-3/6 "
         type="button"
         onClick={() => {
           setErrorMessage('');

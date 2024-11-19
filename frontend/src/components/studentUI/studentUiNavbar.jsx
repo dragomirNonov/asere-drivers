@@ -49,8 +49,7 @@ const UiNavbar = () => {
             <div className="ml-10 flex items-baseline space-x-4">
               <a
                 className="text-yellow-500 transition-all duration-500 hover:bg-gray-600 hover:text-yelow-500 px-3 py-2 rounded-md text-md font-medium border"
-                href="/login"
-              >
+                href="/login">
                 Logout
               </a>
             </div>
@@ -60,8 +59,7 @@ const UiNavbar = () => {
             <button
               type="button"
               onClick={handleMenu}
-              className="inline-flex items-center justify-center p-2 rounded-md text-yellow-400 hover:bg-gray-700 "
-            >
+              className="inline-flex items-center justify-center p-2 rounded-md text-yellow-400 hover:bg-gray-700 ">
               <span className="sr-only">Open Main Manu</span>
               {open ? <FaTimes /> : <FaBars />}
             </button>
@@ -74,8 +72,7 @@ const UiNavbar = () => {
           <div className="ox-2 pt-2 pb-3 space-y-1 sm:px-3">
             <a
               className="text-yellow-500 transition-all duration-500 hover:bg-gray-600 hover:text-yelow-500 px-3 py-2 rounded-md text-md font-medium "
-              href="/login"
-            >
+              href="/login">
               Logout
             </a>
           </div>

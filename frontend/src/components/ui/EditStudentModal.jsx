@@ -61,7 +61,7 @@ const EditStudentModal = (props) => {
     <>
       <button
         // className="edit-button ml-auto px-4 py-1  bg-blue-600  hover:bg-yellow-600 hover:text-white rounded-lg hover:border-collapse"
-        className="bg-gray-800 text-white  font-bold uppercase text-sm px-2 py-2 rounded-lg shadow hover:shadow-lg hover:bg-gray-700 outline-none focus:outline-none ml-auto mr-1  ease-linear transition-all duration-150 md:w-1/6"
+        className="bg-gray-800 text-white font-bold uppercase text-sm md:px-2 px-4 py-2 rounded-lg shadow hover:shadow-lg hover:bg-gray-700 outline-none focus:outline-none ml-auto mr-1  ease-linear transition-all duration-150 md:w-1/6"
         type="button"
         onClick={() => setShowModal(true)}>
         Edit

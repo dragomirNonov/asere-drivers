@@ -51,7 +51,7 @@ const Students = () => {
     .sort((a, b) => a.firstName.localeCompare(b.firstName));
 
   return (
-    <div className="flex flex-col items-center mt-4 h-screen">
+    <div className="flex flex-col items-center mt-4 n">
       <Toaster position="top-center" reverseOrder={false} />
       <input
         type="text"

@@ -80,7 +80,7 @@ const StudentHours = ({ formSubmitted, userId }) => {
   const hours = calculateHours();
 
   return (
-    <div className="p-5  ">
+    <div className="p-5 text-white m-auto">
       <h1 className="font-bold text-xl flex justify-center md:justify-start md:text-2xl md:mb-3">
         Student Hours
       </h1>

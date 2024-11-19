@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-
+import truckImage from './assets/truck3.png';
 import truck from './assets/truck.jpg';
 import AboutUS from './components/AboutUs';
 import ContactUs from './components/ContactUS';
@@ -40,7 +40,12 @@ function HomePage() {
 
 function UI() {
   return (
-    <div className="bg-gray-500 pb-10  ">
+    // <div className="bg-gray-500 pb-10  ">
+    <div
+      className="bg-cover bg-center bg-no-repeat bg-fixed"
+      style={{
+        backgroundImage: `url(${truckImage})`,
+      }}>
       <UiNavbar />
       <UserInfo />
       <Routes>
@@ -53,7 +58,11 @@ function UI() {
 
 function StudentUI() {
   return (
-    <div className="bg-gray-500 pb-10  ">
+    <div
+      className="bg-cover bg-center bg-no-repeat bg-fixed"
+      style={{
+        backgroundImage: `url(${truckImage})`,
+      }}>
       <StudentUiNavbar />
       <UserInfo />
       <Session />
@@ -63,7 +72,11 @@ function StudentUI() {
 
 function InstructorUI() {
   return (
-    <div className="bg-gray-500 pb-10">
+    <div
+      className="bg-cover bg-center bg-no-repeat bg-fixed"
+      style={{
+        backgroundImage: `url(${truckImage})`,
+      }}>
       <InstructorUiNavbar />
       <UserInfo />
       <Routes>
@@ -96,3 +109,4 @@ export default function App() {
     </Router>
   );
 }
+

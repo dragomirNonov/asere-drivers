@@ -67,8 +67,8 @@ const Session = () => {
   };
 
   return (
-    <div className="flex flex-col ">
-      <div className="mt-2  w-full md:w-1/6 md:m-auto md:mt-5 bg-slate-200 md:rounded-lg ">
+    <div className="">
+      <div className="mt-2 w-full md:w-1/6 md:m-auto md:mt-5 bg-slate-200 md:rounded-lg ">
         <form onSubmit={handleSubmit}>
           <div className="bg-slate-800 font-bold text-lg text-white md:rounded-lg p-1 px-3 mb-2">
             <label>Time Form</label>
