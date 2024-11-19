@@ -9,11 +9,16 @@ import SessionTable from './SessionTable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faClose } from '@fortawesome/free-solid-svg-icons';
 
-const StudentHoursModal = (props) => {
-  const userId = props.info._id;
+const StudentHoursModal = ({
+  info,
+  refresh,
+  studentHeading,
+  onVisibilityChange,
+}) => {
+  const userId = info._id;
   const topContentRef = useRef(null);
 
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(true);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -189,27 +194,17 @@ const StudentHoursModal = (props) => {
 
   return (
     <>
-      <button
-        className="bg-gray-800 text-white  uppercase text-sm md:px-2 px-4 py-2 rounded-lg shadow
-         hover:shadow-lg hover:bg-gray-700 outline-none focus:outline-none ml-auto mr-1  ease-linear transition-all 
-         duration-150 md:w-1/6"
-        type="button"
-        onClick={() => setShowModal(true)}>
-        Hours
-      </button>
       <Modal
         isOpen={showModal}
-        onClose={() => setShowModal(false)}
+        onClose={() => {
+          onVisibilityChange(false);
+          setShowModal(false);
+        }}
         onConfirm={null}
-        title="User Hours"
+        title={studentHeading ? `User Hours: ${studentHeading}` : 'User Hours'}
         showConfirm={false}
         footer={
-          <div
-            className={
-              showCreate
-                ? 'flex items-center justify-end'
-                : 'flex items-center justify-between'
-            }>
+          <div className="flex items-center justify-between">
             {!showCreate && (
               <button
                 className="px-3 py-1 text-sm text-white bg-green-600 rounded hover:bg-green-700"
@@ -218,9 +213,13 @@ const StudentHoursModal = (props) => {
                 Add
               </button>
             )}
+            <div></div>
             <button
               type="button"
-              onClick={() => setShowModal(false)}
+              onClick={() => {
+                onVisibilityChange(false);
+                setShowModal(false);
+              }}
               className="ms-2 px-3 py-1 text-sm text-white bg-gray-600 rounded hover:bg-gray-400">
               Cancel
             </button>

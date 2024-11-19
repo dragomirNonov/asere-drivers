@@ -5,6 +5,7 @@ import ScheduleStudent from './ScheduleStudentModal';
 import StudentHoursModal from './StudentHoursModal';
 
 const Student = ({ student, toast, refresh }) => {
+  const [showStudentHours, setShowStudentHours] = useState(false);
   const [accordionOpen, setAccordionOpen] = useState(false);
 
   // Function to determine the color class based on permitExpiryDate
@@ -28,6 +29,12 @@ const Student = ({ student, toast, refresh }) => {
     }
   };
 
+  const onStudenHoursVisibilityChange = (visibility) => {
+    setShowStudentHours(visibility);
+  };
+
+  const studentHeading = `${student.firstName} ${student.lastName} | Class ${student.clas} | ${student.transmission}`;
+
   return (
     <div className={`flex flex-col p-2 my-1 bg-green-500 rounded-lg`}>
       <button
@@ -36,13 +43,7 @@ const Student = ({ student, toast, refresh }) => {
         }}
         className="flex justify-between w-full">
         <span className="text-sm md:text-2xl text-black font-bold ">
-          {student.firstName +
-            ' ' +
-            student.lastName +
-            ' | Class ' +
-            student.clas +
-            ' | ' +
-            student.transmission}
+          {studentHeading}
         </span>
 
         <svg
@@ -86,10 +87,26 @@ const Student = ({ student, toast, refresh }) => {
               <div className="flex py-2">
                 <ScheduleStudent student={student} toast={toast} />
                 <EditStudentModal info={student} refresh={refresh} />
-                <StudentHoursModal info={student} refresh={refresh} />
+                <button
+                  className="bg-gray-800 text-white  uppercase text-sm md:px-2 px-4 py-2 rounded-lg shadow
+                  hover:shadow-lg hover:bg-gray-700 outline-none focus:outline-none ml-auto mr-1  ease-linear transition-all 
+                  duration-150 md:w-1/6"
+                  type="button"
+                  onClick={() => setShowStudentHours(true)}>
+                  Hours
+                </button>
               </div>
             </div>
           </div>
+          {showStudentHours && (
+            <StudentHoursModal
+              info={student}
+              refresh={refresh}
+              show={showStudentHours}
+              studentHeading={studentHeading}
+              onVisibilityChange={onStudenHoursVisibilityChange}
+            />
+          )}
         </div>
       )}
     </div>
