@@ -204,7 +204,12 @@ const StudentHoursModal = (props) => {
         title="User Hours"
         showConfirm={false}
         footer={
-          <div className="flex justify-between">
+          <div
+            className={
+              showCreate
+                ? 'flex items-center justify-end'
+                : 'flex items-center justify-between'
+            }>
             {!showCreate && (
               <button
                 className="px-3 py-1 text-sm text-white bg-green-600 rounded hover:bg-green-700"
@@ -213,14 +218,12 @@ const StudentHoursModal = (props) => {
                 Add
               </button>
             )}
-            <div className="flex justify-end">
-              <button
-                type="button"
-                onClick={() => setShowCreate(false)}
-                className="ms-2 px-3 py-1 text-sm text-white bg-gray-600 rounded hover:bg-gray-400">
-                Cancel
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() => setShowModal(false)}
+              className="ms-2 px-3 py-1 text-sm text-white bg-gray-600 rounded hover:bg-gray-400">
+              Cancel
+            </button>
           </div>
         }
         size="xl">
