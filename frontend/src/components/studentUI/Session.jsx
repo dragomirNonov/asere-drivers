@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
-
+import StudentHoursModal from './StudentHoursModal';
 import StudentHours from './StudentHours';
 import TimePicker from './TimePicker';
 import sessionServices from '../../services/sessions';
@@ -8,7 +8,7 @@ import sessionServices from '../../services/sessions';
 const Session = () => {
   const [user, setUser] = useState(null);
   const [formSubmitted, setFormSubmitted] = useState(false);
-
+  const [info, setInfo] = useState({ _id: '' });
   const clockedIn = () => toast.success('You have Clocked-In');
   const initialFormData = {
     date: '',
@@ -23,6 +23,7 @@ const Session = () => {
     const token = localStorage.getItem('token');
     const decodedToken = decodeToken(token);
     setUser(decodedToken);
+    setInfo((prev) => ({ ...prev, _id: decodedToken.userId }));
   }, []);
 
   const decodeToken = (token) => {
@@ -67,8 +68,8 @@ const Session = () => {
   };
 
   return (
-    <div className="">
-      <div className="mt-2 w-full md:w-1/6 md:m-auto md:mt-5 bg-slate-200 md:rounded-lg ">
+    <div className="flex flex-col ">
+      <div className="mt-2 w-full md:w-1/6 md:m-auto md:mt-5 bg-slate-200 md:rounded-lg mb-2">
         <form onSubmit={handleSubmit}>
           <div className="bg-slate-800 font-bold text-lg text-white md:rounded-lg p-1 px-3 mb-2">
             <label>Time Form</label>
@@ -143,7 +144,8 @@ const Session = () => {
       <Toaster position="top-center" reverseOrder={false} />
 
       {user && (
-        <StudentHours userId={user.userId} formSubmitted={formSubmitted} />
+        // <StudentHours userId={user.userId} formSubmitted={formSubmitted} />
+        <StudentHoursModal info={info} />
       )}
     </div>
   );
