@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { formatDate } from '../../utils/utils.js';
 import Modal from '../Modal';
@@ -11,6 +11,8 @@ import { faCheck, faClose } from '@fortawesome/free-solid-svg-icons';
 
 const StudentHoursModal = (props) => {
   const userId = props.info._id;
+  const topContentRef = useRef(null);
+
   const [showModal, setShowModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
@@ -39,12 +41,16 @@ const StudentHoursModal = (props) => {
     }
   }, []);
 
+  useEffect(() => {
+    if (showCreate && topContentRef.current) {
+      topContentRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [showCreate]);
+
   const populateSessions = () => {
     sessionServices
       .getSessionsByStudentId(userId)
       .then((response) => {
-        console.log('sessions', response.data);
-
         const sortedSessions = response.data?.map((x) => {
           const item = {
             id: x._id,
@@ -199,24 +205,29 @@ const StudentHoursModal = (props) => {
         showConfirm={false}
         footer={
           <div className="flex justify-between">
-            <button
-              className="px-3 py-1 text-sm text-white bg-green-600 rounded hover:bg-green-700"
-              type="button"
-              onClick={() => setShowCreate(true)}>
-              Add
-            </button>
-            <button
-              type="button"
-              onClick={() => setShowCreate(false)}
-              className="ms-2 px-3 py-1 text-sm text-white bg-gray-600 rounded hover:bg-gray-400">
-              Cancel
-            </button>
+            {!showCreate && (
+              <button
+                className="px-3 py-1 text-sm text-white bg-green-600 rounded hover:bg-green-700"
+                type="button"
+                onClick={() => setShowCreate(true)}>
+                Add
+              </button>
+            )}
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={() => setShowCreate(false)}
+                className="ms-2 px-3 py-1 text-sm text-white bg-gray-600 rounded hover:bg-gray-400">
+                Cancel
+              </button>
+            </div>
           </div>
         }
         size="xl">
         <div>
           {showCreate && (
             <form
+              ref={topContentRef}
               onSubmit={onCreate}
               className="bg-white border border-gray-200 rounded-lg shadow-lg p-4">
               {/* First Row: Date and Maneuver */}
