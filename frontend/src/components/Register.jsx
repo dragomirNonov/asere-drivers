@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import truckImage from '../assets/truck3.png';
 import arrow from '../assets/arrow.png';
 import userServices from '../services/users';
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
   const [DLnumber, setDLnumber] = useState('');
@@ -15,7 +16,7 @@ const Register = () => {
   const [DOB, setDOB] = useState('');
   const [transmission, setTransmission] = useState('');
   const [clas, setClas] = useState('');
-
+  const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
@@ -26,6 +27,19 @@ const Register = () => {
     }
     setErrorMessage('');
     return true;
+  };
+
+  const resetFormData = () => {
+    setFirstname('');
+    setLastname('');
+    setPhone('');
+    setEmail('');
+    setTransmission('');
+    setClas('');
+    setDLnumber('');
+    setDOB('');
+    setPassword('');
+    setConfirmPassword('');
   };
 
   const handleSubmit = (event) => {
@@ -51,7 +65,13 @@ const Register = () => {
       .register(registerObj)
       .then((res) => {
         setErrorMessage('');
-        setSuccessMessage(res.data.message);
+        if (res.status === 200) {
+          resetFormData();
+          setSuccessMessage(res.data.message);
+          setTimeout(() => {
+            navigate('/login');
+          }, 1500); // 1500ms = 1.5 seconds delay
+        }
       })
       .catch((err) => {
         setSuccessMessage('');

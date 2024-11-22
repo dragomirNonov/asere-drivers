@@ -21,9 +21,9 @@ const Student = ({ student, toast, refresh }) => {
 
     // Apply different classes based on difference in days
     if (differenceInDays < 0) {
-      return 'bg-red-600 w-max rounded-lg px-1';
+      return 'text-red-600 w-max rounded-lg';
     } else if (differenceInDays <= 7) {
-      return 'bg-orange-500 w-max rounded-lg px-1';
+      return 'text-orange-500 w-max rounded-lg';
     } else {
       return ''; // No special class
     }
