@@ -4,6 +4,8 @@ import EditStudentModal from './EditStudentModal';
 import ScheduleStudent from './ScheduleStudentModal';
 import StudentHoursModal from './StudentHoursModal';
 
+import { formatPhoneNumber } from '../../utils/utils';
+
 const Student = ({ student, toast, refresh }) => {
   const [showStudentHours, setShowStudentHours] = useState(false);
   const [accordionOpen, setAccordionOpen] = useState(false);
@@ -21,9 +23,9 @@ const Student = ({ student, toast, refresh }) => {
 
     // Apply different classes based on difference in days
     if (differenceInDays < 0) {
-      return 'text-red-600 w-max rounded-lg';
+      return 'bg-red-600 w-max rounded-lg px-1';
     } else if (differenceInDays <= 7) {
-      return 'text-orange-500 w-max rounded-lg';
+      return 'bg-orange-500 w-max rounded-lg px-1';
     } else {
       return ''; // No special class
     }
@@ -33,7 +35,7 @@ const Student = ({ student, toast, refresh }) => {
     setShowStudentHours(visibility);
   };
 
-  const studentHeading = `${student.firstName} ${student.lastName} | Class ${student.clas} | ${student.transmission}`;
+  const studentHeading = `${student.firstName} ${student.lastName} | Class ${student.clas}`;
 
   return (
     <div className={`flex flex-col p-2 my-1 bg-green-500 rounded-lg`}>
@@ -42,8 +44,9 @@ const Student = ({ student, toast, refresh }) => {
           setAccordionOpen(!accordionOpen);
         }}
         className="flex justify-between w-full">
-        <span className="text-sm md:text-2xl text-black font-bold ">
-          {studentHeading}
+        <span className="flex justify-between text-sm md:text-2xl text-black font-bold uppercase w-full">
+          <span className="pr-6">{`${student.firstName} ${student.lastName}`}</span>
+          <span>{`Class ${student.clas}`}</span>
         </span>
 
         <svg
@@ -76,12 +79,25 @@ const Student = ({ student, toast, refresh }) => {
           className={`grid overflow-hidden transition-all duration-300 ease-in-out`}>
           <div className={`overflow-hidden font-bold text-sm md:text-xl`}>
             <div className="flex flex-col mt-4">
-              <p>DOB: {student.DOB}</p>
-              <p>Driver&#39;s License Number: {student.DLnumber}</p>
-              <p>Phone: {student.phone}</p>
-              <p>Email: {student.email}</p>
+              <p>
+                DOB: <span className="font-medium">{student.DOB}</span>
+              </p>
+              <p>
+                Driver&#39;s License #:{' '}
+                <span className="font-medium">{student.DLnumber}</span>
+              </p>
+              <p>
+                Phone:{' '}
+                <span className="font-medium">
+                  {formatPhoneNumber(student.phone)}
+                </span>
+              </p>
+              <p>
+                Email: <span className="font-medium">{student.email}</span>
+              </p>
               <p className={getPermitExpiryColor()}>
-                Permit Expiry Date: {student.permitExpiryDate}
+                Permit Expiry Date:{' '}
+                <span className="font-medium">{student.permitExpiryDate}</span>
               </p>
 
               <div className="flex py-2">
