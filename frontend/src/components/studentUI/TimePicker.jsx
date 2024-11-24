@@ -20,7 +20,7 @@ const TimePicker = ({ value, name, onChange }) => {
 
   return (
     <select name={name} value={value} onChange={onChange} className="w-3/8 p-1">
-      <option value="">Time</option> {/* Placeholder for "Time" */}
+      <option value="">Time</option>
       {times.map((time) => (
         <option key={time.value} value={time.value}>
           {time.display}

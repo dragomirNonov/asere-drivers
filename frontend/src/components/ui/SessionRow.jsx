@@ -57,7 +57,9 @@ const SessionRow = ({ session, onEdit, onDelete }) => {
         ) : (
           <div className="inline-flex flex-col sm:flex-row items-center gap-2 bg-white rounded-lg shadow-sm p-2 min-w-max">
             <p>{session.displayClockedIn}</p>{' '}
-            <FontAwesomeIcon icon={faClock} color="darkblue" />
+            <div className="hidden md:block">
+              <FontAwesomeIcon icon={faClock} color="darkblue" />
+            </div>
             <p>{session.displayClockedOut}</p>
           </div>
         )}

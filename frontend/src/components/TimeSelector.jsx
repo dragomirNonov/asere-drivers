@@ -49,7 +49,9 @@ const TimeSelector = ({
             </option>
           ))}
         </select>
-        <FontAwesomeIcon icon={faClock} color="darkblue" />
+        <div className="hidden md:block">
+          <FontAwesomeIcon icon={faClock} color="darkblue" />
+        </div>
         <select
           value={clockOut}
           onChange={(e) => onClockOutChange(e.target.value)}

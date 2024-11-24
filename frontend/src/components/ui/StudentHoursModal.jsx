@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { formatDate } from '../../utils/utils.js';
 import Modal from '../Modal';
 import TimeSelector from '../TimeSelector.jsx';
@@ -9,6 +9,7 @@ import SessionTable from './SessionTable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCancel, faCheck, faClose } from '@fortawesome/free-solid-svg-icons';
 import Spinner from '../Spinner.jsx';
+import useStudentSessions from '../../hooks/useStudentSessions.jsx';
 
 const StudentHoursModal = ({
   info,
@@ -16,10 +17,12 @@ const StudentHoursModal = ({
   studentHeading,
   onVisibilityChange,
 }) => {
-  const userId = info._id;
   const topContentRef = useRef(null);
+  const userId = info._id;
 
-  const [isLoading, setIsLoading] = useState(true);
+  const { sessions, hours, isLoading, fetchSessions } =
+    useStudentSessions(userId);
+
   const [showModal, setShowModal] = useState(true);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
@@ -32,19 +35,13 @@ const StudentHoursModal = ({
     maneuver: '',
   });
 
-  const [preTripSessions, setPreTripSessions] = useState([]);
-  const [straightBackSessions, setStraightBackSessions] = useState([]);
-  const [offSetSessions, setOffSetSessions] = useState([]);
-  const [roadSessions, setRoadSessions] = useState([]);
-  const [hours, setTotalHours] = useState({
-    preTrip: 0,
-    driving: 0,
-    total: 0,
-  });
-
   useEffect(() => {
+    const fetchData = async () => {
+      await fetchSessions();
+    };
+
     if (userId) {
-      populateSessions();
+      fetchData(); // Call the async function
     }
   }, []);
 
@@ -54,85 +51,6 @@ const StudentHoursModal = ({
     }
   }, [showCreate]);
 
-  const populateSessions = () => {
-    setIsLoading(true);
-    sessionServices
-      .getSessionsByStudentId(userId)
-      .then((response) => {
-        const sortedSessions = response.data?.map((x) => {
-          const item = {
-            id: x._id,
-            displayDate: formatDate(x.date),
-            date: x.date.split('T')[0],
-            maneuver: x.maneuver,
-            duration: x.duration,
-            userId: x.user,
-            clockedIn: x.clockedIn,
-            displayClockedIn: x.clockedIn,
-            clockedOut: x.clockedOut,
-            displayClockedOut: x.clockedOut,
-          };
-
-          return item;
-        });
-
-        if (sortedSessions.length > 0) {
-          var calculatedHours = calculateHours(sortedSessions);
-          setTotalHours(calculatedHours);
-        }
-
-        setPreTripSessions(
-          sortedSessions.filter((session) => session.maneuver === 'Pre Trip'),
-        );
-
-        setStraightBackSessions(
-          sortedSessions.filter(
-            (session) => session.maneuver === 'Straight Back',
-          ),
-        );
-
-        setOffSetSessions(
-          sortedSessions.filter((session) => session.maneuver === 'Off Set'),
-        );
-
-        setRoadSessions(
-          sortedSessions.filter((session) => session.maneuver === 'Road'),
-        );
-      })
-      .catch((error) => {
-        toast.error(error.message);
-        console.error('Error fetching sessions:', error);
-      })
-      .finally(() => setIsLoading(false));
-  };
-
-  // Function to calculate total hours across all sessions
-  const calculateHours = (sessions) => {
-    let preTrip = 0;
-    let driving = 0;
-
-    sessions.forEach((session) => {
-      if (session.duration) {
-        const duration = parseFloat(session.duration);
-        if (session.maneuver === 'Pre Trip') {
-          preTrip += duration;
-        } else if (
-          ['Straight Back', 'Off Set', 'Road'].includes(session.maneuver)
-        ) {
-          driving += duration;
-        }
-      }
-    });
-
-    const total = preTrip + driving;
-
-    return {
-      preTrip: preTrip.toFixed(2),
-      driving: driving.toFixed(2),
-      total: total.toFixed(2),
-    };
-  };
-
   //#region Delete
 
   const onDeleteItemClick = (session) => {
@@ -140,56 +58,53 @@ const StudentHoursModal = ({
     setShowDeleteConfirm(true);
   };
 
-  const onDeleteConfirmation = () => {
-    sessionServices
-      .deleteSessionById(selectedItem.id)
-      .then(() => {
-        populateSessions();
-        toast.success('Session deleted successfuly.');
-      })
-      .catch((error) => {
-        toast.error(error.message);
-        console.error('Error fetching sessions:', error);
-      })
-      .finally(setShowDeleteConfirm(false));
+  const onDeleteConfirmation = async () => {
+    try {
+      await sessionServices.deleteSessionById(selectedItem.id);
+      await fetchSessions();
+      toast.success('Session deleted successfuly.');
+    } catch (ex) {
+      toast.error('Failed to delete session');
+    } finally {
+      setShowDeleteConfirm(false);
+    }
   };
 
   //#endregion
 
-  const onEditItem = (editedSession) => {
+  const onEditItem = async (editedSession) => {
     const item = {
       date: editedSession.date,
       clockedIn: editedSession.clockedIn,
       clockedOut: editedSession.clockedOut,
     };
 
-    sessionServices
-      .editSession(editedSession.id, item)
-      .then((response) => {
-        populateSessions();
-        toast.success('Session edited successfuly.');
-      })
-      .catch((error) => {
-        toast.error(error.message);
-        console.error('Error fetching sessions:', error);
-      })
-      .finally(setShowDeleteConfirm(false));
+    try {
+      await sessionServices.editSession(editedSession.id, item);
+      await fetchSessions();
+      toast.success('Session edited successfuly.');
+    } catch (error) {
+      toast.error(error.message);
+      console.error('Error fetching sessions:', error);
+    } finally {
+      setShowDeleteConfirm(false);
+    }
   };
 
-  const onCreate = (e) => {
+  const onCreate = async (e) => {
     e.preventDefault();
+    debugger;
+    try {
+      await sessionServices.createSession(createItem);
 
-    sessionServices
-      .createSession(createItem)
-      .then((response) => {
-        toast.success('Session added successfuly.');
-        populateSessions();
-        setShowCreate(false);
-      })
-      .catch((error) => {
-        toast.error(error.response.data.error);
-        console.error('Error fetching sessions:', error.response.data.error);
-      });
+      await fetchSessions();
+      setShowCreate(false);
+
+      toast.success('Session added successfuly.');
+    } catch (error) {
+      toast.error(error.response.data.error);
+      console.error('Error fetching sessions:', error.response.data.error);
+    }
   };
 
   const handleChange = (field, value) => {
@@ -313,25 +228,25 @@ const StudentHoursModal = ({
           )}
           <SessionTable
             title="Pre Trip Sessions"
-            sessions={preTripSessions}
+            sessions={sessions.preTrip}
             onEdit={onEditItem}
             onDelete={onDeleteItemClick}
           />
           <SessionTable
             title="Straight Back Sessions"
-            sessions={straightBackSessions}
+            sessions={sessions.straightBack}
             onEdit={onEditItem}
             onDelete={onDeleteItemClick}
           />
           <SessionTable
             title="Off Set Sessions"
-            sessions={offSetSessions}
+            sessions={sessions.offSet}
             onEdit={onEditItem}
             onDelete={onDeleteItemClick}
           />
           <SessionTable
             title="Road Sessions"
-            sessions={roadSessions}
+            sessions={sessions.road}
             onEdit={onEditItem}
             onDelete={onDeleteItemClick}
           />
