@@ -14,14 +14,12 @@ const Appointment = (props) => {
             : props.pr === 'header'
               ? 'bg-slate-600'
               : ''
-      }`}
-    >
+      }`}>
       <button
         onClick={() => {
           setAccordionOpen(!accordionOpen);
         }}
-        className="flex justify-between w-full"
-      >
+        className="flex justify-between w-full">
         <span className="text-sm md:text-lg text-black font-bold">
           {props.firstName +
             ' ' +
@@ -41,8 +39,7 @@ const Appointment = (props) => {
           className="fill-black shrink-0 ml-8"
           width="16"
           height="16"
-          xmlns="http://www.w3.org/2000/svg"
-        >
+          xmlns="http://www.w3.org/2000/svg">
           <rect
             y="7"
             width="16"
@@ -69,8 +66,7 @@ const Appointment = (props) => {
           accordionOpen
             ? 'grid-rows-[1fr] opacity-100'
             : 'grid-rows-[0fr] opacity-0'
-        }`}
-      >
+        }`}>
         <div className=" overflow-hidden text-black font-bold ">
           {
             <div className="flex flex-col mt-4">

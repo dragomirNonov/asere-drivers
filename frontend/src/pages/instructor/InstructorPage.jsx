@@ -1,0 +1,22 @@
+import DynamicBackgroundDiv from '../../components/common/DynamicBackgroundDiv';
+import Navbar from '../../components/instructorUI/Navbar';
+import UserInfo from '../../components/common/UserInfo';
+import StudentsPage from './StudentsPage';
+import AppointmentsPage from './AppointmentsPage';
+
+const InstructorPage = () => {
+  return (
+    <div>
+      <DynamicBackgroundDiv backgroundImage={truckImage}>
+        <Navbar />
+        <UserInfo />
+        <Routes>
+          <Route path="students" element={<StudentsPage />} />
+          <Route path="appointments" element={<AppointmentsPage />} />
+        </Routes>
+      </DynamicBackgroundDiv>
+    </div>
+  );
+};
+
+export default InstructorPage;

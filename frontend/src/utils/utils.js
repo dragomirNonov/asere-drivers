@@ -42,3 +42,13 @@ export const formatPhoneNumber = (phoneNumber) => {
   // Return original if it doesn't match the expected format
   return phoneNumber;
 };
+
+export const decodeToken = (token) => {
+  try {
+    const decoded = JSON.parse(atob(token.split('.')[1]));
+    return decoded;
+  } catch (error) {
+    console.error('Error decoding token:', error);
+    return null;
+  }
+};

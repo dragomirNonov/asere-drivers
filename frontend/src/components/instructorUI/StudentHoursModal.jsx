@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { formatDate } from '../../utils/utils.js';
-import Modal from '../Modal';
+import Modal from '../common/Modal.jsx';
 
 import sessionServices from '../../services/sessions';
 import SessionTable from './SessionTable.jsx';
