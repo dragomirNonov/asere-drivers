@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
-import EditStudentModal from '../EditStudentModal';
-import ScheduleStudent from '../ScheduleStudentModal';
+import EditStudentModal from './EditStudentModal';
+import ScheduleStudent from './ScheduleStudentModal';
 import StudentHoursModal from './StudentHoursModal';
 
 import { formatPhoneNumber } from '../../../utils/utils';
@@ -43,8 +43,7 @@ const Student = ({ student, toast, refresh }) => {
         onClick={() => {
           setAccordionOpen(!accordionOpen);
         }}
-        className="flex justify-between w-full"
-      >
+        className="flex justify-between w-full">
         <span className="flex justify-between text-sm md:text-2xl text-black font-bold uppercase w-full">
           <span className="pr-6">{`${student.firstName} ${student.lastName}`}</span>
           <span>{`Class ${student.clas}`}</span>
@@ -54,8 +53,7 @@ const Student = ({ student, toast, refresh }) => {
           className="fill-black shrink-0 ml-8"
           width="16"
           height="16"
-          xmlns="http://www.w3.org/2000/svg"
-        >
+          xmlns="http://www.w3.org/2000/svg">
           <rect
             y="7"
             width="16"
@@ -78,8 +76,7 @@ const Student = ({ student, toast, refresh }) => {
       </button>
       {accordionOpen && (
         <div
-          className={`grid overflow-hidden transition-all duration-300 ease-in-out`}
-        >
+          className={`grid overflow-hidden transition-all duration-300 ease-in-out`}>
           <div className={`overflow-hidden font-bold text-sm md:text-xl`}>
             <div className="flex flex-col mt-4">
               <p>
@@ -111,8 +108,7 @@ const Student = ({ student, toast, refresh }) => {
                   hover:shadow-lg hover:bg-gray-700 outline-none focus:outline-none ml-auto mr-1  ease-linear transition-all 
                   duration-150 md:w-1/6"
                   type="button"
-                  onClick={() => setShowStudentHours(true)}
-                >
+                  onClick={() => setShowStudentHours(true)}>
                   Hours
                 </button>
               </div>

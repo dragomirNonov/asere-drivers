@@ -3,6 +3,9 @@ import Navbar from '../../components/instructorUI/Navbar';
 import UserInfo from '../../components/common/UserInfo';
 import StudentsPage from './StudentsPage';
 import AppointmentsPage from './AppointmentsPage';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+
+import truckImage from '../../assets/truck3.png';
 
 const InstructorPage = () => {
   return (

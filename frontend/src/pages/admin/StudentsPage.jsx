@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
-import AddStudentModal from '../../adminUI/appoinments/AddStudentModal';
-import Student from '../../adminUI/students/Student';
-import studentServices from '../../../services/users';
 
-const Students = () => {
+import AddStudentModal from '../../components/adminUI/students/AddStudentModal';
+import Student from '../../components/adminUI/students/Student';
+import studentServices from '../../services/users';
+
+const StudentsPage = () => {
   const [students, setStudents] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const notify = () => toast.success('Appointment Added Successfully');
@@ -94,4 +95,4 @@ const Students = () => {
   );
 };
 
-export default Students;
+export default StudentsPage;

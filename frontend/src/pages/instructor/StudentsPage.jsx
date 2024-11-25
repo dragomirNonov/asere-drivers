@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 
-import AddStudentModal from '../../components/instructorUI/AddStudentModal';
 import Student from '../../components/instructorUI/Student';
 import studentServices from '../../services/users';
 
@@ -59,7 +58,6 @@ const StudentsPage = () => {
         onChange={handleSearchChange}
         className="my-4 p-2 md:w-1/6 w-full border border-gray-300 rounded-md"
       />
-      <AddStudentModal refresh={fetchStudents} toast={studentAdded} />
       <div className="flex flex-col md:flex-row">
         {/* Div for Standard Transmission Students */}
         <div className="m-4">

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 
-import userService from '../../services/users';
+import userService from '../../../services/users';
 
 const AddStudentModal = (props) => {
   const [showModal, setShowModal] = React.useState(false);

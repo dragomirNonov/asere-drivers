@@ -1,15 +1,14 @@
 import { useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
+import AddAppModal from '../../components/adminUI/appoinments/AddAppModal';
+import Appointment from '../../components/adminUI/appoinments/Appointment';
+import appointmentService from '../../services/appointments';
 
-import AddAppModal from '../../adminUI/appoinments/AddAppModal';
-import Appointment from '../../adminUI/appoinments/Appointment';
-import appointmentService from '../../../services/appointments';
-
-const Appointments = () => {
+const AppointmentsPage = () => {
   const [arrayOfAppointments, setArrayOfAppointments] = useState([]);
   const [userRole, setUserRole] = useState('');
-  const [showAllAppointments, setShowAllAppointments] = useState(false); // State to toggle showing all appointments
-  const [searchDate, setSearchDate] = useState(''); // State to store the selected search date
+  const [showAllAppointments, setShowAllAppointments] = useState(false);
+  const [searchDate, setSearchDate] = useState('');
 
   const notify = () => toast.success('Appointment Added Successfully');
   const deleteApp = () => toast.error('Appointment Deleted Successfully');
@@ -51,22 +50,17 @@ const Appointments = () => {
     ).then((sortedAppointments) => {
       setArrayOfAppointments(sortedAppointments);
     });
-  }, [showAllAppointments, searchDate]); // Add showAllAppointments and searchDate to the dependency array
+  }, [showAllAppointments, searchDate]);
 
   const fetchSortedAppointments = async (role, showAll, date) => {
     try {
       const allAppointments = await appointmentService.getAllAppointments();
-      console.log(allAppointments);
-
-      const currentDate = new Date();
-      currentDate.setHours(0, 0, 0, 0); // Reset time to midnight to compare only the date
-      // console.log("Current date: ", currentDate);
       let filteredAppointments = allAppointments;
 
       if (!showAll) {
         filteredAppointments = allAppointments.filter((app) => {
-          const appDate = app.date; // Use the date string directly (e.g., '2024-09-23')
-          const currentDate = new Date().toISOString().slice(0, 10); // Get current date in YYYY-MM-DD format
+          const appDate = app.date;
+          const currentDate = new Date().toISOString().slice(0, 10);
           return appDate >= currentDate;
         });
       }
@@ -93,6 +87,7 @@ const Appointments = () => {
       );
     }
   };
+
   const refreshAppointments = () => {
     fetchSortedAppointments(userRole, showAllAppointments, searchDate).then(
       (sortedAppointments) => {
@@ -129,61 +124,66 @@ const Appointments = () => {
   };
 
   return (
-    <div className="flex flex-col items-center mt-4 h-screen">
-      <div id="newAppButton">
-        <AddAppModal refresh={refreshAppointments} toast={notify} />
-      </div>
-      <div className="flex flex-col md:flex-row mt-2 ">
-        <h2 className="text-red-800 font-bold p-1">
-          *Appointments older than the current date are not shown.
-        </h2>
-        <button
-          id="showAll"
-          onClick={() => setShowAllAppointments(!showAllAppointments)}
-          className="bg-teal-700 hover:bg-teal-900 text-white rounded px-2 mx-2 p-2">
-          {showAllAppointments ? 'Hide Old' : 'Show All'}
-        </button>
-        <input
-          type="date"
-          value={searchDate}
-          onChange={handleDateChange}
-          className="ml-2 rounded px-2 md:mr-auto m-1 md:w-auto md:p-1 p-2 mx-2"
-        />
-      </div>
+    <div className="flex flex-col items-center py-4 px-4">
+      <div className="w-full max-w-6xl">
+        <div id="newAppButton" className="flex justify-center">
+          <AddAppModal refresh={refreshAppointments} toast={notify} />
+        </div>
 
-      <div className="flex flex-col md:w-4/6 w-full ">
-        {Object.entries(groupedAppointments).map(([date, appointments]) => (
-          <div key={date}>
-            <p className="font-bold text-lg bg-slate-400 pl-3 mt-2">
-              Date: {date} ({getDayOfWeek(date)})
-            </p>
-            {appointments.map((app, index) => (
-              <Appointment
-                key={index}
-                firstName={app.firstName}
-                lastName={app.lastName}
-                DOB={app.DOB}
-                DLnumber={app.DLnumber}
-                phone={app.phone}
-                email={app.email}
-                location={app.location}
-                date={app.date}
-                time={app.time}
-                truck={app.truck}
-                transmission={app.transmission}
-                permitExpiryDate={app.permitExpiryDate}
-                pr={app.checkboxOption}
-                id={app._id}
-                refreshAppointments={refreshAppointments}
-                deleteApp={deleteApp}
-                role={userRole}
-              />
-            ))}
-          </div>
-        ))}
+        <div className="flex flex-col md:flex-row items-center justify-center gap-2 mt-4  p-4 ">
+          <h2 className="text-red-800 font-bold">
+            *Appointments older than the current date are not shown.
+          </h2>
+          <button
+            id="showAll"
+            onClick={() => setShowAllAppointments(!showAllAppointments)}
+            className="bg-teal-700 hover:bg-teal-900 text-white rounded px-4 py-2">
+            {showAllAppointments ? 'Hide Old' : 'Show All'}
+          </button>
+          <input
+            type="date"
+            value={searchDate}
+            onChange={handleDateChange}
+            className="rounded px-4 py-2 border border-gray-300"
+          />
+        </div>
+
+        <div className="mt-6 space-y-1">
+          {Object.entries(groupedAppointments).map(([date, appointments]) => (
+            <div key={date} className="overflow-hidden">
+              <p className="font-bold text-lg bg-slate-400 px-4 py-2">
+                Date: {date} ({getDayOfWeek(date)})
+              </p>
+              <div className="">
+                {appointments.map((app, index) => (
+                  <Appointment
+                    key={index}
+                    firstName={app.firstName}
+                    lastName={app.lastName}
+                    DOB={app.DOB}
+                    DLnumber={app.DLnumber}
+                    phone={app.phone}
+                    email={app.email}
+                    location={app.location}
+                    date={app.date}
+                    time={app.time}
+                    truck={app.truck}
+                    transmission={app.transmission}
+                    permitExpiryDate={app.permitExpiryDate}
+                    pr={app.checkboxOption}
+                    id={app._id}
+                    refreshAppointments={refreshAppointments}
+                    deleteApp={deleteApp}
+                    role={userRole}
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
 };
 
-export default Appointments;
+export default AppointmentsPage;
