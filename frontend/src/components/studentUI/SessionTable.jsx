@@ -1,9 +1,6 @@
-import { useState } from 'react';
 import SessionRow from './SessionRow.jsx';
 
-const SessionTable = ({ title = 'Sessions', sessions, onEdit, onDelete }) => {
-  const [isEditing, setIsEditing] = useState(false);
-
+const SessionTable = ({ title = 'Sessions', sessions }) => {
   return (
     <div className="md:p-1">
       <h2 className="flex justify-between items-center text-lg font-semibold bg-gray-200 px-2">
@@ -28,16 +25,8 @@ const SessionTable = ({ title = 'Sessions', sessions, onEdit, onDelete }) => {
               </td>
             </tr>
           ) : (
-            // Render the session rows as usual
             sessions.map((session) => (
-              <SessionRow
-                key={session.id}
-                session={session}
-                isEditing={isEditing}
-                setIsEditing={setIsEditing}
-                onEdit={onEdit}
-                onDelete={onDelete}
-              />
+              <SessionRow key={session.id} session={session} />
             ))
           )}
         </tbody>

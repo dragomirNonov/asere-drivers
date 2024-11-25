@@ -28,7 +28,7 @@ const SessionForm = ({ userId, onAddSession }) => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const sessionObj = {
@@ -39,11 +39,15 @@ const SessionForm = ({ userId, onAddSession }) => {
       maneuver: formData.maneuver,
     };
 
-    sessionServices.createSession(sessionObj).then(() => {
+    try {
+      await sessionServices.createSession(sessionObj);
       toast.success('You have Clocked-In');
       setFormData(initialFormData);
       onAddSession();
-    });
+    } catch (e) {
+      console.warn(e.message);
+      toast.error('An error has accured.');
+    }
   };
 
   return (
@@ -60,7 +64,6 @@ const SessionForm = ({ userId, onAddSession }) => {
             type="date"
             id="date"
             className="border border-gray-300 rounded-md p-1 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            name="date"
             value={formData.date}
             onChange={handleChange}
             required
@@ -85,7 +88,6 @@ const SessionForm = ({ userId, onAddSession }) => {
           </label>
           <select
             id="maneuver1"
-            s
             name="maneuver"
             value={formData.maneuver || ''}
             onChange={handleChange}

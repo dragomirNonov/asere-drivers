@@ -40,12 +40,15 @@ const TimeSelector = ({
       {/* Clock In Select */}
       <div className="flex flex-col flex-1">
         {showLabels && (
-          <label className="text-sm font-medium text-gray-700 mb-1">
+          <label
+            className="text-sm font-medium text-gray-700 mb-1"
+            htmlFor="clockIn">
             Start Time
           </label>
         )}
         <select
           value={clockIn}
+          id="clockIn"
           onChange={(e) => handleClockInChange(e.target.value)}
           size={1}
           style={{ maxHeight: '50px', overflowY: 'auto' }}
@@ -63,13 +66,16 @@ const TimeSelector = ({
       {/* Clock Out Select */}
       <div className="flex flex-col flex-1">
         {showLabels && (
-          <label className="text-sm font-medium text-gray-700 mb-1">
+          <label
+            className="text-sm font-medium text-gray-700 mb-1"
+            htmlFor="clockedOut">
             End Time
           </label>
         )}
         <select
           value={clockOut}
           size={1}
+          id="clockedOut"
           onChange={(e) => onClockOutChange(e.target.value)}
           style={{ maxHeight: '50px', overflowY: 'auto' }}
           className="border border-gray-300 rounded-md p-1 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
