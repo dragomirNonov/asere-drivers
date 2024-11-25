@@ -65,12 +65,6 @@ const AppointmentsPage = () => {
         });
       }
 
-      if (role === 'Instructor') {
-        filteredAppointments = filteredAppointments.filter(
-          (app) => app.checkboxOption === 'real',
-        );
-      }
-
       if (date) {
         filteredAppointments = filteredAppointments.filter(
           (app) =>
