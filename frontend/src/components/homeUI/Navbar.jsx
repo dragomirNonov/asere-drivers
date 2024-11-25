@@ -24,10 +24,6 @@ const navlinks = [
     title: 'Contact Us',
     link: '#contactus',
   },
-  // {
-  //   title: "Login",
-  //   link: "/login",
-  // },
 ];
 
 const Navbar = () => {
