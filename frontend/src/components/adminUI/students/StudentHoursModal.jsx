@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 import { formatDate } from '../../../utils/utils.js';
 import Modal from '../../common/Modal.jsx';
 import TimeSelector from '../../common/TimeSelector.jsx';
-import sessionServices from '../../../services/sessions.js';
+import sessionApi from '../../../services/sessions.js';
 import SessionTable from './SessionTable.jsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCancel, faCheck, faClose } from '@fortawesome/free-solid-svg-icons';
@@ -60,7 +60,7 @@ const StudentHoursModal = ({
 
   const onDeleteConfirmation = async () => {
     try {
-      await sessionServices.deleteSessionById(selectedItem.id);
+      await sessionApi.deleteSessionById(selectedItem.id);
       await fetchSessions();
       toast.success('Session deleted successfuly.');
     } catch (ex) {
@@ -95,7 +95,7 @@ const StudentHoursModal = ({
     e.preventDefault();
 
     try {
-      await sessionServices.createSession(createItem);
+      await sessionApi.createSession(createItem);
 
       await fetchSessions();
       setShowCreate(false);

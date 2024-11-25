@@ -1,46 +1,109 @@
 const express = require("express");
 const router = express.Router();
 let { sessions } = require("../schemas/sessionsSchema");
-
-const userAuthentication = require("../services/userAuth");
-let userAuth = userAuthentication.authUser;
+const { authorize } = require("../middlewares/authMiddleware");
+const {
+  combineDateAndTime,
+  hasTimeOverlap,
+  calculateDuration,
+  isWithinAllowedTime,
+  calculateSessionTotalHours,
+} = require("../services/sessionService");
 
 // Clock IN
-router.post("/api/clock-in", async (req, res) => {
-  // Call authUser middleware with the desired role to check against
-  userAuth(req, res, ["Instructor", "Manager", "Student"], async () => {
+router.post(
+  "/api/clock-in",
+  authorize(["Instructor", "Manager", "Student"]),
+  async (req, res) => {
     try {
-      const clockedIn = createDateFromTimeString(req.body.startTime);
-      const clockedOut = createDateFromTimeString(req.body.endTime);
+      const { userId, startTime, endTime, date, maneuver } = req.body;
+
+      const clockedIn = combineDateAndTime(date, startTime);
+      const clockedOut = combineDateAndTime(date, endTime);
+
+      if (clockedIn >= clockedOut) {
+        return res.status(400).json({
+          message: "Invalid time: Start time must be before end time.",
+        });
+      }
+
+      // Validate time range
+      if (!isWithinAllowedTime(clockedIn, clockedOut, date)) {
+        return res.status(400).json({
+          message:
+            "Invalid time: Appointments must be between 08:00 and 17:00.",
+        });
+      }
+
+      // Fetch existing sessions for the day
+      const existingSessions = await sessions.find({
+        user: userId,
+        date: new Date(date),
+      });
+
+      // Check for time overlap
+      if (hasTimeOverlap(clockedIn, clockedOut, existingSessions)) {
+        return res.status(400).json({
+          message:
+            "Time conflict: Overlapping session exists for the same day.",
+        });
+      }
+
       const duration = calculateDuration(clockedIn, clockedOut);
 
       const session = new sessions({
-        user: req.body.userId,
-        date: req.body.date,
-        clockedIn: req.body.startTime,
-        clockedOut: req.body.endTime,
-        maneuver: req.body.maneuver,
+        user: userId,
+        date: date,
+        clockedIn: startTime,
+        clockedOut: endTime,
+        maneuver: maneuver,
         duration: duration,
       });
 
       await session.save();
       res.send("Clocked in");
     } catch (err) {
-      res.status(500).json({
-        title: "Server error",
-        error: err.message,
-      });
+      next(err);
     }
-  });
-});
+  }
+);
 
 // Edit
-router.put("/api/session/:id", async (req, res) => {
-  userAuth(req, res, ["Instructor", "Manager", "Student"], async () => {
+router.put(
+  "/api/session/:id",
+  authorize(["Instructor", "Manager"]),
+  async (req, res) => {
     try {
-      const clockedIn = createDateFromTimeString(req.body.clockedIn);
-      const clockedOut = createDateFromTimeString(req.body.clockedOut);
-      const duration = calculateDuration(clockedIn, clockedOut);
+      const clockedIn = combineDateAndTime(date, startTime);
+      const clockedOut = combineDateAndTime(date, endTime);
+
+      if (clockedIn >= clockedOut) {
+        return res.status(400).json({
+          message: "Invalid time: Start time must be before end time.",
+        });
+      }
+
+      // Validate time range
+      if (!isWithinAllowedTime(clockedIn, clockedOut, date)) {
+        return res.status(400).json({
+          message:
+            "Invalid time: Appointments must be between 08:00 and 17:00.",
+        });
+      }
+
+      // Fetch existing sessions for the day
+      const existingSessions = await sessions.find({
+        user: userId,
+        date: new Date(date),
+      });
+
+      // Check for time overlap
+      if (hasTimeOverlap(clockedIn, clockedOut, existingSessions)) {
+        return res.status(400).json({
+          message:
+            "Time conflict: Overlapping session exists for the same day.",
+        });
+      }
 
       const updatedSession = await sessions.findByIdAndUpdate(
         req.params.id,
@@ -60,55 +123,16 @@ router.put("/api/session/:id", async (req, res) => {
 
       res.json({ message: "Session updated", session: updatedSession });
     } catch (err) {
-      console.log(err);
-      res.status(500).json({
-        title: "Server error",
-        error: err.message,
-      });
+      next(err);
     }
-  });
-});
-
-//#region ClockIn/ClockOut
-// // Clock IN
-// router.post("/api/clock-i", async (req, res) => {
-//   // Call authUser middleware with the desired role to check against
-//   userAuth(req, res, "Student", async () => {
-//     try {
-//       const session = new sessions({
-//         user: req.body.userId,
-//         clockedIn: new Date(),
-//       });
-//       await session.save();
-//       res.send("Clocked in");
-//     } catch (err) {
-//       console.log(err);
-//       res.status(500).json({
-//         title: "Server error",
-//         error: err.message,
-//       });
-//     }
-//   });
-// });
-
-// // Clock out
-// router.post("/api/clock-out", async (req, res) => {
-//   const session = await sessions
-//     .findOne({ user: req.body.userId })
-//     .sort({ clockedIn: -1 });
-//   if (!session || session.clockedOut) {
-//     return res.status(400).send("No active clock-in found");
-//   }
-//   session.clockedOut = new Date();
-//   await session.save();
-//   res.send("Clocked out");
-// });
-
-//#endregion
+  }
+);
 
 // Get sessions by student ID
-router.get("/api/sessions/:studentId", async (req, res) => {
-  userAuth(req, res, ["Instructor", "Manager", "Student"], async () => {
+router.get(
+  "/api/sessions/:studentId",
+  authorize(["Instructor", "Manager", "Student"]),
+  async (req, res) => {
     try {
       const { studentId } = req.params;
       let studentSessions = await sessions.find({ user: studentId });
@@ -118,61 +142,40 @@ router.get("/api/sessions/:studentId", async (req, res) => {
         (a, b) => new Date(b.date || 0) - new Date(a.date || 0)
       );
 
-      res.json(studentSessions);
-    } catch (err) {
-      console.log(err);
-      res.status(500).json({
-        title: "Server error",
-        error: err.message,
-      });
-    }
-  });
-});
+      const { preTrip, driving, total } =
+        calculateSessionTotalHours(studentSessions);
 
-router.delete("/api/sessions/:sessionId", async (req, res) => {
-  userAuth(req, res, ["Instructor", "Manager", "Student"], async () => {
+      res.json({
+        sessions: studentSessions,
+        totalHours: {
+          preTrip,
+          driving,
+          total,
+        },
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+router.delete(
+  "/api/sessions/:sessionId",
+  authorize(["Instructor", "Manager"]),
+  async (req, res) => {
     try {
       const { sessionId } = req.params;
-
       const deletedSession = await sessions.findByIdAndDelete(sessionId);
 
-      // If session not found, return a 404 error
       if (!deletedSession) {
-        return res.status(404).json({ message: "Session not found" });
+        return res.status(404).json({ message: "Session not found." });
       }
 
       res.json(deletedSession);
     } catch (err) {
-      console.log(err);
-      res.status(500).json({
-        title: "Server error",
-        error: err.message,
-      });
+      next(err);
     }
-  });
-});
-
-function createDateFromTimeString(timeString) {
-  // Parse hours and minutes from the time string
-  const [hour, minute] = timeString.split(":").map(Number);
-
-  const date = new Date();
-  date.setHours(hour, minute, 0, 0);
-
-  return date;
-}
-
-function calculateDuration(clockedIn, clockedOut) {
-  if (clockedIn >= clockedOut) {
-    throw new Error(
-      "clockedIn time cannot be greater than or equal to clockedOut time."
-    );
   }
-  const diffMs = clockedOut - clockedIn;
-  const diffHours = diffMs / (1000 * 60 * 60);
-  const roundedHours = Math.round(diffHours * 2) / 2;
-
-  return roundedHours;
-}
+);
 
 module.exports = router;

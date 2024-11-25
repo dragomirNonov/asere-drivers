@@ -3,28 +3,38 @@ const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
 const path = require("path");
-require("dotenv").config(); // Load environment variables
 
-const TESTDB = process.env.TEST_DB; // Test DB connection string
-const REALDB = process.env.REAL_DB; // Real DB connection string
-
-app.use(cors());
-app.use(express.json());
-
-// Serve static files from the "dist" directory (deployment only)
-app.use(express.static(path.join(__dirname, "dist")));
-
-// Import the route handlers
+const errorHandler = require("./middlewares/errorHandler");
 const userRoutes = require("./routes/userRoutes");
 const appointmentsRoutes = require("./routes/appointmentsRoutes");
 const sessionsRoutes = require("./routes/sessionsRoutes");
+global.logger = require("./utils/logger");
+app.use(cors());
+app.use(express.json());
+app.use(errorHandler);
 
-// Use the route handlers
+// Serve static files from the "dist" directory (deployment only)
+app.use(express.static(path.join(__dirname, "dist")));
 app.use("/", userRoutes);
 app.use("/", appointmentsRoutes);
 app.use("/", sessionsRoutes);
 
-// Choose the database URL based on the environment
+// Catch uncaught exceptions
+process.on("uncaughtException", (err) => {
+  logger.error(`Uncaught Exception: ${err.message}`);
+  process.exit(1); // Exit the process
+});
+
+// Catch unhandled promise rejections
+process.on("unhandledRejection", (reason) => {
+  logger.error(`Unhandled Rejection: ${reason}`);
+});
+
+require("dotenv").config(); // Load environment variables
+
+const TESTDB = process.env.TEST_DB;
+const REALDB = process.env.REAL_DB;
+
 const url = TESTDB;
 // const url = REALDB;
 

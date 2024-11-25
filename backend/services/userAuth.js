@@ -6,6 +6,7 @@ module.exports.authUser = (req, res, rolesToCheck, next) => {
   jwt.verify(token, "secretkey", (err, decoded) => {
     if (err) {
       console.log(err);
+      logger.error(`${err} Invalid token`);
       return res.status(401).json({
         title: "Unauthorized",
         error: "Invalid token",
@@ -18,6 +19,7 @@ module.exports.authUser = (req, res, rolesToCheck, next) => {
 
       // Check if decoded role matches any of the roles in rolesToCheck
       if (!rolesToCheck.includes(decoded.role)) {
+        logger.error(`Unauthorized - Role: ${decoded.role}`);
         return res.status(401).json({
           title: "Unauthorized",
           error: "Role mismatch",

@@ -3,7 +3,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { formatDate } from '../../utils/utils.js';
 import Modal from '../common/Modal.jsx';
 
-import sessionServices from '../../services/sessions';
+import sessionApi from '../../services/sessions';
 import SessionTable from './SessionTable.jsx';
 
 const StudentHoursModal = (props) => {
@@ -26,7 +26,7 @@ const StudentHoursModal = (props) => {
   }, []);
 
   const populateSessions = () => {
-    sessionServices
+    sessionApi
       .getSessionsByStudentId(userId)
       .then((response) => {
         console.log('sessions', response.data);

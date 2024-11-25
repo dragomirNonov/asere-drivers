@@ -2,15 +2,10 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 import TimeSelector from '../common/TimeSelector';
 
-import sessionServices from '../../services/sessions';
+import sessionApi from '../../services/sessions';
 
 const SessionForm = ({ userId, onAddSession }) => {
-  const today = new Date();
-  const localDate = new Date(
-    today.getTime() - today.getTimezoneOffset() * 60000,
-  )
-    .toISOString()
-    .split('T')[0];
+  const localDate = new Date().toISOString().split('T')[0];
   const initialFormData = {
     date: localDate,
     startTime: '',
@@ -40,13 +35,14 @@ const SessionForm = ({ userId, onAddSession }) => {
     };
 
     try {
-      await sessionServices.createSession(sessionObj);
+      await sessionApi.createSession(sessionObj);
       toast.success('You have Clocked-In');
       setFormData(initialFormData);
       onAddSession();
-    } catch (e) {
-      console.warn(e.message);
-      toast.error('An error has accured.');
+    } catch (error) {
+      console.warn(error.message);
+      console.warn(error);
+      toast.error(error.message);
     }
   };
 
@@ -63,6 +59,7 @@ const SessionForm = ({ userId, onAddSession }) => {
           <input
             type="date"
             id="date"
+            name="date"
             className="border border-gray-300 rounded-md p-1 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             value={formData.date}
             onChange={handleChange}
@@ -74,7 +71,6 @@ const SessionForm = ({ userId, onAddSession }) => {
           <TimeSelector
             clockIn={formData.startTime}
             clockOut={formData.endTime}
-            onChange={handleChange}
             onClockInChange={(value) => handleTimeChange('startTime', value)}
             onClockOutChange={(value) => handleTimeChange('endTime', value)}
           />

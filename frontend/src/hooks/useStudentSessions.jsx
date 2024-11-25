@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import sessionServices from '../services/sessions';
+import sessionApi from '../services/sessions.js';
 import toast from 'react-hot-toast';
 import { formatDate } from '../utils/utils.js';
 
@@ -17,9 +17,9 @@ const useStudentSessions = (userId) => {
   const fetchSessions = async () => {
     try {
       setIsLoading(true);
-      const response = await sessionServices.getSessionsByStudentId(userId);
-      const formattedSessions = formatSessions(response.data);
-      const calculatedHours = calculateHours(formattedSessions);
+      const response = await sessionApi.getSessionsByStudentId(userId);
+      const formattedSessions = formatSessions(response.data.sessions);
+      const totalHours = response.data.totalHours;
 
       setSessions({
         preTrip: formattedSessions.filter((s) => s.maneuver === 'Pre Trip'),
@@ -29,9 +29,14 @@ const useStudentSessions = (userId) => {
         offSet: formattedSessions.filter((s) => s.maneuver === 'Off Set'),
         road: formattedSessions.filter((s) => s.maneuver === 'Road'),
       });
-      setHours(calculatedHours);
+
+      setHours({
+        preTrip: totalHours.preTrip,
+        driving: totalHours.driving,
+        total: totalHours.total,
+      });
     } catch (error) {
-      toast.error('Failed to fetch sessions');
+      toast.error(error.message);
     } finally {
       setIsLoading(false);
     }
@@ -59,32 +64,6 @@ const formatSessions = (sessions) => {
   });
 
   return formatedSessions;
-};
-
-const calculateHours = (sessions) => {
-  let preTrip = 0;
-  let driving = 0;
-
-  sessions.forEach((session) => {
-    if (session.duration) {
-      const duration = parseFloat(session.duration);
-      if (session.maneuver === 'Pre Trip') {
-        preTrip += duration;
-      } else if (
-        ['Straight Back', 'Off Set', 'Road'].includes(session.maneuver)
-      ) {
-        driving += duration;
-      }
-    }
-  });
-
-  const total = preTrip + driving;
-
-  return {
-    preTrip: preTrip.toFixed(2),
-    driving: driving.toFixed(2),
-    total: total.toFixed(2),
-  };
 };
 
 export default useStudentSessions;

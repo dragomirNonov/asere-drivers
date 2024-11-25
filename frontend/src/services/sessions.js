@@ -1,40 +1,60 @@
 import axios from 'axios';
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
-const createSession = (sessionObj) => {
-  return axios.post(`${baseUrl}/clock-in`, sessionObj, {
-    headers: { token: localStorage.getItem('token') },
-  });
-};
+// Create an Axios instance
+const apiClient = axios.create({
+  baseURL: baseUrl,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
 
-const endSession = (sessionObj) => {
-  return axios.post(`${baseUrl}/clock-out`, sessionObj, {
-    headers: { token: localStorage.getItem('token') },
-  });
-};
+// TOKEN
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
 
-const editSession = (sessionId, sessionObj) => {
-  return axios.put(`${baseUrl}/session/${sessionId}`, sessionObj, {
-    headers: { token: localStorage.getItem('token') },
-  });
-};
+    if (token) {
+      config.headers['token'] = token;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error),
+);
 
-const getSessionsByStudentId = (studentId) => {
-  return axios.get(`${baseUrl}/sessions/${studentId}`, {
-    headers: { token: localStorage.getItem('token') },
-  });
-};
+// ErrorHandler
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    console.error('API Error:', error.response || error.message);
+    return Promise.reject({
+      status: error.response.status,
+      statusText: error.response.statusText,
+      message:
+        error.response.data.message ??
+        'Something went wrong. Please try again.',
+    });
+  },
+);
 
-const deleteSessionById = (sessionId) => {
-  return axios.delete(`${baseUrl}/sessions/${sessionId}`, {
-    headers: { token: localStorage.getItem('token') },
-  });
-};
+// API functions
+const createSession = (sessionObj) => apiClient.post('/clock-in', sessionObj);
+
+const endSession = (sessionObj) => apiClient.post('/clock-out', sessionObj);
+
+const editSession = (sessionId, sessionObj) =>
+  apiClient.put(`/session/${sessionId}`, sessionObj);
+
+const getSessionsByStudentId = (studentId) =>
+  apiClient.get(`/sessions/${studentId}`);
+
+const deleteSessionById = (sessionId) =>
+  apiClient.delete(`/sessions/${sessionId}`);
 
 export default {
   createSession,
-  editSession,
   endSession,
+  editSession,
   getSessionsByStudentId,
   deleteSessionById,
 };
