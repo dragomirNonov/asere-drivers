@@ -2,18 +2,21 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 import TimeSelector from '../common/TimeSelector';
 
-import { formatDate } from '../../utils/utils';
 import sessionServices from '../../services/sessions';
 
 const SessionForm = ({ userId, onAddSession }) => {
+  const today = new Date();
+  const localDate = new Date(
+    today.getTime() - today.getTimezoneOffset() * 60000,
+  )
+    .toISOString()
+    .split('T')[0];
   const initialFormData = {
-    date: new Date().toISOString().split('T')[0],
+    date: localDate,
     startTime: '',
     endTime: '',
     maneuver: '',
   };
-
-  console.log(formatDate(new Date()).split('T'));
   const [formData, setFormData] = useState(initialFormData);
 
   const handleChange = (e) => {
@@ -44,8 +47,8 @@ const SessionForm = ({ userId, onAddSession }) => {
   };
 
   return (
-    <div className="flex flex-col ">
-      <div className="mt-2 w-full md:w-1/6 md:m-auto md:mt-5 bg-slate-200 md:rounded-lg mb-2">
+    <div className="flex flex-col md:p-2">
+      <div className="mt-2 w-full md:w-2/6 md:m-auto md:mt-5 bg-slate-200 md:rounded-lg mb-2">
         <form onSubmit={handleSubmit}>
           <div className="bg-slate-800 font-bold text-lg text-white md:rounded-lg p-1 px-3 mb-2">
             <label>Time Form</label>
@@ -67,7 +70,7 @@ const SessionForm = ({ userId, onAddSession }) => {
 
           <div className="p-2 px-5 font-bold text-lg">
             <label className="flex justify-between">
-              Start/End time:
+              Start/End:
               <TimeSelector
                 clockIn={formData.startTime}
                 clockOut={formData.endTime}

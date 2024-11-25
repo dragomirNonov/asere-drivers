@@ -18,8 +18,8 @@ const StudentHours = ({ userId, toggle }) => {
   }, [toggle]);
 
   return (
-    <>
-      <div className="md:w-2/6">
+    <div className="flex flex-col ">
+      <div className="md:w-2/6 md:m-auto">
         <SessionTable title="Pre Trip Sessions" sessions={sessions.preTrip} />
         <SessionTable
           title="Straight Back Sessions"
@@ -49,7 +49,7 @@ const StudentHours = ({ userId, toggle }) => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
