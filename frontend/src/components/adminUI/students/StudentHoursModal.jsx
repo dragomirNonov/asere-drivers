@@ -93,7 +93,7 @@ const StudentHoursModal = ({
 
   const onCreate = async (e) => {
     e.preventDefault();
-    debugger;
+
     try {
       await sessionServices.createSession(createItem);
 
@@ -128,8 +128,7 @@ const StudentHoursModal = ({
               <button
                 className="px-3 py-1 text-sm text-white bg-green-600 rounded hover:bg-green-700"
                 type="button"
-                onClick={() => setShowCreate(true)}
-              >
+                onClick={() => setShowCreate(true)}>
                 Add
               </button>
             )}
@@ -140,28 +139,24 @@ const StudentHoursModal = ({
                 onVisibilityChange(false);
                 setShowModal(false);
               }}
-              className="ms-2 px-3 py-1 text-sm text-white bg-gray-600 rounded hover:bg-gray-400"
-            >
+              className="ms-2 px-3 py-1 text-sm text-white bg-gray-600 rounded hover:bg-gray-400">
               Cancel
             </button>
           </div>
         }
-        size="xl"
-      >
+        size="xl">
         <div>
           {isLoading && <Spinner />}
           {showCreate && (
             <form
               ref={topContentRef}
               onSubmit={onCreate}
-              className="bg-white border border-gray-200 rounded-lg shadow-lg p-4"
-            >
+              className="bg-white border border-gray-200 rounded-lg shadow-lg p-4">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                 <div className="flex flex-col">
                   <label
                     htmlFor="date"
-                    className="text-gray-600 text-sm font-medium mb-1"
-                  >
+                    className="text-gray-600 text-sm font-medium mb-1">
                     Date
                   </label>
                   <input
@@ -178,8 +173,7 @@ const StudentHoursModal = ({
                 <div className="flex flex-col">
                   <label
                     htmlFor="maneuver"
-                    className="text-gray-600 text-sm font-medium mb-1"
-                  >
+                    className="text-gray-600 text-sm font-medium mb-1">
                     Maneuver
                   </label>
                   <select
@@ -187,8 +181,7 @@ const StudentHoursModal = ({
                     name="maneuver"
                     value={createItem.maneuver}
                     onChange={(e) => handleChange('maneuver', e.target.value)}
-                    required
-                  >
+                    required>
                     <option value="" disabled>
                       Select Maneuver
                     </option>
@@ -199,12 +192,6 @@ const StudentHoursModal = ({
                   </select>
                 </div>
                 <div className="flex flex-col">
-                  <label
-                    htmlFor="startTime"
-                    className="text-gray-600 text-sm font-medium"
-                  >
-                    Start/End time
-                  </label>
                   <TimeSelector
                     clockIn={createItem.startTime}
                     clockOut={createItem.endTime}
@@ -212,6 +199,7 @@ const StudentHoursModal = ({
                       handleChange('startTime', value)
                     }
                     onClockOutChange={(value) => handleChange('endTime', value)}
+                    showLabels={true}
                   />
                 </div>
 
@@ -288,8 +276,7 @@ const StudentHoursModal = ({
         onConfirm={onDeleteConfirmation}
         title="Delete Confirmation"
         showConfirm={true}
-        size="sm"
-      >
+        size="sm">
         <p className="text-center text-sm text-red-600">
           Are you shure you want to delete this record?
         </p>

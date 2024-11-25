@@ -53,6 +53,7 @@ const SessionRow = ({ session, onEdit, onDelete }) => {
             clockOut={editedSession.clockedOut}
             onClockInChange={(value) => handleChange('clockedIn', value)}
             onClockOutChange={(value) => handleChange('clockedOut', value)}
+            showLabels={false}
           />
         ) : (
           <div className="inline-flex flex-col sm:flex-row items-center gap-2 bg-white rounded-lg shadow-sm p-2 min-w-max">

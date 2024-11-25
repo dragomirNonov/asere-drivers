@@ -12,7 +12,7 @@ const HomePage = () => {
   return (
     <div>
       <Navbar />
-      <img src={truck} className="w-auto h-100" alt="Truck" id="home" />
+      <img src={truck} className="w-full h-100" alt="Truck" id="home" />
       <Info />
       <AboutUS />
       <FAQs />

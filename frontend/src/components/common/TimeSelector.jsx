@@ -7,6 +7,7 @@ const TimeSelector = ({
   clockOut,
   onClockInChange,
   onClockOutChange,
+  showLabels = true,
 }) => {
   const generateTimeSlots = () => {
     const slots = [];
@@ -35,12 +36,20 @@ const TimeSelector = ({
   };
 
   return (
-    <div className="max-w-full overflow-x-auto scrollbar-thin">
-      <div className="inline-flex flex-col sm:flex-row items-center gap-2 bg-white rounded-lg shadow-sm p-1 min-w-max">
+    <div className="flex flex-wrap items-center gap-4">
+      {/* Clock In Select */}
+      <div className="flex flex-col flex-1">
+        {showLabels && (
+          <label className="text-sm font-medium text-gray-700 mb-1">
+            Start Time
+          </label>
+        )}
         <select
           value={clockIn}
           onChange={(e) => handleClockInChange(e.target.value)}
-          className="px-1 py-1.5 rounded border border-gray-200 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors appearance-none cursor-pointer hover:border-gray-300"
+          size={1}
+          style={{ maxHeight: '50px', overflowY: 'auto' }}
+          className="border border-gray-300 rounded-md p-1 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           required>
           <option value="">Start</option>
           {timeSlots.map((time) => (
@@ -49,13 +58,21 @@ const TimeSelector = ({
             </option>
           ))}
         </select>
-        <div className="hidden md:block">
-          <FontAwesomeIcon icon={faClock} color="darkblue" />
-        </div>
+      </div>
+
+      {/* Clock Out Select */}
+      <div className="flex flex-col flex-1">
+        {showLabels && (
+          <label className="text-sm font-medium text-gray-700 mb-1">
+            End Time
+          </label>
+        )}
         <select
           value={clockOut}
+          size={1}
           onChange={(e) => onClockOutChange(e.target.value)}
-          className="px-1 py-1.5 rounded border border-gray-200 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors disabled:bg-gray-50 disabled:text-gray-400 appearance-none cursor-pointer hover:border-gray-300"
+          style={{ maxHeight: '50px', overflowY: 'auto' }}
+          className="border border-gray-300 rounded-md p-1 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           required
           disabled={!clockIn}>
           <option value="">End</option>
