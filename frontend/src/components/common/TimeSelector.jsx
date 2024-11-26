@@ -2,10 +2,10 @@ import React from 'react';
 import { TextField, MenuItem } from '@mui/material';
 
 const TimeSelector = ({
-  clockIn,
-  clockOut,
-  onClockInChange,
-  onClockOutChange,
+  clockedIn,
+  clockedOut,
+  onClockedInChange,
+  onClockedOutChange,
 }) => {
   const generateTimeSlots = () => {
     const slots = [];
@@ -26,11 +26,10 @@ const TimeSelector = ({
     return timeSlots[currentIndex + 1] || timeSlots[timeSlots.length - 1];
   };
 
-  const handleClockInChange = (time) => {
-    debugger;
-    onClockInChange(time);
-    if (clockOut && time >= clockOut) {
-      onClockOutChange(getNextAvailableTime(time));
+  const handleClockedInChange = (time) => {
+    onClockedInChange(time);
+    if (clockedOut && time >= clockedOut) {
+      onClockedOutChange(getNextAvailableTime(time));
     }
   };
 
@@ -42,8 +41,8 @@ const TimeSelector = ({
         select
         fullWidth
         label="Start Time"
-        value={clockIn || ''}
-        onChange={(e) => handleClockInChange(e.target.value)}
+        value={clockedIn}
+        onChange={(e) => handleClockedInChange(e.target.value)}
         variant="outlined"
         className="flex-1 bg-white"
         required>
@@ -63,12 +62,12 @@ const TimeSelector = ({
         select
         fullWidth
         label="End Time"
-        value={clockOut || ''}
-        onChange={(e) => onClockOutChange(e.target.value)}
+        value={clockedOut}
+        onChange={(e) => onClockedOutChange(e.target.value)}
         variant="outlined"
         className="flex-1 bg-white"
         required
-        disabled={!clockIn}>
+        disabled={!clockedIn}>
         <MenuItem value="" disabled>
           End
         </MenuItem>
@@ -76,7 +75,7 @@ const TimeSelector = ({
           <MenuItem
             key={`out-${time}`}
             value={time}
-            disabled={clockIn ? time <= clockIn : false}>
+            disabled={clockedIn ? time <= clockedIn : false}>
             {time}
           </MenuItem>
         ))}

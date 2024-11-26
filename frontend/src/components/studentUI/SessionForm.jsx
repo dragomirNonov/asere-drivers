@@ -7,14 +7,14 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { TextField, MenuItem } from '@mui/material';
 
-import sessionApi from '../../services/sessions';
+import sessionService from '../../services/sessions';
 
 const SessionForm = ({ userId, onAddSession }) => {
   const today = dayjs();
   const initialFormData = {
     date: today,
-    startTime: '',
-    endTime: '',
+    clockedIn: '',
+    clockedOut: '',
     maneuver: '',
   };
   const [formData, setFormData] = useState(initialFormData);
@@ -25,7 +25,10 @@ const SessionForm = ({ userId, onAddSession }) => {
   };
 
   const handleTimeChange = (name, value) => {
-    setFormData({ ...formData, [name]: value });
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
   };
 
   const handleDateChange = (newDate) => {
@@ -37,20 +40,18 @@ const SessionForm = ({ userId, onAddSession }) => {
 
     const sessionObj = {
       userId: userId,
-      date: formData.date.format('YYYY-MM-DD'), // Convert dayjs object to formatted date string
-      startTime: formData.startTime,
-      endTime: formData.endTime,
+      date: formData.date.format('YYYY-MM-DD'),
+      clockedIn: formData.clockedIn,
+      clockedOut: formData.clockedOut,
       maneuver: formData.maneuver,
     };
 
     try {
-      await sessionApi.createSession(sessionObj);
+      await sessionService.createSession(sessionObj);
       toast.success('You have Clocked-In');
       setFormData(initialFormData);
       onAddSession();
     } catch (error) {
-      console.warn(error.message);
-      console.warn(error);
       toast.error(error.message);
     }
   };
@@ -83,10 +84,14 @@ const SessionForm = ({ userId, onAddSession }) => {
 
           <div className="w-full">
             <TimeSelector
-              clockIn={formData.startTime}
-              clockOut={formData.endTime}
-              onClockInChange={(value) => handleTimeChange('startTime', value)}
-              onClockOutChange={(value) => handleTimeChange('endTime', value)}
+              clockedIn={formData.clockedIn}
+              clockedOut={formData.clockedOut}
+              onClockedInChange={(value) =>
+                handleTimeChange('clockedIn', value)
+              }
+              onClockedOutChange={(value) =>
+                handleTimeChange('clockedOut', value)
+              }
             />
           </div>
 

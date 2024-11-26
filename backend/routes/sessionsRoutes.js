@@ -16,19 +16,19 @@ router.post(
   authorize(["Instructor", "Manager", "Student"]),
   async (req, res) => {
     try {
-      const { userId, startTime, endTime, date, maneuver } = req.body;
+      const { userId, clockedIn, clockedOut, date, maneuver } = req.body;
 
-      const clockedIn = combineDateAndTime(date, startTime);
-      const clockedOut = combineDateAndTime(date, endTime);
+      const clockedInDateTime = combineDateAndTime(date, clockedIn);
+      const clockedOutDateTime = combineDateAndTime(date, clockedOut);
 
-      if (clockedIn >= clockedOut) {
+      if (clockedInDateTime >= clockedOutDateTime) {
         return res.status(400).json({
           message: "Invalid time: Start time must be before end time.",
         });
       }
 
       // Validate time range
-      if (!isWithinAllowedTime(clockedIn, clockedOut, date)) {
+      if (!isWithinAllowedTime(clockedInDateTime, clockedOutDateTime, date)) {
         return res.status(400).json({
           message:
             "Invalid time: Appointments must be between 08:00 and 17:00.",
@@ -42,20 +42,22 @@ router.post(
       });
 
       // Check for time overlap
-      if (hasTimeOverlap(clockedIn, clockedOut, existingSessions)) {
+      if (
+        hasTimeOverlap(clockedInDateTime, clockedOutDateTime, existingSessions)
+      ) {
         return res.status(400).json({
           message:
             "Time conflict: Overlapping session exists for the same day.",
         });
       }
 
-      const duration = calculateDuration(clockedIn, clockedOut);
+      const duration = calculateDuration(clockedInDateTime, clockedOutDateTime);
 
       const session = new sessions({
         user: userId,
         date: date,
-        clockedIn: startTime,
-        clockedOut: endTime,
+        clockedIn: clockedIn,
+        clockedOut: clockedOut,
         maneuver: maneuver,
         duration: duration,
       });
@@ -74,7 +76,7 @@ router.put(
   authorize(["Instructor", "Manager"]),
   async (req, res) => {
     try {
-      const clockedIn = combineDateAndTime(date, startTime);
+      const clockedIn = combineDateAndTime(date, clockedIn);
       const clockedOut = combineDateAndTime(date, endTime);
 
       if (clockedIn >= clockedOut) {
