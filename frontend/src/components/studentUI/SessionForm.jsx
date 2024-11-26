@@ -62,17 +62,13 @@ const SessionForm = ({ userId, onAddSession }) => {
         <h2 className="text-xl font-bold mb-4 text-gray-800">Time Form</h2>
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div className="flex flex-col">
-            {/* <label
-              htmlFor="date"
-              className="text-sm font-medium text-gray-700 mb-1">
-              Date
-            </label> */}
             <DatePicker
               label="Select Date"
               value={formData.date}
               onChange={handleDateChange}
               slotProps={{
                 textField: {
+                  size: 'small',
                   fullWidth: true,
                   variant: 'outlined',
                   className:

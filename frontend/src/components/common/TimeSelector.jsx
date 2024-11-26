@@ -9,13 +9,25 @@ const TimeSelector = ({
 }) => {
   const generateTimeSlots = () => {
     const slots = [];
-    for (let hour = 9; hour <= 16; hour++) {
-      const formattedHour = hour.toString().padStart(2, '0');
-      slots.push(`${formattedHour}:00`);
-      slots.push(`${formattedHour}:30`);
+    // 9 AM to 12 PM (Noon)
+    for (let hour = 9; hour <= 11; hour++) {
+      const formattedHour = hour % 12 || 12;
+      slots.push(`${formattedHour}:00 AM`);
+      slots.push(`${formattedHour}:30 AM`);
     }
-    // Add 17:00 as the last slot
-    slots.push('17:00');
+
+    // 12 PM (Noon)
+    slots.push('12:00 PM');
+    slots.push('12:30 PM');
+
+    // 1 PM to 5 PM
+    for (let hour = 1; hour <= 5; hour++) {
+      slots.push(`${hour}:00 PM`);
+      if (hour < 5) {
+        slots.push(`${hour}:30 PM`);
+      }
+    }
+
     return slots;
   };
 
@@ -28,10 +40,34 @@ const TimeSelector = ({
 
   const handleClockedInChange = (time) => {
     onClockedInChange(time);
-    if (clockedOut && time >= clockedOut) {
+    if (clockedOut && compareTime(time, clockedOut) >= 0) {
       onClockedOutChange(getNextAvailableTime(time));
     }
   };
+
+  // Helper function to compare times
+  const compareTime = (time1, time2) => {
+    const convertTo24Hour = (time) => {
+      const [timeStr, period] = time.split(' ');
+      let [hours, minutes] = timeStr.split(':').map(Number);
+
+      if (period === 'PM' && hours !== 12) {
+        hours += 12;
+      }
+      if (period === 'AM' && hours === 12) {
+        hours = 0;
+      }
+
+      return hours * 60 + minutes;
+    };
+
+    return convertTo24Hour(time1) - convertTo24Hour(time2);
+  };
+
+  // Filter end time slots based on selected start time
+  const filteredEndTimeSlots = clockedIn
+    ? timeSlots.filter((time) => compareTime(time, clockedIn) > 0)
+    : timeSlots;
 
   return (
     <div className="flex flex-wrap items-center gap-4">
@@ -71,11 +107,8 @@ const TimeSelector = ({
         <MenuItem value="" disabled>
           End
         </MenuItem>
-        {timeSlots.map((time) => (
-          <MenuItem
-            key={`out-${time}`}
-            value={time}
-            disabled={clockedIn ? time <= clockedIn : false}>
+        {filteredEndTimeSlots.map((time) => (
+          <MenuItem key={`out-${time}`} value={time}>
             {time}
           </MenuItem>
         ))}

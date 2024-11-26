@@ -7,7 +7,7 @@ const SessionRow = ({ session }) => {
           id="date"
           name="date"
           value={session.date}
-          className="p-1 max-w-[85%]"
+          className="p-1 max-w-[85%] bg-white"
           disabled
         />
       </td>

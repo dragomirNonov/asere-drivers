@@ -10,3 +10,8 @@ body {
   /* background-color: rgb(226 232 240); */
   background-color: rgb(107 114 128);
 }
+
+body {
+  overflow: visible !important;
+  padding-right: 0 !important;
+}
