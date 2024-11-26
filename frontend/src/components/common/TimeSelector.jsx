@@ -1,13 +1,11 @@
 import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClock } from '@fortawesome/free-solid-svg-icons';
+import { TextField, MenuItem } from '@mui/material';
 
 const TimeSelector = ({
   clockIn,
   clockOut,
   onClockInChange,
   onClockOutChange,
-  showLabels = true,
 }) => {
   const generateTimeSlots = () => {
     const slots = [];
@@ -29,6 +27,7 @@ const TimeSelector = ({
   };
 
   const handleClockInChange = (time) => {
+    debugger;
     onClockInChange(time);
     if (clockOut && time >= clockOut) {
       onClockOutChange(getNextAvailableTime(time));
@@ -38,57 +37,50 @@ const TimeSelector = ({
   return (
     <div className="flex flex-wrap items-center gap-4">
       {/* Clock In Select */}
-      <div className="flex flex-col flex-1">
-        {showLabels && (
-          <label
-            className="text-sm font-medium text-gray-700 mb-1"
-            htmlFor="clockIn">
-            Start Time
-          </label>
-        )}
-        <select
-          value={clockIn}
-          id="clockIn"
-          onChange={(e) => handleClockInChange(e.target.value)}
-          size={1}
-          style={{ maxHeight: '50px', overflowY: 'auto' }}
-          className="border border-gray-300 rounded-md p-1 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          required>
-          <option value="">Start</option>
-          {timeSlots.map((time) => (
-            <option key={`in-${time}`} value={time}>
-              {time}
-            </option>
-          ))}
-        </select>
-      </div>
+      <TextField
+        size="small"
+        select
+        fullWidth
+        label="Start Time"
+        value={clockIn || ''}
+        onChange={(e) => handleClockInChange(e.target.value)}
+        variant="outlined"
+        className="flex-1 bg-white"
+        required>
+        <MenuItem value="" disabled>
+          Start
+        </MenuItem>
+        {timeSlots.map((time) => (
+          <MenuItem key={`in-${time}`} value={time}>
+            {time}
+          </MenuItem>
+        ))}
+      </TextField>
 
       {/* Clock Out Select */}
-      <div className="flex flex-col flex-1">
-        {showLabels && (
-          <label
-            className="text-sm font-medium text-gray-700 mb-1"
-            htmlFor="clockedOut">
-            End Time
-          </label>
-        )}
-        <select
-          value={clockOut}
-          size={1}
-          id="clockedOut"
-          onChange={(e) => onClockOutChange(e.target.value)}
-          style={{ maxHeight: '50px', overflowY: 'auto' }}
-          className="border border-gray-300 rounded-md p-1 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          required
-          disabled={!clockIn}>
-          <option value="">End</option>
-          {timeSlots.map((time) => (
-            <option key={`out-${time}`} value={time} disabled={time <= clockIn}>
-              {time}
-            </option>
-          ))}
-        </select>
-      </div>
+      <TextField
+        size="small"
+        select
+        fullWidth
+        label="End Time"
+        value={clockOut || ''}
+        onChange={(e) => onClockOutChange(e.target.value)}
+        variant="outlined"
+        className="flex-1 bg-white"
+        required
+        disabled={!clockIn}>
+        <MenuItem value="" disabled>
+          End
+        </MenuItem>
+        {timeSlots.map((time) => (
+          <MenuItem
+            key={`out-${time}`}
+            value={time}
+            disabled={clockIn ? time <= clockIn : false}>
+            {time}
+          </MenuItem>
+        ))}
+      </TextField>
     </div>
   );
 };

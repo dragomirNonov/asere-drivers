@@ -1,60 +1,76 @@
 import React, { useEffect, useRef, useState } from 'react';
+import PropTypes from 'prop-types';
 
-const DynamicBackgroundDiv = ({ children, backgroundImage }) => {
-  const [useFullHeight, setUseFullHeight] = useState(true);
+const DynamicBackgroundDiv = ({
+  children,
+  backgroundImage,
+  className = '',
+}) => {
+  const [minHeight, setMinHeight] = useState(undefined);
   const contentRef = useRef(null);
 
   useEffect(() => {
-    const checkHeight = () => {
+    const calculateMinHeight = () => {
       if (contentRef.current) {
-        // Add a small delay to ensure DOM has updated
-        setTimeout(() => {
-          const contentHeight = contentRef.current.scrollHeight;
-          const windowHeight = window.innerHeight;
-          setUseFullHeight(contentHeight < windowHeight);
-        }, 0);
+        const contentHeight = contentRef.current.scrollHeight;
+        const windowHeight = window.innerHeight;
+        const calculatedMinHeight = Math.max(contentHeight, windowHeight);
+        setMinHeight(calculatedMinHeight);
       }
     };
 
-    // Create a MutationObserver to watch for changes in content
-    const observer = new MutationObserver(checkHeight);
+    calculateMinHeight();
+    window.addEventListener('resize', calculateMinHeight);
 
-    if (contentRef.current) {
-      // Watch for changes in the content
-      observer.observe(contentRef.current, {
-        childList: true,
-        subtree: true,
-        attributes: true,
-        characterData: true,
-      });
-    }
-
-    // Check initially
-    checkHeight();
-
-    // Add resize listener
-    window.addEventListener('resize', checkHeight);
-
-    // Cleanup
     return () => {
-      observer.disconnect();
-      window.removeEventListener('resize', checkHeight);
+      window.removeEventListener('resize', calculateMinHeight);
     };
-  }, [children]); // Re-run when children change
+  }, [children]);
+
+  const containerStyle = {
+    position: 'relative',
+    width: '100%',
+    minHeight: minHeight ? `${minHeight}px` : '100vh',
+    overflow: 'hidden',
+  };
+
+  const backgroundStyle = {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    zIndex: -1,
+  };
+
+  const contentStyle = {
+    position: 'relative',
+    zIndex: 1,
+  };
 
   return (
-    <div
-      ref={contentRef}
-      className={`bg-cover bg-center bg-no-repeat bg-fixed ${
-        useFullHeight ? 'h-screen' : 'min-h-screen'
-      }`}
-      style={{
-        backgroundImage: `url(${backgroundImage})`,
-      }}
-    >
-      {children}
+    <div style={containerStyle} className={`relative w-full ${className}`}>
+      <div style={backgroundStyle} />
+      <div ref={contentRef} style={contentStyle}>
+        {children}
+      </div>
     </div>
   );
+};
+
+DynamicBackgroundDiv.propTypes = {
+  children: PropTypes.node.isRequired,
+  backgroundImage: PropTypes.string,
+  className: PropTypes.string,
+};
+
+DynamicBackgroundDiv.defaultProps = {
+  backgroundImage: '',
+  className: '',
 };
 
 export default DynamicBackgroundDiv;
