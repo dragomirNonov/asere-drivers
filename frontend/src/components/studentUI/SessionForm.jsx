@@ -5,7 +5,12 @@ import TimeSelector from '../common/TimeSelector';
 import sessionApi from '../../services/sessions';
 
 const SessionForm = ({ userId, onAddSession }) => {
-  const localDate = new Date().toISOString().split('T')[0];
+  const today = new Date();
+  const localDate = new Date(
+    today.getTime() - today.getTimezoneOffset() * 60000,
+  )
+    .toISOString()
+    .split('T')[0];
   const initialFormData = {
     date: localDate,
     startTime: '',
