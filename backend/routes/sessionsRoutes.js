@@ -31,7 +31,7 @@ router.post(
       if (!isWithinAllowedTime(clockedInDateTime, clockedOutDateTime, date)) {
         return res.status(400).json({
           message:
-            "Invalid time: Appointments must be between 08:00 and 17:00.",
+            "Invalid time: Appointments must be between 09:00 and 17:00.",
         });
       }
 

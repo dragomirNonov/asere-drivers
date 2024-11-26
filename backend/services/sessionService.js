@@ -35,7 +35,7 @@ function calculateDuration(clockedIn, clockedOut) {
 }
 
 function isWithinAllowedTime(clockedIn, clockedOut, date) {
-  const allowedStart = combineDateAndTime(date, "08:00");
+  const allowedStart = combineDateAndTime(date, "09:00");
   const allowedEnd = combineDateAndTime(date, "17:00");
 
   return clockedIn >= allowedStart && clockedOut <= allowedEnd;

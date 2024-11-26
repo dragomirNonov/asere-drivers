@@ -1,22 +1,14 @@
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
 import toast from 'react-hot-toast';
-import { formatDate } from '../../../utils/utils.js';
 import Modal from '../../common/Modal.jsx';
-import TimeSelector from '../../common/TimeSelector.jsx';
-import sessionApi from '../../../services/sessions.js';
+import sessionService from '../../../services/sessions.js';
 import SessionTable from './SessionTable.jsx';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCancel, faCheck, faClose } from '@fortawesome/free-solid-svg-icons';
 import Spinner from '../../common/Spinner.jsx';
 import useStudentSessions from '../../../hooks/useStudentSessions.jsx';
+import SessionForm from './SessionForm.jsx';
 
-const StudentHoursModal = ({
-  info,
-  refresh,
-  studentHeading,
-  onVisibilityChange,
-}) => {
+const StudentHoursModal = ({ info, studentHeading, onVisibilityChange }) => {
   const topContentRef = useRef(null);
   const userId = info._id;
 
@@ -27,13 +19,6 @@ const StudentHoursModal = ({
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
-  const [createItem, setCreateItem] = useState({
-    userId: userId,
-    date: '',
-    startTime: '',
-    endTime: '',
-    maneuver: '',
-  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,7 +26,7 @@ const StudentHoursModal = ({
     };
 
     if (userId) {
-      fetchData(); // Call the async function
+      fetchData();
     }
   }, []);
 
@@ -60,8 +45,9 @@ const StudentHoursModal = ({
 
   const onDeleteConfirmation = async () => {
     try {
-      await sessionApi.deleteSessionById(selectedItem.id);
+      await sessionService.deleteSessionById(selectedItem.id);
       await fetchSessions();
+
       toast.success('Session deleted successfuly.');
     } catch (ex) {
       toast.error('Failed to delete session');
@@ -80,7 +66,7 @@ const StudentHoursModal = ({
     };
 
     try {
-      await sessionServices.editSession(editedSession.id, item);
+      await sessionService.editSession(editedSession.id, item);
       await fetchSessions();
       toast.success('Session edited successfuly.');
     } catch (error) {
@@ -91,24 +77,9 @@ const StudentHoursModal = ({
     }
   };
 
-  const onCreate = async (e) => {
-    e.preventDefault();
-
-    try {
-      await sessionApi.createSession(createItem);
-
-      await fetchSessions();
-      setShowCreate(false);
-
-      toast.success('Session added successfuly.');
-    } catch (error) {
-      toast.error(error.response.data.error);
-      console.error('Error fetching sessions:', error.response.data.error);
-    }
-  };
-
-  const handleChange = (field, value) => {
-    setCreateItem({ ...createItem, [field]: value });
+  const onCreated = async () => {
+    setShowCreate(false);
+    await fetchSessions();
   };
 
   return (
@@ -145,82 +116,14 @@ const StudentHoursModal = ({
           </div>
         }
         size="xl">
-        <div>
+        <div ref={topContentRef}>
           {isLoading && <Spinner />}
           {showCreate && (
-            <form
-              ref={topContentRef}
-              onSubmit={onCreate}
-              className="bg-white border border-gray-200 rounded-lg shadow-lg p-4">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                <div className="flex flex-col">
-                  <label
-                    htmlFor="date"
-                    className="text-gray-600 text-sm font-medium mb-1">
-                    Date
-                  </label>
-                  <input
-                    type="date"
-                    id="date"
-                    name="date"
-                    value={createItem.date}
-                    onChange={(e) => handleChange('date', e.target.value)}
-                    className="p-1 border border-gray-300 rounded-md text-sm"
-                    required
-                  />
-                </div>
-
-                <div className="flex flex-col">
-                  <label
-                    htmlFor="maneuver"
-                    className="text-gray-600 text-sm font-medium mb-1">
-                    Maneuver
-                  </label>
-                  <select
-                    className="p-1 border border-gray-300 rounded-md text-sm"
-                    name="maneuver"
-                    value={createItem.maneuver}
-                    onChange={(e) => handleChange('maneuver', e.target.value)}
-                    required>
-                    <option value="" disabled>
-                      Select Maneuver
-                    </option>
-                    <option value="Pre Trip">Pre Trip</option>
-                    <option value="Straight Back">Straight Back</option>
-                    <option value="Off Set">Off Set</option>
-                    <option value="Road">Road</option>
-                  </select>
-                </div>
-                <div className="flex flex-col">
-                  <TimeSelector
-                    clockIn={createItem.startTime}
-                    clockOut={createItem.endTime}
-                    onClockInChange={(value) =>
-                      handleChange('startTime', value)
-                    }
-                    onClockOutChange={(value) => handleChange('endTime', value)}
-                    showLabels={true}
-                  />
-                </div>
-
-                <div className="flex justify-end gap-3 mt-5">
-                  <button type="submit">
-                    <FontAwesomeIcon
-                      icon={faCheck}
-                      color="green"
-                      className="px-2 py-2 bg-green-600 text-white rounded-full hover:bg-green-700"
-                    />
-                  </button>
-                  <button type="button" onClick={() => setShowCreate(false)}>
-                    <FontAwesomeIcon
-                      icon={faCancel}
-                      color="white"
-                      className="px-2 py-2 bg-gray-600 text-white rounded-full hover:bg-gray-700"
-                    />
-                  </button>
-                </div>
-              </div>
-            </form>
+            <SessionForm
+              userId={userId}
+              onCreated={onCreated}
+              onCanceled={() => setShowCreate(false)}
+            />
           )}
           <SessionTable
             title="Pre Trip Sessions"

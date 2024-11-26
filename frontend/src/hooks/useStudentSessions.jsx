@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import sessionApi from '../services/sessions.js';
+import sessionService from '../services/sessions.js';
 import toast from 'react-hot-toast';
 import { formatDate } from '../utils/utils.js';
 
@@ -17,7 +17,7 @@ const useStudentSessions = (userId) => {
   const fetchSessions = async () => {
     try {
       setIsLoading(true);
-      const response = await sessionApi.getSessionsByStudentId(userId);
+      const response = await sessionService.getSessionsByStudentId(userId);
       const formattedSessions = formatSessions(response.data.sessions);
       const totalHours = response.data.totalHours;
 
