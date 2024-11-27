@@ -23,13 +23,6 @@ const SessionForm = ({ userId, onCreated, onCanceled }) => {
     setCreateItem((prevState) => ({ ...prevState, [field]: value }));
   };
 
-  // const handleTimeChange = (name, value) => {
-  //   setFormData((prevState) => ({
-  //     ...prevState,
-  //     [name]: value,
-  //   }));
-  // };
-
   const onCreate = async (e) => {
     e.preventDefault();
 
@@ -54,44 +47,49 @@ const SessionForm = ({ userId, onCreated, onCanceled }) => {
     <form
       onSubmit={onCreate}
       className="bg-white border border-gray-200 rounded-lg shadow-lg p-4">
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-        <div className="flex flex-col">
-          <DatePicker
-            value={createItem.date}
-            handleChange={(value) => handleChange('date', value)}
-          />
-        </div>
-        <div className="flex flex-col">
-          <ManeuverSelectMenu
-            value={createItem.maneuver}
-            handleChange={(e) => handleChange('maneuver', e.target.value)}
-          />
-        </div>
-        <div className="flex flex-col">
-          <TimeSelector
-            clockedIn={createItem.clockedIn}
-            clockedOut={createItem.clockedOut}
-            onClockedInChange={(value) => handleChange('clockedIn', value)}
-            onClockedOutChange={(value) => handleChange('clockedOut', value)}
-            showLabels={true}
-          />
-        </div>
-        <div className="flex justify-end gap-3">
-          <button type="submit">
-            <FontAwesomeIcon
-              icon={faCheck}
-              color="green"
-              className="px-2 py-2 bg-green-600 text-white rounded-full hover:bg-green-700"
+      <div className="md:flex flex-row">
+        <div className="flex flex-row md:w-3/6 gap-4 ">
+          <div className="w-3/6 ">
+            <DatePicker
+              value={createItem.date}
+              handleChange={(value) => handleChange('date', value)}
             />
-          </button>
-          <button type="button" onClick={onCanceled}>
-            <FontAwesomeIcon
-              icon={faCancel}
-              color="white"
-              className="px-2 py-2 bg-gray-600 text-white rounded-full hover:bg-gray-700"
+          </div>
+          <div className="w-3/6 ">
+            <ManeuverSelectMenu
+              value={createItem.maneuver}
+              handleChange={(e) => handleChange('maneuver', e.target.value)}
             />
-          </button>
+          </div>
         </div>
+        <div className="md:w-3/6 md:pl-4">
+          <div className="mt-2 md:mt-0">
+            <TimeSelector
+              clockedIn={createItem.clockedIn}
+              clockedOut={createItem.clockedOut}
+              onClockedInChange={(value) => handleChange('clockedIn', value)}
+              onClockedOutChange={(value) => handleChange('clockedOut', value)}
+              showLabels={true}
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="flex justify-end gap-3 mt-2">
+        <button type="submit">
+          <FontAwesomeIcon
+            icon={faCheck}
+            color="green"
+            className="px-2 py-2 bg-green-600 text-white rounded-full hover:bg-green-700"
+          />
+        </button>
+        <button type="button" onClick={onCanceled}>
+          <FontAwesomeIcon
+            icon={faCancel}
+            color="white"
+            className="px-2 py-2 bg-gray-600 text-white rounded-full hover:bg-gray-700"
+          />
+        </button>
       </div>
     </form>
   );

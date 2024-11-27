@@ -52,3 +52,20 @@ export const decodeToken = (token) => {
     return null;
   }
 };
+
+export const formatTimeToAmPm = (militaryTime) => {
+  if (!militaryTime) return '';
+  const [hours, minutes] = militaryTime.split(':').map(Number);
+  if (isNaN(hours) || isNaN(minutes)) return militaryTime;
+  let period = 'AM';
+  let formattedHours = hours;
+  if (hours >= 12) {
+    period = 'PM';
+    formattedHours = hours === 12 ? 12 : hours - 12;
+  }
+  if (hours === 0) {
+    formattedHours = 12;
+  }
+  const formattedMinutes = minutes.toString().padStart(2, '0');
+  return `${formattedHours}:${formattedMinutes} ${period}`;
+};

@@ -7,27 +7,41 @@ const TimeSelector = ({
   onClockedInChange,
   onClockedOutChange,
 }) => {
+  // Convert 24-hour time to 12-hour AM/PM format
+  const formatTimeDisplay = (time) => {
+    if (!time) return '';
+    const [hours, minutes] = time.split(':');
+    const hourNum = parseInt(hours);
+    const period = hourNum >= 12 ? 'PM' : 'AM';
+    const displayHour = hourNum % 12 || 12;
+    return `${displayHour}:${minutes} ${period}`;
+  };
+
+  // Convert 12-hour AM/PM time back to 24-hour format
+  const convertToMilitaryTime = (time) => {
+    if (!time) return '';
+    const [timeWithoutPeriod, period] = time.split(' ');
+    let [hours, minutes] = timeWithoutPeriod.split(':');
+    hours = parseInt(hours);
+
+    if (period === 'PM' && hours !== 12) {
+      hours += 12;
+    } else if (period === 'AM' && hours === 12) {
+      hours = 0;
+    }
+
+    return `${hours.toString().padStart(2, '0')}:${minutes}`;
+  };
+
   const generateTimeSlots = () => {
     const slots = [];
-    // 9 AM to 12 PM (Noon)
-    for (let hour = 9; hour <= 11; hour++) {
-      const formattedHour = hour % 12 || 12;
-      slots.push(`${formattedHour}:00 AM`);
-      slots.push(`${formattedHour}:30 AM`);
+    for (let hour = 9; hour <= 16; hour++) {
+      const formattedHour = hour.toString().padStart(2, '0');
+      slots.push(`${formattedHour}:00`);
+      slots.push(`${formattedHour}:30`);
     }
-
-    // 12 PM (Noon)
-    slots.push('12:00 PM');
-    slots.push('12:30 PM');
-
-    // 1 PM to 5 PM
-    for (let hour = 1; hour <= 5; hour++) {
-      slots.push(`${hour}:00 PM`);
-      if (hour < 5) {
-        slots.push(`${hour}:30 PM`);
-      }
-    }
-
+    // Add 17:00 as the last slot
+    slots.push('17:00');
     return slots;
   };
 
@@ -39,55 +53,44 @@ const TimeSelector = ({
   };
 
   const handleClockedInChange = (time) => {
-    onClockedInChange(time);
-    if (clockedOut && compareTime(time, clockedOut) >= 0) {
-      onClockedOutChange(getNextAvailableTime(time));
+    const militaryTime = convertToMilitaryTime(time);
+    onClockedInChange(militaryTime);
+
+    if (clockedOut && militaryTime >= clockedOut) {
+      const nextTime = getNextAvailableTime(militaryTime);
+      onClockedOutChange(nextTime);
     }
   };
 
-  // Helper function to compare times
-  const compareTime = (time1, time2) => {
-    const convertTo24Hour = (time) => {
-      const [timeStr, period] = time.split(' ');
-      let [hours, minutes] = timeStr.split(':').map(Number);
-
-      if (period === 'PM' && hours !== 12) {
-        hours += 12;
-      }
-      if (period === 'AM' && hours === 12) {
-        hours = 0;
-      }
-
-      return hours * 60 + minutes;
-    };
-
-    return convertTo24Hour(time1) - convertTo24Hour(time2);
+  const handleClockedOutChange = (time) => {
+    const militaryTime = convertToMilitaryTime(time);
+    onClockedOutChange(militaryTime);
   };
 
-  // Filter end time slots based on selected start time
+  // Filter time slots based on selected start time
   const filteredEndTimeSlots = clockedIn
-    ? timeSlots.filter((time) => compareTime(time, clockedIn) > 0)
+    ? timeSlots.filter((time) => time > clockedIn)
     : timeSlots;
 
   return (
-    <div className="flex flex-wrap items-center gap-4">
+    <div className="flex flex-wrap items-center gap-4 ">
       {/* Clock In Select */}
       <TextField
         size="small"
         select
         fullWidth
         label="Start Time"
-        value={clockedIn}
+        value={clockedIn ? formatTimeDisplay(clockedIn) : ''}
         onChange={(e) => handleClockedInChange(e.target.value)}
         variant="outlined"
-        className="flex-1 bg-white"
+        className="md:flex-1 bg-white"
         required>
         <MenuItem value="" disabled>
           Start
         </MenuItem>
         {timeSlots.map((time) => (
-          <MenuItem key={`in-${time}`} value={time}>
-            {time}
+          <MenuItem key={`in-${time}`} value={formatTimeDisplay(time)}>
+            {formatTimeDisplay(time)}
           </MenuItem>
         ))}
       </TextField>
@@ -98,18 +101,18 @@ const TimeSelector = ({
         select
         fullWidth
         label="End Time"
-        value={clockedOut}
-        onChange={(e) => onClockedOutChange(e.target.value)}
+        value={clockedOut ? formatTimeDisplay(clockedOut) : ''}
+        onChange={(e) => handleClockedOutChange(e.target.value)}
         variant="outlined"
-        className="flex-1 bg-white"
+        className="md:flex-1 bg-white"
         required
         disabled={!clockedIn}>
         <MenuItem value="" disabled>
           End
         </MenuItem>
         {filteredEndTimeSlots.map((time) => (
-          <MenuItem key={`out-${time}`} value={time}>
-            {time}
+          <MenuItem key={`out-${time}`} value={formatTimeDisplay(time)}>
+            {formatTimeDisplay(time)}
           </MenuItem>
         ))}
       </TextField>

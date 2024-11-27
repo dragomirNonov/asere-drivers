@@ -8,8 +8,11 @@ import {
   faTrashAlt,
   faClock,
 } from '@fortawesome/free-solid-svg-icons';
+import { formatTimeToAmPm } from '../../../utils/utils';
+import dayjs from 'dayjs';
+import DatePicker from '../../common/DatePicker.jsx';
 
-const SessionRow = ({ session, onEdit, onDelete }) => {
+const SessionRow = ({ session, onEdit, onDelete, columnCount }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedSession, setEditedSession] = useState(session);
 
@@ -22,7 +25,10 @@ const SessionRow = ({ session, onEdit, onDelete }) => {
   };
 
   const handleChange = (field, value) => {
-    setEditedSession({ ...editedSession, [field]: value });
+    setEditedSession((prevSession) => ({
+      ...prevSession,
+      [field]: value,
+    }));
   };
 
   const handleSaveClick = () => {
@@ -31,44 +37,42 @@ const SessionRow = ({ session, onEdit, onDelete }) => {
   };
 
   return (
-    <tr className="border-b border-gray-200">
+    <tr className="border-b border-gray-200 text-sm md:text-lg">
       <td className="py-1 text-center">
         {isEditing ? (
-          <input
-            type="date"
-            id="date"
-            name="date"
-            value={editedSession.date}
-            onChange={(e) => handleChange('date', e.target.value)}
-            className="max-w-[85%]"
+          <DatePicker
+            value={dayjs(editedSession.date)}
+            handleChange={(newDate) => handleChange('date', newDate)}
           />
         ) : (
           session.displayDate
         )}
       </td>
-      <td className="py-1 text-center">
+      <td className="py-1 text-center ">
         {isEditing ? (
           <TimeSelector
-            clockIn={editedSession.clockedIn}
-            clockOut={editedSession.clockedOut}
-            onClockInChange={(value) => handleChange('clockedIn', value)}
-            onClockOutChange={(value) => handleChange('clockedOut', value)}
+            clockedIn={editedSession.clockedIn}
+            clockedOut={editedSession.clockedOut}
+            onClockedInChange={(value) => handleChange('clockedIn', value)}
+            onClockedOutChange={(value) => handleChange('clockedOut', value)}
             showLabels={false}
           />
         ) : (
           <div className="inline-flex flex-col sm:flex-row items-center gap-2 bg-white rounded-lg shadow-sm p-2 min-w-max">
-            <p>{session.displayClockedIn}</p>{' '}
+            <p>{formatTimeToAmPm(session.displayClockedIn)}</p>{' '}
             <div className="hidden md:block">
               <FontAwesomeIcon icon={faClock} color="darkblue" />
             </div>
-            <p>{session.displayClockedOut}</p>
+            <p>{formatTimeToAmPm(session.displayClockedOut)}</p>
           </div>
         )}
       </td>
+      {/* {!isEditing && ( */}
       <td className="py-1 text-center">{session.duration} hr(s)</td>
+      {/* )} */}
       <td className="py-1 text-center">
         {isEditing ? (
-          <>
+          <div className="text-center ">
             <button onClick={handleSaveClick}>
               <FontAwesomeIcon icon={faSave} color="green" className="px-2" />
             </button>
@@ -79,7 +83,7 @@ const SessionRow = ({ session, onEdit, onDelete }) => {
                 className="px-2"
               />
             </button>
-          </>
+          </div>
         ) : (
           <>
             <button onClick={onEditClick}>

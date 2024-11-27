@@ -74,46 +74,45 @@ router.post(
 router.put(
   "/api/session/:id",
   authorize(["Instructor", "Manager"]),
-  async (req, res) => {
+  async (req, res, next) => {
     try {
-      const clockedIn = combineDateAndTime(date, clockedIn);
-      const clockedOut = combineDateAndTime(date, endTime);
+      const { date, clockedIn, clockedOut, maneuver, userId } = req.body;
 
-      if (clockedIn >= clockedOut) {
+      const clockedInDateTime = combineDateAndTime(date, clockedIn);
+      const clockedOutDateTime = combineDateAndTime(date, clockedOut);
+
+      const duration = calculateDuration(clockedInDateTime, clockedOutDateTime);
+
+      if (clockedInDateTime >= clockedOutDateTime) {
         return res.status(400).json({
           message: "Invalid time: Start time must be before end time.",
         });
       }
-
-      // Validate time range
-      if (!isWithinAllowedTime(clockedIn, clockedOut, date)) {
+      if (!isWithinAllowedTime(clockedInDateTime, clockedOutDateTime, date)) {
         return res.status(400).json({
           message:
             "Invalid time: Appointments must be between 08:00 and 17:00.",
         });
       }
-
-      // Fetch existing sessions for the day
       const existingSessions = await sessions.find({
         user: userId,
         date: new Date(date),
       });
-
-      // Check for time overlap
-      if (hasTimeOverlap(clockedIn, clockedOut, existingSessions)) {
+      if (
+        hasTimeOverlap(clockedInDateTime, clockedOutDateTime, existingSessions)
+      ) {
         return res.status(400).json({
           message:
             "Time conflict: Overlapping session exists for the same day.",
         });
       }
-
       const updatedSession = await sessions.findByIdAndUpdate(
         req.params.id,
         {
-          date: req.body.date,
-          clockedIn: req.body.clockedIn,
-          clockedOut: req.body.clockedOut,
-          maneuver: req.body.maneuver,
+          date: date,
+          clockedIn: clockedIn,
+          clockedOut: clockedOut,
+          maneuver: maneuver,
           duration: duration,
         },
         { new: true }

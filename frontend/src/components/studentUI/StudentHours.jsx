@@ -28,7 +28,7 @@ const StudentHours = ({ userId, toggle }) => {
         <SessionTable title="Off Set Sessions" sessions={sessions.offSet} />
         <SessionTable title="Road Sessions" sessions={sessions.road} />
 
-        <div className="flex flex-row text-lg text-white items-center gap-4 bg-gray-800 md:mx-1">
+        <div className="flex flex-row text-lg text-white items-center gap-4 bg-gray-800 md:mx-1 h-10">
           <div>
             <label htmlFor="date" className="">
               Pre-Trip:
