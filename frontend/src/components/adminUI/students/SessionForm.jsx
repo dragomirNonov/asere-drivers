@@ -28,7 +28,7 @@ const SessionForm = ({ userId, onCreated, onCanceled }) => {
 
     const sessionObj = {
       userId: userId,
-      date: createItem.date.format('YYYY-MM-DD'),
+      date: createItem.date.toISOString(),
       clockedIn: createItem.clockedIn,
       clockedOut: createItem.clockedOut,
       maneuver: createItem.maneuver,
