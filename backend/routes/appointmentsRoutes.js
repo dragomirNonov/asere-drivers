@@ -1,19 +1,38 @@
 const express = require("express");
 const router = express.Router();
-let { appointment } = require("../schemas/appointmentsSchema");
+let { Appointment } = require("../schemas/appointmentsSchema");
+const { authorize } = require("../middlewares/authorize");
 
-const userAuthentication = require("../services/userAuth");
-let userAuth = userAuthentication.authUser;
+const validateAppointment = require("../middlewares/validateAppointment");
 
-// Addind new appointment
-router.post("/api/newappointment", async (req, res) => {
-  // Call authUser middleware with the desired role to check against
-  userAuth(req, res, "Manager", async () => {
+// Create
+router.post(
+  "/",
+  authorize(["Manager"]),
+  validateAppointment,
+  async (req, res, next) => {
     try {
+      const {
+        firstName,
+        lastName,
+        DOB,
+        DLnumber,
+        phone,
+        email,
+        location,
+        date,
+        time,
+        truck,
+        transmission,
+        permitExpDate,
+        checkboxOption,
+      } = req.body;
+
       // Check if an appointment with the same DLnumber already exists
-      const existingAppointment = await appointment.findOne({
+      const existingAppointment = await Appointment.findOne({
         DLnumber: req.body.DLnumber,
       });
+
       if (existingAppointment) {
         return res.status(400).json({
           title: "Appointment exists.",
@@ -21,21 +40,22 @@ router.post("/api/newappointment", async (req, res) => {
         });
       }
 
-      const newAppointment = new appointment({
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        DOB: req.body.DOB,
-        DLnumber: req.body.DLnumber,
-        phone: req.body.phone,
-        email: req.body.email,
-        location: req.body.location,
-        date: req.body.date,
-        time: req.body.time,
-        truck: req.body.truck,
-        transmission: req.body.transmission,
-        permitExpiryDate: req.body.permitExpDate,
-        checkboxOption: req.body.checkboxOption,
+      const newAppointment = new Appointment({
+        firstName: firstName,
+        lastName: lastName,
+        DOB: DOB,
+        DLnumber: DLnumber,
+        phone: phone,
+        email: email,
+        location: location,
+        date: date,
+        time: time,
+        truck: truck,
+        transmission: transmission,
+        permitExpiryDate: permitExpDate,
+        checkboxOption: checkboxOption,
       });
+
       const savedAppointment = await newAppointment.save();
 
       return res.status(200).json({
@@ -43,52 +63,38 @@ router.post("/api/newappointment", async (req, res) => {
         message: "Appointment added successfully.",
       });
     } catch (err) {
-      console.log(err);
-      res.status(500).json({
-        title: "Server error",
-        error: err.message,
-      });
+      next(err);
     }
-  });
-});
+  }
+);
 
-// Get all appointments
-router.get("/api/appointments", (req, res) => {
-  // Call authUser middleware with the desired role to check against
-  userAuth(req, res, ["Instructor", "Manager"], async () => {
+// Update
+router.put(
+  "/:id",
+  authorize(["Manager"]),
+  validateAppointment,
+  async (req, res, next) => {
     try {
-      const appointments = await appointment.find();
+      const appointmentId = req.params.id;
 
-      res.json(appointments);
-    } catch (error) {
-      res.status(500).json({ error: "An error occurred" });
-    }
-  });
-});
-
-// Get all real appointments
-router.get("/api/realappointments", (req, res) => {
-  // Call authUser middleware with the desired role to check against
-  userAuth(req, res, ["Instructor", "Manager"], async () => {
-    try {
-      // Fetch appointments where checkboxOption is "real"
-      const appointments = await appointment.find({ checkboxOption: "real" });
-      res.json(appointments);
-    } catch (error) {
-      res.status(500).json({ error: "An error occurred" });
-    }
-  });
-});
-
-// Editing an existing appointment
-router.put("/api/editappointment", (req, res) => {
-  // Call authUser middleware with the desired role to check against
-  userAuth(req, res, "Manager", async () => {
-    try {
-      const appointmentId = req.body.id;
+      const {
+        firstName,
+        lastName,
+        DOB,
+        DLnumber,
+        phone,
+        email,
+        location,
+        date,
+        time,
+        truck,
+        transmission,
+        permitExpDate,
+        checkboxOption,
+      } = req.body;
 
       // Find the appointment by ID
-      const existingAppointment = await appointment.findById(appointmentId);
+      const existingAppointment = await Appointment.findById(appointmentId);
 
       // Check if the appointment exists
       if (!existingAppointment) {
@@ -98,19 +104,19 @@ router.put("/api/editappointment", (req, res) => {
       }
 
       // Update appointment fields
-      existingAppointment.firstName = req.body.firstName;
-      existingAppointment.lastName = req.body.lastName;
-      existingAppointment.DOB = req.body.DOB;
-      existingAppointment.DLnumber = req.body.DLnumber;
-      existingAppointment.phone = req.body.phone;
-      existingAppointment.email = req.body.email;
-      existingAppointment.location = req.body.location;
-      existingAppointment.date = req.body.date;
-      existingAppointment.time = req.body.time;
-      existingAppointment.truck = req.body.truck;
-      existingAppointment.transmission = req.body.transmission;
-      existingAppointment.permitExpiryDate = req.body.permitExpiryDate;
-      existingAppointment.checkboxOption = req.body.checkboxOption;
+      existingAppointment.firstName = firstName;
+      existingAppointment.lastName = lastName;
+      existingAppointment.DOB = DOB;
+      existingAppointment.DLnumber = DLnumber;
+      existingAppointment.phone = phone;
+      existingAppointment.email = email;
+      existingAppointment.location = location;
+      existingAppointment.date = date;
+      existingAppointment.time = time;
+      existingAppointment.truck = truck;
+      existingAppointment.transmission = transmission;
+      existingAppointment.permitExpiryDate = permitExpDate;
+      existingAppointment.checkboxOption = checkboxOption;
 
       // Save the updated appointment
       const updatedAppointment = await existingAppointment.save();
@@ -120,45 +126,64 @@ router.put("/api/editappointment", (req, res) => {
         message: "Appointment updated successfully.",
       });
     } catch (err) {
-      console.log(err);
-      res.status(500).json({
-        title: "Server error",
-        error: err.message,
-      });
+      next(err);
     }
-  });
-});
+  }
+);
+
+// Read
+router.get(
+  "/",
+  authorize(["Instructor", "Manager"]),
+  async (req, res, next) => {
+    try {
+      const appointments = await Appointment.find();
+      console.log(appointments);
+      res.json(appointments);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+// Get all real appointments
+router.get(
+  "/real",
+  authorize(["Instructor", "Manager"]),
+  async (req, res, next) => {
+    try {
+      // Fetch appointments where checkboxOption is "real"
+      const appointments = await Appointment.find({ checkboxOption: "real" });
+      res.json(appointments);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 // Deleting an existing appointment
-router.delete("/api/deleteappointment/:id", (req, res) => {
-  // Call authUser middleware with the desired role to check against
-  userAuth(req, res, "Manager", async () => {
-    try {
-      const appointmentId = req.params.id;
+router.delete("/:id", authorize(["Manager"]), async (req, res, next) => {
+  try {
+    const appointmentId = req.params.id;
 
-      // Delete the appointment by ID
-      const deletedAppointment = await appointment.deleteOne({
-        _id: appointmentId,
-      });
+    // Delete the appointment by ID
+    const deletedAppointment = await Appointment.deleteOne({
+      _id: appointmentId,
+    });
 
-      // Check if the appointment was deleted
-      if (deletedAppointment.deletedCount === 0) {
-        return res.status(404).json({
-          message: "Appointment not found.",
-        });
-      }
-
-      return res.status(200).json({
-        message: "Appointment deleted successfully.",
-      });
-    } catch (err) {
-      console.log(err);
-      res.status(500).json({
-        title: "Server error",
-        error: err.message,
+    // Check if the appointment was deleted
+    if (deletedAppointment.deletedCount === 0) {
+      return res.status(404).json({
+        message: "Appointment not found.",
       });
     }
-  });
+
+    return res.status(200).json({
+      message: "Appointment deleted successfully.",
+    });
+  } catch (err) {
+    next(err);
+  }
 });
 
 module.exports = router;

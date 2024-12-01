@@ -3,7 +3,7 @@ const baseUrl = import.meta.env.VITE_BASE_URL;
 
 // Create an Axios instance
 const apiClient = axios.create({
-  baseURL: baseUrl,
+  baseURL: `${baseUrl}/sessions`,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -24,9 +24,10 @@ apiClient.interceptors.request.use(
 
 // ErrorHandler
 apiClient.interceptors.response.use(
-  (response) => response,
+  (response) => response.data,
   (error) => {
     console.error('API Error:', error.response || error.message);
+
     return Promise.reject({
       status: error.response.status,
       statusText: error.response.statusText,
@@ -38,22 +39,17 @@ apiClient.interceptors.response.use(
 );
 
 // API functions
-const createSession = (sessionObj) => apiClient.post('/clock-in', sessionObj);
-
-const endSession = (sessionObj) => apiClient.post('/clock-out', sessionObj);
+const createSession = (sessionObj) => apiClient.post('', sessionObj);
 
 const editSession = (sessionId, sessionObj) =>
-  apiClient.put(`/session/${sessionId}`, sessionObj);
+  apiClient.put(`/${sessionId}`, sessionObj);
 
-const getSessionsByStudentId = (studentId) =>
-  apiClient.get(`/sessions/${studentId}`);
+const getSessionsByStudentId = (studentId) => apiClient.get(`/${studentId}`);
 
-const deleteSessionById = (sessionId) =>
-  apiClient.delete(`/sessions/${sessionId}`);
+const deleteSessionById = (sessionId) => apiClient.delete(`/${sessionId}`);
 
 export default {
   createSession,
-  endSession,
   editSession,
   getSessionsByStudentId,
   deleteSessionById,

@@ -1,38 +1,55 @@
 import axios from 'axios';
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
-const register = (rejisterObj) => {
-  return axios.post(`${baseUrl}/register`, rejisterObj);
-};
+// Create an Axios instance
+const apiClient = axios.create({
+  baseURL: `${baseUrl}/users/`,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
 
-const login = (loginObj) => {
-  return axios.post(`${baseUrl}/login`, loginObj);
-};
+// ErrorHandler
+apiClient.interceptors.response.use(
+  (response) => response.data,
+  (error) => {
+    console.error('API Error:', error.response || error.message);
+    return Promise.reject({
+      status: error.response.status,
+      statusText: error.response.statusText,
+      message:
+        error.response.data.message ??
+        'Something went wrong. Please try again.',
+    });
+  },
+);
 
-const getUserById = (userId) => {
-  return axios.post(`${baseUrl}/user`, { id: userId });
-};
+const register = (rejisterObj) => apiClient.post(`register`, rejisterObj);
+
+const login = (loginObj) => apiClient.post(`login`, loginObj);
+
+const getUserById = (userId) => apiClient.get(`${userId}`);
 
 const getAllStudents = () => {
-  return axios.get(`${baseUrl}/students`, {
+  return apiClient.get(``, {
     headers: { token: localStorage.getItem('token') },
   });
 };
 
 const editStudent = (updatedData) => {
-  return axios.put(`${baseUrl}/editstudent`, updatedData, {
+  return apiClient.put('', updatedData, {
     headers: { token: localStorage.getItem('token') },
   });
 };
 
 const deleteStudent = (studentId) => {
-  return axios.delete(`${baseUrl}/deletestudent/${studentId}`, studentId, {
+  return apiClient.delete(`${studentId}`, {
     headers: { token: localStorage.getItem('token') },
   });
 };
 
 const addStudent = (studentObj) => {
-  return axios.post(`${baseUrl}/addstudent`, studentObj, {
+  return apiClient.post('', studentObj, {
     headers: { token: localStorage.getItem('token') },
   });
 };

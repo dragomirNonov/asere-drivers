@@ -71,7 +71,8 @@ const ScheduleStudent = (props) => {
 
   const handleError = (err) => {
     setSuccessMessage('');
-    setErrorMessage(err.response.data.message);
+    debugger;
+    setErrorMessage(err.message);
   };
 
   const resetFormData = () => {

@@ -13,7 +13,7 @@ const StudentHours = ({ userId, toggle }) => {
     };
 
     if (userId) {
-      fetchData(); // Call the async function
+      fetchData();
     }
   }, [toggle]);
 

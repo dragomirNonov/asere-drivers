@@ -42,7 +42,7 @@ const RegisterPage = () => {
     setConfirmPassword('');
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     if (!checkPasswordMatch()) {
@@ -61,22 +61,19 @@ const RegisterPage = () => {
       DOB: DOB,
     };
 
-    userServices
-      .register(registerObj)
-      .then((res) => {
-        setErrorMessage('');
-        if (res.status === 200) {
-          resetFormData();
-          setSuccessMessage(res.data.message);
-          setTimeout(() => {
-            navigate('/login');
-          }, 1500); // 1500ms = 1.5 seconds delay
-        }
-      })
-      .catch((err) => {
-        setSuccessMessage('');
-        setErrorMessage(err.response.data.message);
-      });
+    try {
+      const res = await userServices.register(registerObj);
+
+      setErrorMessage('');
+      resetFormData();
+      setSuccessMessage(res.message);
+      setTimeout(() => {
+        navigate('/login');
+      }, 1500); // 1500ms = 1.5 seconds delay
+    } catch (err) {
+      setSuccessMessage('');
+      setErrorMessage(err.message);
+    }
   };
 
   return (
@@ -85,8 +82,7 @@ const RegisterPage = () => {
       className="bg-cover bg-center bg-no-repeat bg-fixed flex flex-col items-center w-auto h-screen"
       style={{
         backgroundImage: `url(${truckImage})`,
-      }}
-    >
+      }}>
       <div className="bg-gray-900 shadow-md rounded-md p-4 md:mt-20 flex flex-col items-center w-full  mx-auto md:h-max md:w-2/6">
         <h2 className="text-white font-bold p-2 text-3xl">SIGN UP</h2>
         <form onSubmit={handleSubmit} className=" w-full  p-2">
@@ -147,8 +143,7 @@ const RegisterPage = () => {
                 value={transmission}
                 onChange={(event) => setTransmission(event.target.value)}
                 required
-                className="p-1 rounded-md bg-gray-500 text-white"
-              >
+                className="p-1 rounded-md bg-gray-500 text-white">
                 <option value="" disabled>
                   Select transmission
                 </option>
@@ -165,8 +160,7 @@ const RegisterPage = () => {
                 value={clas}
                 onChange={(event) => setClas(event.target.value)}
                 required
-                className="p-1 rounded-md bg-gray-500 text-white"
-              >
+                className="p-1 rounded-md bg-gray-500 text-white">
                 <option value="" disabled>
                   Select class
                 </option>
@@ -230,16 +224,14 @@ const RegisterPage = () => {
             <p className="text-gray-500 p-1">Already have an account? </p>
             <a
               href="/login"
-              className="text-gray-500 ml-auto hover:text-white hover:rounded-md p-1"
-            >
+              className="text-gray-500 ml-auto hover:text-white hover:rounded-md p-1">
               Login{' '}
             </a>
           </div>
 
           <button
             type="submit"
-            className="text-white font-bold p-2 bg-teal-700 w-full  hover:bg-teal-900 rounded-lg mt-4"
-          >
+            className="text-white font-bold p-2 bg-teal-700 w-full  hover:bg-teal-900 rounded-lg mt-4">
             Register
           </button>
         </form>

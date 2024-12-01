@@ -1,138 +1,52 @@
 const express = require("express");
 const router = express.Router();
-let { sessions } = require("../schemas/sessionsSchema");
-const { authorize } = require("../middlewares/authMiddleware");
+const { authorize } = require("../middlewares/authorize");
+const validateSession = require("../middlewares/validateSession");
+const { check, validationResult } = require("express-validator");
+const dayjs = require("dayjs");
+const utc = require("dayjs/plugin/utc");
+dayjs.extend(utc);
+const { Session } = require("../schemas/sessionsSchema");
 const {
-  combineDateAndTime,
-  hasTimeOverlap,
   calculateDuration,
-  isWithinAllowedTime,
-  calculateSessionTotalHours,
+  calculateSessionsTotalHours,
 } = require("../services/sessionService");
 
-// // Clock IN
-// router.post(
-//   "/api/clock-in",
-//   authorize(["Instructor", "Manager", "Student"]),
-//   async (req, res, next) => {
-//     try {
-//       const { userId, clockedIn, clockedOut, date, maneuver } = req.body;
+// Shared validation rules
+const sessionValidationRules = [
+  check("userId", "User ID is required.").notEmpty(),
+  check("clockedIn", "ClockedIn time is required.").notEmpty(),
+  check("clockedOut", "ClockedOut time is require.").notEmpty(),
+  check("date", "Date is required.").notEmpty(),
+  check("maneuver", "Maneuver is required.").notEmpty(),
+];
 
-//       const clockedInDateTime = combineDateAndTime(date, clockedIn);
-//       const clockedOutDateTime = combineDateAndTime(date, clockedOut);
-
-//       if (clockedInDateTime >= clockedOutDateTime) {
-//         return res.status(400).json({
-//           message: "Invalid time: Start time must be before end time.",
-//         });
-//       }
-
-//       // Validate time range
-//       if (!isWithinAllowedTime(clockedInDateTime, clockedOutDateTime, date)) {
-//         return res.status(400).json({
-//           message:
-//             "Invalid time: Appointments must be between 09:00 and 17:00.",
-//         });
-//       }
-
-//       // Fetch existing sessions for the day
-//       const existingSessions = await sessions.find({
-//         user: userId,
-//         date: new Date(date),
-//       });
-
-//       // Check for time overlap
-//       if (
-//         hasTimeOverlap(clockedInDateTime, clockedOutDateTime, existingSessions)
-//       ) {
-//         return res.status(400).json({
-//           message:
-//             "Time conflict: Overlapping session exists for the same day.",
-//         });
-//       }
-
-//       const duration = calculateDuration(clockedInDateTime, clockedOutDateTime);
-
-//       const session = new sessions({
-//         user: userId,
-//         date: date,
-//         clockedIn: clockedIn,
-//         clockedOut: clockedOut,
-//         maneuver: maneuver,
-//         duration: duration,
-//       });
-
-//       await session.save();
-//       res.send("Clocked in");
-//     } catch (err) {
-//       next(err);
-//     }
-//   }
-// );
-
-// Clock IN
+// Create
 router.post(
-  "/api/clock-in",
+  "/",
   authorize(["Instructor", "Manager", "Student"]),
+  sessionValidationRules,
+  validateSession,
   async (req, res, next) => {
     try {
-      const { userId, clockedIn, clockedOut, date, maneuver } = req.body;
+      const errors = validationResult(req);
 
-      // Convert date string to start and end of day
-      const sessionDate = new Date(date);
-      const startOfDay = new Date(sessionDate.setHours(0, 0, 0, 0));
-      const endOfDay = new Date(sessionDate.setHours(23, 59, 59, 999));
-
-      // Find sessions for the same user on the same day
-      const existingSessions = await sessions.find({
-        user: userId,
-        date: {
-          $gte: startOfDay,
-          $lte: endOfDay,
-        },
-      });
-
-      // Convert times to minutes for easier comparison
-      const getMinutes = (timeStr) => {
-        const [hours, minutes] = timeStr.split(":").map(Number);
-        return hours * 60 + minutes;
-      };
-
-      const newStartMinutes = getMinutes(clockedIn);
-      const newEndMinutes = getMinutes(clockedOut);
-
-      // Check for overlap
-      const hasOverlap = existingSessions.some((session) => {
-        const existingStartMinutes = getMinutes(session.clockedIn);
-        const existingEndMinutes = getMinutes(session.clockedOut);
-
-        const overlap =
-          (newStartMinutes >= existingStartMinutes &&
-            newStartMinutes < existingEndMinutes) ||
-          (newEndMinutes > existingStartMinutes &&
-            newEndMinutes <= existingEndMinutes) ||
-          (newStartMinutes <= existingStartMinutes &&
-            newEndMinutes >= existingEndMinutes);
-
-        return overlap;
-      });
-
-      if (hasOverlap) {
-        return res.status(400).json({
-          message: "Time conflict.",
-        });
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
       }
 
+      const { userId, clockedIn, clockedOut, date, maneuver } = req.body;
+
       // Calculate duration
-      const duration = (
-        (getMinutes(clockedOut) - getMinutes(clockedIn)) /
-        60
-      ).toFixed(1);
+      const duration = calculateDuration(clockedIn, clockedOut);
+
+      const utcDate = dayjs(date).utc().toDate();
+      console.log(utcDate);
 
       // Create the session
-      const session = new sessions({
+      const session = new Session({
         user: userId,
-        date,
+        date: utcDate,
         clockedIn,
         clockedOut,
         maneuver,
@@ -140,6 +54,7 @@ router.post(
       });
 
       await session.save();
+
       res.status(200).json({
         message: "Session created successfully",
         session,
@@ -153,44 +68,24 @@ router.post(
 
 // Edit
 router.put(
-  "/api/session/:id",
+  "/:id",
   authorize(["Instructor", "Manager"]),
+  sessionValidationRules,
+  validateSession,
   async (req, res, next) => {
     try {
-      const { date, clockedIn, clockedOut, maneuver, userId } = req.body;
+      const { userId, clockedIn, clockedOut, date, maneuver } = req.body;
 
-      const clockedInDateTime = combineDateAndTime(date, clockedIn);
-      const clockedOutDateTime = combineDateAndTime(date, clockedOut);
+      // Calculate duration
+      const duration = calculateDuration(clockedIn, clockedOut);
 
-      const duration = calculateDuration(clockedInDateTime, clockedOutDateTime);
+      const utcDate = dayjs(date).utc().toDate();
+      console.log(utcDate);
 
-      if (clockedInDateTime >= clockedOutDateTime) {
-        return res.status(400).json({
-          message: "Invalid time: Start time must be before end time.",
-        });
-      }
-      if (!isWithinAllowedTime(clockedInDateTime, clockedOutDateTime, date)) {
-        return res.status(400).json({
-          message:
-            "Invalid time: Appointments must be between 08:00 and 17:00.",
-        });
-      }
-      const existingSessions = await sessions.find({
-        user: userId,
-        date: new Date(date),
-      });
-      if (
-        hasTimeOverlap(clockedInDateTime, clockedOutDateTime, existingSessions)
-      ) {
-        return res.status(400).json({
-          message:
-            "Time conflict: Overlapping session exists for the same day.",
-        });
-      }
-      const updatedSession = await sessions.findByIdAndUpdate(
+      const updatedSession = await Session.findByIdAndUpdate(
         req.params.id,
         {
-          date: date,
+          date: utcDate,
           clockedIn: clockedIn,
           clockedOut: clockedOut,
           maneuver: maneuver,
@@ -212,12 +107,12 @@ router.put(
 
 // Get sessions by student ID
 router.get(
-  "/api/sessions/:studentId",
+  "/:studentId",
   authorize(["Instructor", "Manager", "Student"]),
-  async (req, res) => {
+  async (req, res, next) => {
     try {
       const { studentId } = req.params;
-      let studentSessions = await sessions.find({ user: studentId });
+      let studentSessions = await Session.find({ user: studentId });
 
       // Sort sessions by date, latest first
       studentSessions = studentSessions.sort(
@@ -225,7 +120,7 @@ router.get(
       );
 
       const { preTrip, driving, total } =
-        calculateSessionTotalHours(studentSessions);
+        calculateSessionsTotalHours(studentSessions);
 
       res.json({
         sessions: studentSessions,
@@ -242,14 +137,14 @@ router.get(
 );
 
 router.delete(
-  "/api/sessions/:sessionId",
+  "/:sessionId",
   authorize(["Instructor", "Manager"]),
-  async (req, res) => {
+  async (req, res, next) => {
     try {
       const { sessionId } = req.params;
       console.log(sessionId);
 
-      const deletedSession = await sessions.findByIdAndDelete(sessionId);
+      const deletedSession = await Session.findByIdAndDelete(sessionId);
 
       if (!deletedSession) {
         return res.status(404).json({ message: "Session not found." });

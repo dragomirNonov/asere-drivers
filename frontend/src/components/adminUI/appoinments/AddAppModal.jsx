@@ -52,18 +52,12 @@ const AddAppModal = (props) => {
         checkboxOption: formData.checkboxOption,
       };
 
-      await appointmentService
-        .createNewAppt(appointmentObj)
-        .then(() => {
-          resetFormData();
-          setShowModal(false);
-          props.refresh();
-          props.toast();
-        })
-        .catch(() => {
-          // setErrorMessage(err.response.data.message);
-          // console.log(err.response.data.message);
-        });
+      await appointmentService.createNewAppt(appointmentObj);
+
+      resetFormData();
+      setShowModal(false);
+      props.refresh();
+      props.toast();
     } catch (err) {
       console.log(err);
     }

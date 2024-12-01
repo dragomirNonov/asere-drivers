@@ -1,60 +1,58 @@
 import axios from 'axios';
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
+// Create an Axios instance
+const apiClient = axios.create({
+  baseURL: `${baseUrl}/appointments/`,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// TOKEN
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+
+    if (token) {
+      config.headers['token'] = token;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error),
+);
+
+// ErrorHandler
+apiClient.interceptors.response.use(
+  (response) => response.data,
+  (error) => {
+    console.error('API Error:', error.response || error.message);
+    return Promise.reject({
+      status: error.response.status,
+      statusText: error.response.statusText,
+      message:
+        error.response.data.message ??
+        'Something went wrong. Please try again.',
+    });
+  },
+);
+
 //Create an appointment
-const createNewAppt = (appointmentObj) => {
-  return axios.post(`${baseUrl}/newappointment`, appointmentObj, {
-    headers: { token: localStorage.getItem('token') },
-  });
-};
+const createNewAppt = (appointmentObj) => apiClient.post('', appointmentObj);
 
 //Get all appointments
-const getAllAppointments = () => {
-  return axios
-    .get(`${baseUrl}/appointments`, {
-      headers: { token: localStorage.getItem('token') },
-    })
-    .then((response) => response.data)
-    .catch((error) => {
-      throw new Error(`Failed to fetch all appointments: ${error}`);
-    });
-};
+const getAllAppointments = () => apiClient.get('');
 
 //Get all real appointments
-const getAllRealAppointments = () => {
-  return axios
-    .get(`${baseUrl}/realappointments`, {
-      headers: { token: localStorage.getItem('token') },
-    })
-    .then((response) => response.data)
-    .catch((error) => {
-      throw new Error(`Failed to fetch all appointments: ${error}`);
-    });
-};
+const getAllRealAppointments = () => apiClient.get('/real');
 
 //Edit appointment
-const editAppointment = (editedAppointment) => {
-  return axios
-    .put(`${baseUrl}/editappointment`, editedAppointment, {
-      headers: { token: localStorage.getItem('token') },
-    })
-    .then((response) => response.data)
-    .catch((error) => {
-      throw new Error(`Failed to edit appointment: ${error}`);
-    });
-};
+const editAppointment = (id, editedAppointment) =>
+  apiClient.put(`/${id}`, editedAppointment);
 
 // Delete appointment
-const deleteAppointment = (appointmentId) => {
-  return axios
-    .delete(`${baseUrl}/deleteappointment/${appointmentId}`, {
-      headers: { token: localStorage.getItem('token') },
-    })
-    .then((response) => response.data)
-    .catch((error) => {
-      throw new Error(`Failed to delete appointment: ${error}`);
-    });
-};
+const deleteAppointment = (appointmentId) =>
+  apiClient.delete(`/${appointmentId}`);
 
 export default {
   createNewAppt,

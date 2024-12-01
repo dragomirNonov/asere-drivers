@@ -17,7 +17,7 @@ const UserInfo = () => {
       userService
         .getUserById(decodedToken.userId)
         .then((response) => {
-          setUser(response.data.user);
+          setUser(response.user);
         })
         .catch((error) => {
           console.error('Error fetching user:', error);

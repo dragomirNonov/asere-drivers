@@ -2,56 +2,55 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
-// const users = require("../data/usersData");
-const userAuthentication = require("../services/userAuth");
-let authUser = userAuthentication.authUser;
-let { user } = require("../schemas/userSchemas");
+const { authorize } = require("../middlewares/authorize");
+let { User } = require("../schemas/userSchemas");
 
 // Register user
-router.post("/api/register", async (request, response) => {
+router.post("/register", async (req, res, next) => {
   try {
-    const phone = request.body.phone;
+    console.log(req);
+    const phone = req.body.phone;
 
-    const existingUser = await user
-      .findOne({
-        $or: [{ phone: phone }],
-      })
-      .exec();
+    const existingUser = await User.findOne({
+      $or: [{ phone: phone }],
+    }).exec();
+
     if (existingUser) {
-      return response.status(401).json({
+      return res.status(401).json({
         title: "Existing Email",
         message: "User already exists.",
       });
     }
-    const newUser = new user({
-      firstName: request.body.firstName,
-      lastName: request.body.lastName,
-      phone: request.body.phone,
-      email: request.body.email,
-      transmission: request.body.transmission,
-      clas: request.body.clas,
-      DOB: request.body.DOB,
+
+    const newUser = new User({
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      phone: req.body.phone,
+      email: req.body.email,
+      transmission: req.body.transmission,
+      clas: req.body.clas,
+      DOB: req.body.DOB,
       // DLnumber: bcrypt.hashSync(request.body.DLnumber, 10),
-      DLnumber: request.body.DLnumber,
-      password: bcrypt.hashSync(request.body.password, 10),
+      DLnumber: req.body.DLnumber,
+      password: bcrypt.hashSync(req.body.password, 10),
     });
+
     const savedUser = await newUser.save();
-    return response
+
+    return res
       .status(200)
       .json({ savedUser: savedUser, message: "User added successfully." });
   } catch (err) {
-    console.log(err);
-    response.status(500).json({
-      title: "server error",
-      error: err.message,
-    });
+    next(err);
   }
 });
 
 // LOGIN
-router.post("/api/login", async (req, res) => {
+router.post("/login", async (req, res, next) => {
   try {
-    const userExists = await user.findOne({ phone: req.body.phone }).exec();
+    const { phone, password } = req.body;
+
+    const userExists = await User.findOne({ phone }).exec();
 
     if (!userExists) {
       return res.status(401).json({
@@ -60,7 +59,7 @@ router.post("/api/login", async (req, res) => {
       });
     }
 
-    if (!bcrypt.compareSync(req.body.password, userExists.password)) {
+    if (!bcrypt.compareSync(password, userExists.password)) {
       return res.status(401).json({
         title: "Login Failed.",
         message: "Invalid credentials.",
@@ -80,20 +79,16 @@ router.post("/api/login", async (req, res) => {
       token: token,
     });
   } catch (err) {
-    console.log(err);
-    res.status(500).json({
-      title: "server error",
-      error: err.message,
-    });
+    next(err);
   }
 });
 
 // Get user by ID
-router.post("/api/user", async (req, res) => {
+router.get("/:id", async (req, res, next) => {
   try {
-    const userId = req.body.id;
+    const userId = req.params.id;
 
-    const foundUser = await user.findById(userId);
+    const foundUser = await User.findById(userId);
 
     if (!foundUser) {
       return res.status(404).json({
@@ -105,20 +100,17 @@ router.post("/api/user", async (req, res) => {
       user: foundUser,
     });
   } catch (err) {
-    console.log(err);
-    res.status(500).json({
-      title: "Server error",
-      error: err.message,
-    });
+    next(err);
   }
 });
 
 // Get all students
-router.get("/api/students", (req, res) => {
-  // Call authUser middleware with the desired role to check against
-  authUser(req, res, ["Instructor", "Manager"], async () => {
+router.get(
+  "/",
+  authorize(["Instructor", "Manager"]),
+  async (req, res, next) => {
     try {
-      const students = await user.find({ Role: "Student" });
+      const students = await User.find({ Role: "Student" });
 
       if (!students || students.length === 0) {
         return res.status(404).json({
@@ -130,22 +122,18 @@ router.get("/api/students", (req, res) => {
         students: students,
       });
     } catch (err) {
-      console.log(err);
-      res.status(500).json({
-        title: "Server error",
-        error: err.message,
-      });
+      next(err);
     }
-  });
-});
+  }
+);
 
 // Update student by ID
-router.put("/api/editstudent", async (req, res) => {
+router.put("/", async (req, res) => {
   try {
     const studentId = req.body.id;
     const updatedData = req.body;
 
-    const updatedStudent = await user.findByIdAndUpdate(
+    const updatedStudent = await User.findByIdAndUpdate(
       studentId,
       updatedData,
       { new: true }
@@ -162,76 +150,66 @@ router.put("/api/editstudent", async (req, res) => {
       student: updatedStudent,
     });
   } catch (err) {
-    console.log(err);
-    res.status(500).json({
-      title: "Server error",
-      error: err.message,
-    });
+    next(err);
   }
 });
 
 // Delete student by ID
-router.delete("/api/deletestudent/:id", async (req, res) => {
+router.delete("/:id", async (req, res, next) => {
   try {
     const studentId = req.params.id;
-
-    const deletedStudent = await user.findByIdAndDelete(studentId);
+    const deletedStudent = await User.findByIdAndDelete(studentId);
 
     if (!deletedStudent) {
       return res.status(404).json({
         message: "Student not found.",
       });
     }
+
     return res.status(200).json({
       message: "Student deleted successfully.",
       student: deletedStudent,
     });
   } catch (err) {
-    console.log(err);
-    res.status(500).json({
-      title: "Server error",
-      error: err.message,
-    });
+    next(err);
   }
 });
 
 // Add new Student
-router.post("/api/addstudent", async (request, response) => {
+router.post("/", async (req, res, next) => {
   try {
-    const phone = request.body.phone;
+    const phone = req.body.phone;
 
-    const existingUser = await user
-      .findOne({
-        $or: [{ phone: phone }],
-      })
-      .exec();
+    const existingUser = await User.findOne({
+      $or: [{ phone: phone }],
+    }).exec();
+
     if (existingUser) {
-      return response.status(401).json({
+      return res.status(401).json({
         title: "Existing Email",
         message: "User already exists.",
       });
     }
-    const newUser = new user({
-      firstName: request.body.firstName,
-      lastName: request.body.lastName,
-      phone: request.body.phone,
-      email: request.body.email,
-      transmission: request.body.transmission,
-      clas: request.body.clas,
-      DLnumber: request.body.DLnumber,
-      DOB: request.body.DOB,
-      permitExpiryDate: request.body.permitExpDate,
+
+    const newUser = new User({
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      phone: req.body.phone,
+      email: req.body.email,
+      transmission: req.body.transmission,
+      clas: req.body.clas,
+      DLnumber: req.body.DLnumber,
+      DOB: req.body.DOB,
+      permitExpiryDate: req.body.permitExpDate,
     });
+
     const savedUser = await newUser.save();
-    return response
+
+    return res
       .status(200)
       .json({ savedUser: savedUser, message: "User added successfully." });
   } catch (err) {
-    console.log(err);
-    response.status(500).json({
-      title: "server error",
-      error: err.message,
-    });
+    next(err);
   }
 });
 

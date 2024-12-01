@@ -20,34 +20,6 @@ const AddStudentModal = (props) => {
     clas: 'A',
   });
 
-  // useEffect(() => {
-  //   // Retrieve JWT token from local storage
-  //   const token = localStorage.getItem("token");
-
-  //   const decodeToken = (token) => {
-  //     try {
-  //       // Decode token
-  //       const decoded = JSON.parse(atob(token.split(".")[1]));
-  //       return decoded;
-  //     } catch (error) {
-  //       console.error("Error decoding token:", error);
-  //       return null;
-  //     }
-  //   };
-
-  //   // Decode token to get user ID and role
-  //   const decodedToken = decodeToken(token);
-
-  //   if (decodedToken) {
-  //     const addAppButton = document.getElementById("newAppButton");
-  //     if (decodedToken.role === "Instructor") {
-  //       if (addAppButton) {
-  //         addAppButton.style.display = "none";
-  //       }
-  //     }
-  //   }
-  // }, []);
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({

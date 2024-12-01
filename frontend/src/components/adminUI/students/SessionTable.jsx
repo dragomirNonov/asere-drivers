@@ -20,8 +20,7 @@ const SessionTable = ({ title = 'Sessions', sessions, onEdit, onDelete }) => {
             <tr className="border-b border-gray-200">
               <td
                 colSpan="5"
-                className="text-sm text-start px-2 py-2 text-gray-500"
-              >
+                className="text-sm text-start px-2 py-2 text-gray-500">
                 No sessions available.
               </td>
             </tr>

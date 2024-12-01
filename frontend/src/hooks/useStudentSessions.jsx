@@ -18,8 +18,8 @@ const useStudentSessions = (userId) => {
     try {
       setIsLoading(true);
       const response = await sessionService.getSessionsByStudentId(userId);
-      const formattedSessions = formatSessions(response.data.sessions);
-      const totalHours = response.data.totalHours;
+      const formattedSessions = formatSessions(response.sessions);
+      const totalHours = response.totalHours;
 
       setSessions({
         preTrip: formattedSessions.filter((s) => s.maneuver === 'Pre Trip'),

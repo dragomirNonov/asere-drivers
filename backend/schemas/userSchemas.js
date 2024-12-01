@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const uuid = require("uuid");
 const Schema = mongoose.Schema;
 
-let userCredentials = new Schema({
+let user = new Schema({
   _id: { type: String, default: uuid.v1 },
   firstName: {
     type: String,
@@ -55,5 +55,5 @@ let userCredentials = new Schema({
 });
 
 // create models from mongoose schemas
-const user = mongoose.model("users", userCredentials);
-module.exports = { user };
+const User = mongoose.model("user", user);
+module.exports = { User };

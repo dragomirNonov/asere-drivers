@@ -18,10 +18,8 @@ const EditStudentModal = (props) => {
     e.preventDefault();
 
     try {
-      // Handle form submission, for example: save editedInfo to database
-      console.log('Edited Info:', editedInfo);
       await userService.editStudent(editedInfo);
-      // Refresh students after editing
+
       props.refresh();
       // Close the pop-up
       setShowModal(false);

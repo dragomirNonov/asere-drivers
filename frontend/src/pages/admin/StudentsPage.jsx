@@ -22,7 +22,7 @@ const StudentsPage = () => {
       .getAllStudents()
       .then((response) => {
         // Set the fetched students to state
-        setStudents(response.data.students);
+        setStudents(response.students);
       })
       .catch((error) => {
         console.error('Error fetching students:', error);

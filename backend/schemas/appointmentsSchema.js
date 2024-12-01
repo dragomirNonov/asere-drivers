@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const uuid = require("uuid");
 const Schema = mongoose.Schema;
 
-let appointments = new Schema({
+let appointment = new Schema({
   _id: { type: String, default: uuid.v1 },
   firstName: {
     type: String,
@@ -57,5 +57,5 @@ let appointments = new Schema({
 });
 
 // create models from mongoose schemas
-const appointment = mongoose.model("appointments", appointments);
-module.exports = { appointment };
+const Appointment = mongoose.model("appointment", appointment);
+module.exports = { Appointment };

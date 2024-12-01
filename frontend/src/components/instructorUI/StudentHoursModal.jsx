@@ -1,108 +1,26 @@
 import { useState, useEffect } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
-import { formatDate } from '../../utils/utils.js';
-import Modal from '../common/Modal.jsx';
 
-import sessionApi from '../../services/sessions';
+import Modal from '../common/Modal.jsx';
+import useStudentSessions from '../../hooks/useStudentSessions.jsx';
 import SessionTable from './SessionTable.jsx';
 
 const StudentHoursModal = (props) => {
   const userId = props.info._id;
   const [showModal, setShowModal] = useState(false);
-  const [preTripSessions, setPreTripSessions] = useState([]);
-  const [straightBackSessions, setStraightBackSessions] = useState([]);
-  const [offSetSessions, setOffSetSessions] = useState([]);
-  const [roadSessions, setRoadSessions] = useState([]);
-  const [hours, setTotalHours] = useState({
-    preTrip: 0,
-    driving: 0,
-    total: 0,
-  });
+
+  const { sessions, hours, isLoading, fetchSessions } =
+    useStudentSessions(userId);
 
   useEffect(() => {
+    const fetchData = async () => {
+      await fetchSessions();
+      console.log(sessions);
+    };
+
     if (userId) {
-      populateSessions();
+      fetchData();
     }
   }, []);
-
-  const populateSessions = () => {
-    sessionApi
-      .getSessionsByStudentId(userId)
-      .then((response) => {
-        console.log('sessions', response.data);
-
-        const sortedSessions = response.data?.map((x) => {
-          const item = {
-            id: x._id,
-            displayDate: formatDate(x.date),
-            date: x.date.split('T')[0],
-            maneuver: x.maneuver,
-            duration: x.duration,
-            userId: x.user,
-            clockedIn: x.clockedIn,
-            displayClockedIn: x.clockedIn,
-            clockedOut: x.clockedOut,
-            displayClockedOut: x.clockedOut,
-          };
-
-          return item;
-        });
-
-        if (sortedSessions.length > 0) {
-          var calculatedHours = calculateHours(sortedSessions);
-          setTotalHours(calculatedHours);
-        }
-
-        setPreTripSessions(
-          sortedSessions.filter((session) => session.maneuver === 'Pre Trip'),
-        );
-
-        setStraightBackSessions(
-          sortedSessions.filter(
-            (session) => session.maneuver === 'Straight Back',
-          ),
-        );
-
-        setOffSetSessions(
-          sortedSessions.filter((session) => session.maneuver === 'Off Set'),
-        );
-
-        setRoadSessions(
-          sortedSessions.filter((session) => session.maneuver === 'Road'),
-        );
-      })
-      .catch((error) => {
-        toast.error(error.message);
-        console.error('Error fetching sessions:', error);
-      });
-  };
-
-  // Function to calculate total hours across all sessions
-  const calculateHours = (sessions) => {
-    let preTrip = 0;
-    let driving = 0;
-
-    sessions.forEach((session) => {
-      if (session.duration) {
-        const duration = parseFloat(session.duration);
-        if (session.maneuver === 'Pre Trip') {
-          preTrip += duration;
-        } else if (
-          ['Straight Back', 'Off Set', 'Road'].includes(session.maneuver)
-        ) {
-          driving += duration;
-        }
-      }
-    });
-
-    const total = preTrip + driving;
-
-    return {
-      preTrip: preTrip.toFixed(2),
-      driving: driving.toFixed(2),
-      total: total.toFixed(2),
-    };
-  };
 
   return (
     <>
@@ -123,13 +41,13 @@ const StudentHoursModal = (props) => {
         footer={<div className="flex justify-between"></div>}
         size="xl">
         <div>
-          <SessionTable title="Pre Trip Sessions" sessions={preTripSessions} />
+          <SessionTable title="Pre Trip Sessions" sessions={sessions.preTrip} />
           <SessionTable
             title="Straight Back Sessions"
-            sessions={straightBackSessions}
+            sessions={sessions.straightBack}
           />
-          <SessionTable title="Off Set Sessions" sessions={offSetSessions} />
-          <SessionTable title="Road Sessions" sessions={roadSessions} />
+          <SessionTable title="Off Set Sessions" sessions={sessions.offSet} />
+          <SessionTable title="Road Sessions" sessions={sessions.road} />
 
           <div className="flex flex-row items-center gap-4">
             <div>

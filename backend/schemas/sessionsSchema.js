@@ -27,5 +27,5 @@ let session = new Schema({
 });
 
 // create models from mongoose schemas
-const sessions = mongoose.model("sessions", session);
-module.exports = { sessions };
+const Session = mongoose.model("session", session);
+module.exports = { Session };
