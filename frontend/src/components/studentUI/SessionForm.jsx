@@ -40,7 +40,7 @@ const SessionForm = ({ userId, onAddSession }) => {
 
     const sessionObj = {
       userId: userId,
-      date: formData.date.format('YYYY-MM-DD'),
+      date: formData.date.toISOString(),
       clockedIn: formData.clockedIn,
       clockedOut: formData.clockedOut,
       maneuver: formData.maneuver,

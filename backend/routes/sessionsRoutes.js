@@ -10,61 +10,142 @@ const {
   calculateSessionTotalHours,
 } = require("../services/sessionService");
 
+// // Clock IN
+// router.post(
+//   "/api/clock-in",
+//   authorize(["Instructor", "Manager", "Student"]),
+//   async (req, res, next) => {
+//     try {
+//       const { userId, clockedIn, clockedOut, date, maneuver } = req.body;
+
+//       const clockedInDateTime = combineDateAndTime(date, clockedIn);
+//       const clockedOutDateTime = combineDateAndTime(date, clockedOut);
+
+//       if (clockedInDateTime >= clockedOutDateTime) {
+//         return res.status(400).json({
+//           message: "Invalid time: Start time must be before end time.",
+//         });
+//       }
+
+//       // Validate time range
+//       if (!isWithinAllowedTime(clockedInDateTime, clockedOutDateTime, date)) {
+//         return res.status(400).json({
+//           message:
+//             "Invalid time: Appointments must be between 09:00 and 17:00.",
+//         });
+//       }
+
+//       // Fetch existing sessions for the day
+//       const existingSessions = await sessions.find({
+//         user: userId,
+//         date: new Date(date),
+//       });
+
+//       // Check for time overlap
+//       if (
+//         hasTimeOverlap(clockedInDateTime, clockedOutDateTime, existingSessions)
+//       ) {
+//         return res.status(400).json({
+//           message:
+//             "Time conflict: Overlapping session exists for the same day.",
+//         });
+//       }
+
+//       const duration = calculateDuration(clockedInDateTime, clockedOutDateTime);
+
+//       const session = new sessions({
+//         user: userId,
+//         date: date,
+//         clockedIn: clockedIn,
+//         clockedOut: clockedOut,
+//         maneuver: maneuver,
+//         duration: duration,
+//       });
+
+//       await session.save();
+//       res.send("Clocked in");
+//     } catch (err) {
+//       next(err);
+//     }
+//   }
+// );
+
 // Clock IN
 router.post(
   "/api/clock-in",
   authorize(["Instructor", "Manager", "Student"]),
-  async (req, res) => {
+  async (req, res, next) => {
     try {
       const { userId, clockedIn, clockedOut, date, maneuver } = req.body;
 
-      const clockedInDateTime = combineDateAndTime(date, clockedIn);
-      const clockedOutDateTime = combineDateAndTime(date, clockedOut);
+      // Convert date string to start and end of day
+      const sessionDate = new Date(date);
+      const startOfDay = new Date(sessionDate.setHours(0, 0, 0, 0));
+      const endOfDay = new Date(sessionDate.setHours(23, 59, 59, 999));
 
-      if (clockedInDateTime >= clockedOutDateTime) {
-        return res.status(400).json({
-          message: "Invalid time: Start time must be before end time.",
-        });
-      }
-
-      // Validate time range
-      if (!isWithinAllowedTime(clockedInDateTime, clockedOutDateTime, date)) {
-        return res.status(400).json({
-          message:
-            "Invalid time: Appointments must be between 09:00 and 17:00.",
-        });
-      }
-
-      // Fetch existing sessions for the day
+      // Find sessions for the same user on the same day
       const existingSessions = await sessions.find({
         user: userId,
-        date: new Date(date),
+        date: {
+          $gte: startOfDay,
+          $lte: endOfDay,
+        },
       });
 
-      // Check for time overlap
-      if (
-        hasTimeOverlap(clockedInDateTime, clockedOutDateTime, existingSessions)
-      ) {
+      // Convert times to minutes for easier comparison
+      const getMinutes = (timeStr) => {
+        const [hours, minutes] = timeStr.split(":").map(Number);
+        return hours * 60 + minutes;
+      };
+
+      const newStartMinutes = getMinutes(clockedIn);
+      const newEndMinutes = getMinutes(clockedOut);
+
+      // Check for overlap
+      const hasOverlap = existingSessions.some((session) => {
+        const existingStartMinutes = getMinutes(session.clockedIn);
+        const existingEndMinutes = getMinutes(session.clockedOut);
+
+        const overlap =
+          (newStartMinutes >= existingStartMinutes &&
+            newStartMinutes < existingEndMinutes) ||
+          (newEndMinutes > existingStartMinutes &&
+            newEndMinutes <= existingEndMinutes) ||
+          (newStartMinutes <= existingStartMinutes &&
+            newEndMinutes >= existingEndMinutes);
+
+        return overlap;
+      });
+
+      if (hasOverlap) {
         return res.status(400).json({
-          message:
-            "Time conflict: Overlapping session exists for the same day.",
+          message: "Time conflict.",
         });
       }
 
-      const duration = calculateDuration(clockedInDateTime, clockedOutDateTime);
+      // Calculate duration
+      const duration = (
+        (getMinutes(clockedOut) - getMinutes(clockedIn)) /
+        60
+      ).toFixed(1);
 
+      // Create the session
       const session = new sessions({
         user: userId,
-        date: date,
-        clockedIn: clockedIn,
-        clockedOut: clockedOut,
-        maneuver: maneuver,
-        duration: duration,
+        date,
+        clockedIn,
+        clockedOut,
+        maneuver,
+        duration,
       });
 
       await session.save();
-      res.send("Clocked in");
+      res.status(200).json({
+        message: "Session created successfully",
+        session,
+      });
     } catch (err) {
+      console.error("Error creating session:", err);
       next(err);
     }
   }
@@ -166,6 +247,8 @@ router.delete(
   async (req, res) => {
     try {
       const { sessionId } = req.params;
+      console.log(sessionId);
+
       const deletedSession = await sessions.findByIdAndDelete(sessionId);
 
       if (!deletedSession) {
