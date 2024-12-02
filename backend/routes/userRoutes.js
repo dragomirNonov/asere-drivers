@@ -87,6 +87,7 @@ router.get(
 
       if (!foundUser) {
         return res.status(404).json({
+          title: "Validation error",
           message: "User not found",
         });
       }
@@ -107,11 +108,7 @@ router.get(
   async (req, res, next) => {
     try {
       const students = await User.find({ Role: "Student" });
-      if (!students || students.length === 0) {
-        return res.status(404).json({
-          message: "No students found",
-        });
-      }
+
       return res.status(200).json({ students });
     } catch (err) {
       next(err);
@@ -135,12 +132,13 @@ router.put(
 
       if (!updatedStudent) {
         return res.status(404).json({
-          message: "Student not found",
+          title: "Not found",
+          message: "Student not found.",
         });
       }
 
       return res.status(200).json({
-        message: "Student updated successfully",
+        message: "Student updated successfully.",
         student: updatedStudent,
       });
     } catch (err) {
@@ -157,7 +155,8 @@ router.delete("/:id", authorize(["Manager"]), async (req, res, next) => {
 
     if (!deletedStudent) {
       return res.status(404).json({
-        message: "Student not found",
+        title: "Not found",
+        message: "Student not found.",
       });
     }
 

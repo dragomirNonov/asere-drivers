@@ -48,7 +48,8 @@ const validateUser = async (req, res, next) => {
     if (!errors.isEmpty()) {
       return res.status(400).json({
         title: "Validation Error",
-        errors: errors.array(),
+        message: "One or more fields are missing or invalid.",
+        errors: errors.errors,
       });
     }
 
@@ -93,14 +94,13 @@ const validateUser = async (req, res, next) => {
       if (!dayjs(req.body.permitExpiryDate, "YYYY-MM-DD", true).isValid()) {
         return res.status(400).json({
           title: "Validation Error",
-          message: "Invalid permit expiry date format. Use YYYY-MM-DD",
+          message: "Invalid permit expiry date format. Use `YYYY-MM-DD`",
         });
       }
     }
 
     next();
   } catch (err) {
-    console.error("Error validating user:", err);
     next(err);
   }
 };

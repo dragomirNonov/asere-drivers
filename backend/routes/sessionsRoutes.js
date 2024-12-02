@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const { authorize } = require("../middlewares/authorize");
 const validateSession = require("../middlewares/validateSession");
-const { check, validationResult } = require("express-validator");
 const dayjs = require("dayjs");
 const utc = require("dayjs/plugin/utc");
 dayjs.extend(utc);
@@ -12,29 +11,13 @@ const {
   calculateSessionsTotalHours,
 } = require("../services/sessionService");
 
-// Shared validation rules
-const sessionValidationRules = [
-  check("userId", "User ID is required.").notEmpty(),
-  check("clockedIn", "ClockedIn time is required.").notEmpty(),
-  check("clockedOut", "ClockedOut time is require.").notEmpty(),
-  check("date", "Date is required.").notEmpty(),
-  check("maneuver", "Maneuver is required.").notEmpty(),
-];
-
 // Create
 router.post(
   "/",
   authorize(["Instructor", "Manager", "Student"]),
-  sessionValidationRules,
   validateSession,
   async (req, res, next) => {
     try {
-      const errors = validationResult(req);
-
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-      }
-
       const { userId, clockedIn, clockedOut, date, maneuver } = req.body;
 
       // Calculate duration
@@ -56,11 +39,10 @@ router.post(
       await session.save();
 
       res.status(200).json({
-        message: "Session created successfully",
+        message: "Session added successfully.",
         session,
       });
     } catch (err) {
-      console.error("Error creating session:", err);
       next(err);
     }
   }
@@ -70,7 +52,6 @@ router.post(
 router.put(
   "/:id",
   authorize(["Instructor", "Manager"]),
-  sessionValidationRules,
   validateSession,
   async (req, res, next) => {
     try {
@@ -80,7 +61,6 @@ router.put(
       const duration = calculateDuration(clockedIn, clockedOut);
 
       const utcDate = dayjs(date).utc().toDate();
-      console.log(utcDate);
 
       const updatedSession = await Session.findByIdAndUpdate(
         req.params.id,
@@ -95,10 +75,15 @@ router.put(
       );
 
       if (!updatedSession) {
-        return res.status(404).json({ error: "Session not found" });
+        return res
+          .status(404)
+          .json({ title: "Not found", error: "Session not found" });
       }
 
-      res.json({ message: "Session updated", session: updatedSession });
+      res.status(200).json({
+        message: "Session edited successfully.",
+        session: updatedSession,
+      });
     } catch (err) {
       next(err);
     }
@@ -122,7 +107,7 @@ router.get(
       const { preTrip, driving, total } =
         calculateSessionsTotalHours(studentSessions);
 
-      res.json({
+      res.status(200).json({
         sessions: studentSessions,
         totalHours: {
           preTrip,
@@ -147,10 +132,15 @@ router.delete(
       const deletedSession = await Session.findByIdAndDelete(sessionId);
 
       if (!deletedSession) {
-        return res.status(404).json({ message: "Session not found." });
+        return res
+          .status(404)
+          .json({ title: "Not Found", message: "Session not found." });
       }
 
-      res.json(deletedSession);
+      res.status(200).json({
+        message: "Session deleted successfully",
+        session: deletedSession,
+      });
     } catch (err) {
       next(err);
     }

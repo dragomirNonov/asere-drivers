@@ -26,13 +26,13 @@ apiClient.interceptors.request.use((config) => {
 apiClient.interceptors.response.use(
   (response) => response.data,
   (error) => {
-    console.error('API Error:', error.response || error.message);
     return Promise.reject({
       status: error.response?.status,
       statusText: error.response?.statusText,
       message:
         error.response?.data?.message ??
         'Something went wrong. Please try again.',
+      errors: error.response?.data?.errors,
     });
   },
 );

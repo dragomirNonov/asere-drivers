@@ -71,7 +71,6 @@ const ScheduleStudent = (props) => {
 
   const handleError = (err) => {
     setSuccessMessage('');
-    debugger;
     setErrorMessage(err.message);
   };
 

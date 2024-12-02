@@ -26,22 +26,26 @@ const validateAppointment = [
       const errors = validationResult(req);
 
       if (!errors.isEmpty()) {
-        return res.status(400).json({ message: "Missing field values." });
+        return res.status(400).json({
+          title: "Validation Error",
+          message: "One or more fields are missing or invalid.",
+          errors,
+        });
       }
 
       const { date } = req.body;
 
       if (!dayjs(date, "YYYY-MM-DD", true).isValid()) {
-        return res
-          .status(400)
-          .json({ message: "Invalid date format. Use `YYYY-MM-DD`." });
+        return res.status(400).json({
+          title: "Validation Error",
+          message: "Invalid date format. Use `YYYY-MM-DD`.",
+        });
       }
 
       // Additional custom validations can go here...
 
       next();
     } catch (err) {
-      console.error("Error validating appointment:", err);
       next(err);
     }
   },

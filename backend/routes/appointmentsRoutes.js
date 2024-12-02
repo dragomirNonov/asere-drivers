@@ -59,8 +59,8 @@ router.post(
       const savedAppointment = await newAppointment.save();
 
       return res.status(200).json({
-        savedAppointment: savedAppointment,
         message: "Appointment added successfully.",
+        appointment: savedAppointment,
       });
     } catch (err) {
       next(err);
@@ -99,6 +99,7 @@ router.put(
       // Check if the appointment exists
       if (!existingAppointment) {
         return res.status(404).json({
+          title: "Not Found",
           message: "Appointment not found.",
         });
       }
@@ -122,8 +123,8 @@ router.put(
       const updatedAppointment = await existingAppointment.save();
 
       return res.status(200).json({
-        updatedAppointment: updatedAppointment,
         message: "Appointment updated successfully.",
+        appointment: updatedAppointment,
       });
     } catch (err) {
       next(err);
@@ -173,12 +174,14 @@ router.delete("/:id", authorize(["Manager"]), async (req, res, next) => {
     // Check if the appointment was deleted
     if (deletedAppointment.deletedCount === 0) {
       return res.status(404).json({
+        title: "Nor found",
         message: "Appointment not found.",
       });
     }
 
     return res.status(200).json({
       message: "Appointment deleted successfully.",
+      appointment: deletedAppointment,
     });
   } catch (err) {
     next(err);
