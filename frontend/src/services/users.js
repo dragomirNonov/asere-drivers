@@ -9,50 +9,42 @@ const apiClient = axios.create({
   },
 });
 
+// Add token to every request that needs it
+apiClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (
+    token &&
+    !config.url.includes('login') &&
+    !config.url.includes('register')
+  ) {
+    config.headers.token = token;
+  }
+  return config;
+});
+
 // ErrorHandler
 apiClient.interceptors.response.use(
   (response) => response.data,
   (error) => {
     console.error('API Error:', error.response || error.message);
     return Promise.reject({
-      status: error.response.status,
-      statusText: error.response.statusText,
+      status: error.response?.status,
+      statusText: error.response?.statusText,
       message:
-        error.response.data.message ??
+        error.response?.data?.message ??
         'Something went wrong. Please try again.',
     });
   },
 );
 
+// Services
 const register = (rejisterObj) => apiClient.post(`register`, rejisterObj);
-
 const login = (loginObj) => apiClient.post(`login`, loginObj);
-
 const getUserById = (userId) => apiClient.get(`${userId}`);
-
-const getAllStudents = () => {
-  return apiClient.get(``, {
-    headers: { token: localStorage.getItem('token') },
-  });
-};
-
-const editStudent = (updatedData) => {
-  return apiClient.put('', updatedData, {
-    headers: { token: localStorage.getItem('token') },
-  });
-};
-
-const deleteStudent = (studentId) => {
-  return apiClient.delete(`${studentId}`, {
-    headers: { token: localStorage.getItem('token') },
-  });
-};
-
-const addStudent = (studentObj) => {
-  return apiClient.post('', studentObj, {
-    headers: { token: localStorage.getItem('token') },
-  });
-};
+const getAllStudents = () => apiClient.get(``);
+const editStudent = (updatedData) => apiClient.put('', updatedData);
+const deleteStudent = (studentId) => apiClient.delete(`${studentId}`);
+const addStudent = (studentObj) => apiClient.post('', studentObj);
 
 export default {
   register,

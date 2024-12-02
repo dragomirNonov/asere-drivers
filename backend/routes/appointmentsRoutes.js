@@ -138,7 +138,6 @@ router.get(
   async (req, res, next) => {
     try {
       const appointments = await Appointment.find();
-      console.log(appointments);
       res.json(appointments);
     } catch (err) {
       next(err);

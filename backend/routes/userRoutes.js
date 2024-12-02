@@ -4,78 +4,71 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 const { authorize } = require("../middlewares/authorize");
 let { User } = require("../schemas/userSchemas");
+const {
+  validateUser,
+  userValidationRules,
+  registrationValidationRules,
+  loginValidationRules,
+} = require("../middlewares/validateUser");
 
 // Register user
-router.post("/register", async (req, res, next) => {
-  try {
-    console.log(req);
-    const phone = req.body.phone;
-
-    const existingUser = await User.findOne({
-      $or: [{ phone: phone }],
-    }).exec();
-
-    if (existingUser) {
-      return res.status(401).json({
-        title: "Existing Email",
-        message: "User already exists.",
+router.post(
+  "/register",
+  registrationValidationRules,
+  validateUser,
+  async (req, res, next) => {
+    try {
+      const newUser = new User({
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        phone: req.body.phone,
+        email: req.body.email,
+        transmission: req.body.transmission,
+        clas: req.body.clas,
+        DOB: req.body.DOB,
+        DLnumber: req.body.DLnumber,
+        password: bcrypt.hashSync(req.body.password, 10),
       });
+
+      const savedUser = await newUser.save();
+      return res.status(200).json({
+        message: "User registered successfully.",
+        user: savedUser,
+      });
+    } catch (err) {
+      next(err);
     }
-
-    const newUser = new User({
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      phone: req.body.phone,
-      email: req.body.email,
-      transmission: req.body.transmission,
-      clas: req.body.clas,
-      DOB: req.body.DOB,
-      // DLnumber: bcrypt.hashSync(request.body.DLnumber, 10),
-      DLnumber: req.body.DLnumber,
-      password: bcrypt.hashSync(req.body.password, 10),
-    });
-
-    const savedUser = await newUser.save();
-
-    return res
-      .status(200)
-      .json({ savedUser: savedUser, message: "User added successfully." });
-  } catch (err) {
-    next(err);
   }
-});
+);
 
-// LOGIN
-router.post("/login", async (req, res, next) => {
+// Login
+router.post("/login", loginValidationRules, async (req, res, next) => {
   try {
     const { phone, password } = req.body;
 
     const userExists = await User.findOne({ phone }).exec();
-
     if (!userExists) {
       return res.status(401).json({
-        title: "User not found.",
-        message: "Invalid credentials.",
+        title: "Login Failed",
+        message: "Invalid credentials",
       });
     }
 
     if (!bcrypt.compareSync(password, userExists.password)) {
       return res.status(401).json({
-        title: "Login Failed.",
-        message: "Invalid credentials.",
+        title: "Login Failed",
+        message: "Invalid credentials",
       });
     }
 
     let token = jwt.sign(
       { userId: userExists._id, role: userExists.Role },
       "secretkey",
-      {
-        expiresIn: "480min",
-      }
+      { expiresIn: "480min" }
     );
 
     return res.status(200).json({
-      message: "Login success",
+      message: "Login successful",
       token: token,
     });
   } catch (err) {
@@ -84,25 +77,28 @@ router.post("/login", async (req, res, next) => {
 });
 
 // Get user by ID
-router.get("/:id", async (req, res, next) => {
-  try {
-    const userId = req.params.id;
+router.get(
+  "/:id",
+  authorize(["Instructor", "Manager", "Student"]),
+  async (req, res, next) => {
+    try {
+      const userId = req.params.id;
+      const foundUser = await User.findById(userId);
 
-    const foundUser = await User.findById(userId);
+      if (!foundUser) {
+        return res.status(404).json({
+          message: "User not found",
+        });
+      }
 
-    if (!foundUser) {
-      return res.status(404).json({
-        message: "User not found.",
+      return res.status(200).json({
+        user: foundUser,
       });
+    } catch (err) {
+      next(err);
     }
-
-    return res.status(200).json({
-      user: foundUser,
-    });
-  } catch (err) {
-    next(err);
   }
-});
+);
 
 // Get all students
 router.get(
@@ -111,15 +107,41 @@ router.get(
   async (req, res, next) => {
     try {
       const students = await User.find({ Role: "Student" });
-
       if (!students || students.length === 0) {
         return res.status(404).json({
-          message: "No students found.",
+          message: "No students found",
+        });
+      }
+      return res.status(200).json({ students });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+// Update student
+router.put(
+  "/:id",
+  authorize(["Manager"]),
+  userValidationRules,
+  validateUser,
+  async (req, res, next) => {
+    try {
+      const updatedStudent = await User.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        { new: true }
+      );
+
+      if (!updatedStudent) {
+        return res.status(404).json({
+          message: "Student not found",
         });
       }
 
       return res.status(200).json({
-        students: students,
+        message: "Student updated successfully",
+        student: updatedStudent,
       });
     } catch (err) {
       next(err);
@@ -127,47 +149,20 @@ router.get(
   }
 );
 
-// Update student by ID
-router.put("/", async (req, res) => {
-  try {
-    const studentId = req.body.id;
-    const updatedData = req.body;
-
-    const updatedStudent = await User.findByIdAndUpdate(
-      studentId,
-      updatedData,
-      { new: true }
-    );
-
-    if (!updatedStudent) {
-      return res.status(404).json({
-        message: "Student not found.",
-      });
-    }
-
-    return res.status(200).json({
-      message: "Student updated successfully.",
-      student: updatedStudent,
-    });
-  } catch (err) {
-    next(err);
-  }
-});
-
-// Delete student by ID
-router.delete("/:id", async (req, res, next) => {
+// Delete student
+router.delete("/:id", authorize(["Manager"]), async (req, res, next) => {
   try {
     const studentId = req.params.id;
     const deletedStudent = await User.findByIdAndDelete(studentId);
 
     if (!deletedStudent) {
       return res.status(404).json({
-        message: "Student not found.",
+        message: "Student not found",
       });
     }
 
     return res.status(200).json({
-      message: "Student deleted successfully.",
+      message: "Student deleted successfully",
       student: deletedStudent,
     });
   } catch (err) {
@@ -176,41 +171,35 @@ router.delete("/:id", async (req, res, next) => {
 });
 
 // Add new Student
-router.post("/", async (req, res, next) => {
-  try {
-    const phone = req.body.phone;
-
-    const existingUser = await User.findOne({
-      $or: [{ phone: phone }],
-    }).exec();
-
-    if (existingUser) {
-      return res.status(401).json({
-        title: "Existing Email",
-        message: "User already exists.",
+router.post(
+  "/",
+  authorize(["Manager"]),
+  userValidationRules,
+  validateUser,
+  async (req, res, next) => {
+    try {
+      const newUser = new User({
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        phone: req.body.phone,
+        email: req.body.email,
+        transmission: req.body.transmission,
+        clas: req.body.clas,
+        DLnumber: req.body.DLnumber,
+        DOB: req.body.DOB,
+        permitExpiryDate: req.body.permitExpDate,
+        Role: "Student",
       });
+
+      const savedUser = await newUser.save();
+      return res.status(200).json({
+        message: "Student added successfully",
+        user: savedUser,
+      });
+    } catch (err) {
+      next(err);
     }
-
-    const newUser = new User({
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      phone: req.body.phone,
-      email: req.body.email,
-      transmission: req.body.transmission,
-      clas: req.body.clas,
-      DLnumber: req.body.DLnumber,
-      DOB: req.body.DOB,
-      permitExpiryDate: req.body.permitExpDate,
-    });
-
-    const savedUser = await newUser.save();
-
-    return res
-      .status(200)
-      .json({ savedUser: savedUser, message: "User added successfully." });
-  } catch (err) {
-    next(err);
   }
-});
+);
 
 module.exports = router;
