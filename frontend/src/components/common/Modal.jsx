@@ -62,8 +62,7 @@ const Modal = ({
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50"
-      onClick={handleBackdropClick}
-    >
+      onClick={handleBackdropClick}>
       <div
         ref={modalRef}
         tabIndex={-1}
@@ -71,8 +70,8 @@ const Modal = ({
         className={`bg-white rounded-lg shadow-lg w-full ${getSizeClass()}`}
         role="dialog"
         aria-modal="true"
-        aria-labelledby="modal-title"
-      >
+        aria-labelledby="modal-title">
+        {/* Header */}
         <div className="flex justify-between p-4 rounded border border-slate-800 bg-slate-800 text-white">
           <h3 id="modal-title" className="text-xl font-semibold">
             {title}
@@ -80,35 +79,38 @@ const Modal = ({
           <button
             onClick={onClose}
             aria-label="Close modal"
-            className="text-white hover:text-gray-300 focus:outline-none"
-          >
+            className="text-white hover:text-gray-300 focus:outline-none text-xl">
             &times;
           </button>
         </div>
+
+        {/* Content */}
         <div className="p-4 space-y-4 max-h-96 overflow-y-auto">{children}</div>
-        <div className="border-t border-gray-300 bg-gray-20 p-3">
-          {footer ? (
-            footer
-          ) : (
-            <div className="flex justify-end">
+
+        {/* Footer */}
+        <div className="border-t border-gray-300 bg-gray-100 p-3">
+          <div className="flex justify-end items-center space-x-2">
+            {/* Custom footer content */}
+            {footer && <div className="flex-1">{footer}</div>}
+
+            {/* Default buttons */}
+            <div className="flex space-x-2">
               {showConfirm && (
                 <button
                   type="button"
                   onClick={onConfirm}
-                  className="px-3 py-1 text-sm text-white bg-blue-500 rounded hover:bg-blue-600"
-                >
+                  className="px-3 py-1 text-sm text-white bg-blue-500 rounded hover:bg-blue-600 transition-colors">
                   {confirmLabel}
                 </button>
               )}
               <button
                 type="button"
                 onClick={onClose}
-                className="ms-2 px-3 py-1 text-sm text-white bg-gray-600 rounded hover:bg-gray-400"
-              >
+                className="px-3 py-1 text-sm text-white bg-gray-600 rounded hover:bg-gray-700 transition-colors">
                 Cancel
               </button>
             </div>
-          )}
+          </div>
         </div>
       </div>
     </div>

@@ -1,5 +1,5 @@
 import DynamicBackgroundDiv from '../../components/common/DynamicBackgroundDiv';
-import Navbar from '../../components/studentUI/Navbar';
+import Navbar from '../../components/common/Navbar';
 import UserInfo from '../../components/common/UserInfo';
 import SessionForm from '../../components/studentUI/SessionForm';
 import StudentHours from '../../components/studentUI/StudentHours';
@@ -26,7 +26,7 @@ const StudentPage = () => {
   return (
     <div>
       <DynamicBackgroundDiv backgroundImage={truckImage}>
-        <Navbar />
+        <Navbar navlinks={[]} />
         <UserInfo />
         {userId && (
           <>

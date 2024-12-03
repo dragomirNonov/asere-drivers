@@ -50,13 +50,13 @@ const StudentsPage = () => {
     .sort((a, b) => a.firstName.localeCompare(b.firstName));
 
   return (
-    <div className="flex flex-col items-center mt-4 n">
+    <div className="flex flex-col items-center  ">
       <input
         type="text"
         placeholder="Search by student name..."
         value={searchQuery}
         onChange={handleSearchChange}
-        className="my-4 p-2 md:w-1/6 w-full border border-gray-300 rounded-md"
+        className="my-4 p-2 md:w-1/6 w-96 border border-gray-300 rounded-md"
       />
       <div className="flex flex-col md:flex-row">
         {/* Div for Standard Transmission Students */}

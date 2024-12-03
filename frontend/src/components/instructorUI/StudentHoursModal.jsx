@@ -27,7 +27,7 @@ const StudentHoursModal = (props) => {
       <button
         className="bg-gray-800 text-white active:bg-blue-600 uppercase text-sm px-2 py-2 rounded-lg shadow
          hover:shadow-lg hover:bg-gray-600 outline-none focus:outline-none ml-auto mr-1 mb-1 ease-linear transition-all 
-         duration-150 md:w-1/6"
+         duration-150 "
         type="button"
         onClick={() => setShowModal(true)}>
         Hours
@@ -38,7 +38,30 @@ const StudentHoursModal = (props) => {
         onConfirm={null}
         title="User Hours"
         showConfirm={false}
-        footer={<div className="flex justify-between"></div>}
+        footer={
+          <div className="flex justify-between">
+            <div className="flex flex-row items-center gap-4 text-black">
+              <div>
+                <label htmlFor="date" className="">
+                  Pre-Trip:
+                </label>
+                <span className="font-light"> {hours.preTrip}</span>
+              </div>
+              <div>
+                <label htmlFor="date" className="">
+                  Driving:
+                </label>
+                <span className="font-light"> {hours.driving}</span>
+              </div>
+              <div>
+                <label htmlFor="date" className="">
+                  Total:
+                </label>
+                <span className="font-light"> {hours.total}</span>
+              </div>
+            </div>
+          </div>
+        }
         size="xl">
         <div>
           <SessionTable title="Pre Trip Sessions" sessions={sessions.preTrip} />
@@ -48,27 +71,6 @@ const StudentHoursModal = (props) => {
           />
           <SessionTable title="Off Set Sessions" sessions={sessions.offSet} />
           <SessionTable title="Road Sessions" sessions={sessions.road} />
-
-          <div className="flex flex-row items-center gap-4">
-            <div>
-              <label htmlFor="date" className="">
-                Pre-Trip:
-              </label>
-              <span className="font-light"> {hours.preTrip}</span>
-            </div>
-            <div>
-              <label htmlFor="date" className="">
-                Driving:
-              </label>
-              <span className="font-light"> {hours.driving}</span>
-            </div>
-            <div>
-              <label htmlFor="date" className="">
-                Total:
-              </label>
-              <span className="font-light"> {hours.total}</span>
-            </div>
-          </div>
         </div>
       </Modal>
     </>

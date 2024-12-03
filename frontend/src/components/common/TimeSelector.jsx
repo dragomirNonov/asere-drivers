@@ -1,11 +1,13 @@
 import React from 'react';
-import { TextField, MenuItem } from '@mui/material';
+import { TextField, MenuItem, FormHelperText } from '@mui/material';
 
 const TimeSelector = ({
   clockedIn,
   clockedOut,
   onClockedInChange,
   onClockedOutChange,
+  error,
+  helperText,
 }) => {
   // Convert 24-hour time to 12-hour AM/PM format
   const formatTimeDisplay = (time) => {
@@ -23,13 +25,11 @@ const TimeSelector = ({
     const [timeWithoutPeriod, period] = time.split(' ');
     let [hours, minutes] = timeWithoutPeriod.split(':');
     hours = parseInt(hours);
-
     if (period === 'PM' && hours !== 12) {
       hours += 12;
     } else if (period === 'AM' && hours === 12) {
       hours = 0;
     }
-
     return `${hours.toString().padStart(2, '0')}:${minutes}`;
   };
 
@@ -40,7 +40,6 @@ const TimeSelector = ({
       slots.push(`${formattedHour}:00`);
       slots.push(`${formattedHour}:30`);
     }
-    // Add 17:00 as the last slot
     slots.push('17:00');
     return slots;
   };
@@ -55,7 +54,6 @@ const TimeSelector = ({
   const handleClockedInChange = (time) => {
     const militaryTime = convertToMilitaryTime(time);
     onClockedInChange(militaryTime);
-
     if (clockedOut && militaryTime >= clockedOut) {
       const nextTime = getNextAvailableTime(militaryTime);
       onClockedOutChange(nextTime);
@@ -73,49 +71,56 @@ const TimeSelector = ({
     : timeSlots;
 
   return (
-    <div className="flex flex-wrap items-center gap-4 ">
-      {/* Clock In Select */}
-      <TextField
-        size="small"
-        select
-        fullWidth
-        label="Start Time"
-        value={clockedIn ? formatTimeDisplay(clockedIn) : ''}
-        onChange={(e) => handleClockedInChange(e.target.value)}
-        variant="outlined"
-        className="md:flex-1 bg-white"
-        required>
-        <MenuItem value="" disabled>
-          Start
-        </MenuItem>
-        {timeSlots.map((time) => (
-          <MenuItem key={`in-${time}`} value={formatTimeDisplay(time)}>
-            {formatTimeDisplay(time)}
+    <div className="flex flex-col w-full">
+      <div className="flex flex-wrap items-center gap-4">
+        {/* Clock In Select */}
+        <TextField
+          size="small"
+          select
+          fullWidth
+          label="Start Time"
+          value={clockedIn ? formatTimeDisplay(clockedIn) : ''}
+          onChange={(e) => handleClockedInChange(e.target.value)}
+          variant="outlined"
+          className="md:flex-1 bg-white"
+          error={error}>
+          <MenuItem value="" disabled>
+            Start
           </MenuItem>
-        ))}
-      </TextField>
+          {timeSlots.map((time) => (
+            <MenuItem key={`in-${time}`} value={formatTimeDisplay(time)}>
+              {formatTimeDisplay(time)}
+            </MenuItem>
+          ))}
+        </TextField>
 
-      {/* Clock Out Select */}
-      <TextField
-        size="small"
-        select
-        fullWidth
-        label="End Time"
-        value={clockedOut ? formatTimeDisplay(clockedOut) : ''}
-        onChange={(e) => handleClockedOutChange(e.target.value)}
-        variant="outlined"
-        className="md:flex-1 bg-white"
-        required
-        disabled={!clockedIn}>
-        <MenuItem value="" disabled>
-          End
-        </MenuItem>
-        {filteredEndTimeSlots.map((time) => (
-          <MenuItem key={`out-${time}`} value={formatTimeDisplay(time)}>
-            {formatTimeDisplay(time)}
+        {/* Clock Out Select */}
+        <TextField
+          size="small"
+          select
+          fullWidth
+          label="End Time"
+          value={clockedOut ? formatTimeDisplay(clockedOut) : ''}
+          onChange={(e) => handleClockedOutChange(e.target.value)}
+          variant="outlined"
+          className="md:flex-1 bg-white"
+          disabled={!clockedIn}
+          error={error}>
+          <MenuItem value="" disabled>
+            End
           </MenuItem>
-        ))}
-      </TextField>
+          {filteredEndTimeSlots.map((time) => (
+            <MenuItem key={`out-${time}`} value={formatTimeDisplay(time)}>
+              {formatTimeDisplay(time)}
+            </MenuItem>
+          ))}
+        </TextField>
+      </div>
+      {error && helperText && (
+        <FormHelperText error className="px-2 mt-1">
+          {helperText}
+        </FormHelperText>
+      )}
     </div>
   );
 };

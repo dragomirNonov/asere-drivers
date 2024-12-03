@@ -4,8 +4,7 @@ import SessionTable from './SessionTable.jsx';
 import useStudentSessions from '../../hooks/useStudentSessions.jsx';
 
 const StudentHours = ({ userId, toggle }) => {
-  const { sessions, hours, isLoading, fetchSessions } =
-    useStudentSessions(userId);
+  const { sessions, hours, fetchSessions } = useStudentSessions(userId);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -28,12 +27,12 @@ const StudentHours = ({ userId, toggle }) => {
         <SessionTable title="Off Set Sessions" sessions={sessions.offSet} />
         <SessionTable title="Road Sessions" sessions={sessions.road} />
 
-        <div className="flex flex-row text-lg text-white items-center gap-4 bg-gray-800 md:mx-1 h-10">
+        <div className="flex flex-row text-lg text-white items-center gap-4 bg-gray-800 md:mx-1 h-10 px-5">
           <div>
             <label htmlFor="date" className="">
               Pre-Trip:
             </label>
-            <span className="font-light"> {hours.preTrip}</span>
+            <span className="font-light "> {hours.preTrip}</span>
           </div>
           <div>
             <label htmlFor="date" className="">

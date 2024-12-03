@@ -1,24 +1,19 @@
 import { useState } from 'react';
 import { FaBars, FaTimes } from 'react-icons/fa';
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import logo from '../../assets/logo.png';
 
-const navlinks = [
-  {
-    title: 'Students',
-    link: '/instructorui/students',
-  },
-  {
-    title: 'Appointments',
-    link: '/instructorui/appointments',
-  },
-];
-
-const Navbar = () => {
+const Navbar = ({ navlinks }) => {
   const [open, setOpen] = useState(false);
 
   const handleMenu = () => {
     setOpen((prev) => !prev);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    window.location.href = '/login';
   };
 
   return (
@@ -38,17 +33,16 @@ const Navbar = () => {
                 <a
                   key={index}
                   className="text-yellow-500 transition-all duration-500 hover:bg-gray-600 hover:text-yelow-500 px-3 py-2 rounded-md text-md font-medium"
-                  href={link.link}
-                >
+                  href={link.link}>
                   {link.title}
                 </a>
               ))}
-              <a
-                className="text-yellow-500 transition-all duration-500 hover:bg-gray-600 hover:text-yelow-500 px-3 py-2 rounded-md text-md font-medium border"
-                href="/login"
-              >
+              <button
+                onClick={handleLogout}
+                className="flex items-center text-yellow-500 hover:bg-gray-700 px-4 py-2 rounded-md text-md font-medium transition-colors duration-300 border border-yellow-500">
+                <FontAwesomeIcon icon={faSignOutAlt} className="w-4 h-4 mr-2" />
                 Logout
-              </a>
+              </button>
             </div>
           </div>
           {/* hamburger button */}
@@ -56,8 +50,7 @@ const Navbar = () => {
             <button
               type="button"
               onClick={handleMenu}
-              className="inline-flex items-center justify-center p-2 rounded-md text-yellow-400 hover:bg-gray-700 "
-            >
+              className="inline-flex items-center justify-center p-2 rounded-md text-yellow-400 hover:bg-gray-700 ">
               <span className="sr-only">Open Main Manu</span>
               {open ? <FaTimes /> : <FaBars />}
             </button>
@@ -72,18 +65,17 @@ const Navbar = () => {
               <a
                 key={index}
                 className="text-yellow-500 hover:bg-gray-700 block px-3 py-2 rounded-md text-base  font-medium"
-                href={link.link}
-              >
+                href={link.link}>
                 {link.title}
               </a>
             ))}
             <div className="px-2 py-2  flex justify-end">
-              <a
-                className="text-yellow-600 transition-all duration-500 hover:bg-gray-600 hover:text-yelow-500  rounded-md text-md font-medium px-1 "
-                href="/login"
-              >
+              <button
+                onClick={handleLogout}
+                className="flex items-center text-yellow-500 hover:bg-gray-700 px-4 py-2 rounded-md text-md font-medium transition-colors duration-300 border border-yellow-500">
+                <FontAwesomeIcon icon={faSignOutAlt} className="w-4 h-4 mr-2" />
                 Logout
-              </a>
+              </button>
             </div>
           </div>
         </div>
