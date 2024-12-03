@@ -4,7 +4,7 @@ export const formatDate = (dateString) => {
   const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is zero-based
   const day = String(date.getDate()).padStart(2, '0');
 
-  return `${month}/${day}/${year}`;
+  return `${month}-${day}-${year}`;
 };
 
 // Function to format time from 24-hour to 12-hour AM/PM format

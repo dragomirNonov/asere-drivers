@@ -8,7 +8,6 @@ const StudentsPage = () => {
   const [students, setStudents] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const notify = () => toast.success('Appointment Added Successfully');
-  const studentAdded = () => toast.success('Student Added Successfully');
 
   useEffect(() => {
     // Fetch students when component mounts

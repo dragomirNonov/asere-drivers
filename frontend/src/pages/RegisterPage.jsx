@@ -107,7 +107,7 @@ const RegisterPage = () => {
     <div
       className="bg-cover bg-center bg-fixed w-full min-h-screen"
       style={{ backgroundImage: `url(${truckImage})` }}>
-      <div className="bg-gray-900 shadow-md rounded-md p-4 md:mt-10 flex flex-col items-center w-full mx-auto md:h-max md:w-2/6">
+      <div className="bg-gray-900 shadow-md md:rounded-md p-4 md:mt-10 flex flex-col items-center w-full mx-auto md:h-max md:w-2/6 h-screen">
         <h2 className="text-white font-bold p-2 text-3xl">SIGN UP</h2>
         <form onSubmit={handleSubmit(onSubmit)} className="w-full p-2">
           <div className="md:flex md:flex-row my-0">

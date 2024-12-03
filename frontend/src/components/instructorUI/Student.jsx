@@ -10,6 +10,7 @@ import {
   faGraduationCap,
   faGear,
 } from '@fortawesome/free-solid-svg-icons';
+import { formatDate } from '../../utils/utils';
 
 const Student = ({ student, refresh }) => {
   const [accordionOpen, setAccordionOpen] = useState(false);
@@ -102,7 +103,7 @@ const Student = ({ student, refresh }) => {
                 Permit Status: {permitStatus.text}
               </span>
               <span className="text-sm">
-                Expires: {student.permitExpiryDate}
+                Expires: {formatDate(student.permitExpiryDate)}
               </span>
             </div>
           </div>

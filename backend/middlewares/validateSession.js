@@ -2,7 +2,7 @@ const { Session } = require("../schemas/sessionsSchema.js");
 const dayjs = require("dayjs");
 const utc = require("dayjs/plugin/utc");
 dayjs.extend(utc);
-const { check, validationResult } = require("express-validator");
+const { check, validationResult, body } = require("express-validator");
 
 const {
   convertTimeStringToMinutes,
@@ -10,11 +10,11 @@ const {
 } = require("../utils/dateTimeUtils.js");
 
 const validateSession = [
-  check("userId", "User ID is required.").notEmpty(),
-  check("clockedIn", "ClockedIn time is required.").notEmpty(),
-  check("clockedOut", "ClockedOut time is require.").notEmpty(),
-  check("date", "Date is required.").notEmpty(),
-  check("maneuver", "Maneuver is required.").notEmpty(),
+  check("userId").if(body("userId").exists()).notEmpty(),
+  check("clockedIn").if(body("clockedIn").exists()).notEmpty(),
+  check("clockedOut").if(body("clockedOut").exists()).notEmpty(),
+  check("date").if(body("date").exists()).notEmpty(),
+  check("maneuver").if(body("maneuver").exists()).notEmpty(),
 
   async (req, res, next) => {
     try {

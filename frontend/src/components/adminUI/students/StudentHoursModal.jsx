@@ -94,7 +94,7 @@ const StudentHoursModal = ({ info, studentHeading, onVisibilityChange }) => {
         title={studentHeading ? `${studentHeading}` : 'User Hours'}
         showConfirm={false}
         footer={
-          <div className="flex items-center justify-between">
+          <div className="flex items-center ">
             {!showCreate && (
               <button
                 className="px-3 py-1 text-sm text-white bg-green-600 rounded hover:bg-green-700"
@@ -103,16 +103,26 @@ const StudentHoursModal = ({ info, studentHeading, onVisibilityChange }) => {
                 Add
               </button>
             )}
-            <div></div>
-            <button
-              type="button"
-              onClick={() => {
-                onVisibilityChange(false);
-                setShowModal(false);
-              }}
-              className="ms-2 px-3 py-1 text-sm text-white bg-gray-600 rounded hover:bg-gray-400">
-              Cancel
-            </button>
+            <div className="flex flex-row gap-4 px-6">
+              <div>
+                <label htmlFor="date" className="">
+                  Pre-Trip:
+                </label>
+                <span className="font-light"> {hours.preTrip}</span>
+              </div>
+              <div>
+                <label htmlFor="date" className="">
+                  Driving:
+                </label>
+                <span className="font-light"> {hours.driving}</span>
+              </div>
+              <div>
+                <label htmlFor="date" className="">
+                  Total:
+                </label>
+                <span className="font-light"> {hours.total}</span>
+              </div>
+            </div>
           </div>
         }
         size="xl">
@@ -149,27 +159,6 @@ const StudentHoursModal = ({ info, studentHeading, onVisibilityChange }) => {
             onEdit={onEditItem}
             onDelete={onDeleteItemClick}
           />
-
-          <div className="flex flex-row items-center gap-4">
-            <div>
-              <label htmlFor="date" className="">
-                Pre-Trip:
-              </label>
-              <span className="font-light"> {hours.preTrip}</span>
-            </div>
-            <div>
-              <label htmlFor="date" className="">
-                Driving:
-              </label>
-              <span className="font-light"> {hours.driving}</span>
-            </div>
-            <div>
-              <label htmlFor="date" className="">
-                Total:
-              </label>
-              <span className="font-light"> {hours.total}</span>
-            </div>
-          </div>
         </div>
       </Modal>
 

@@ -57,7 +57,7 @@ const StudentsPage = () => {
         placeholder="Search by student name..."
         value={searchQuery}
         onChange={handleSearchChange}
-        className="my-4 p-2 md:w-1/6 w-full border border-gray-300 rounded-md"
+        className="my-4 p-2 md:w-1/6 w-full border border-gray-300 rounded-md w-96"
       />
       <AddStudentModal refresh={fetchStudents} toast={studentAdded} />
       <div className="flex flex-col md:flex-row">

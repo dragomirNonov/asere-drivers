@@ -18,7 +18,7 @@ const EditStudentModal = (props) => {
     e.preventDefault();
 
     try {
-      await userService.editStudent(editedInfo);
+      await userService.editStudent(editedInfo, props.info._id);
 
       props.refresh();
       // Close the pop-up

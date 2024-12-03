@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import Modal from '../common/Modal.jsx';
 import useStudentSessions from '../../hooks/useStudentSessions.jsx';
 import SessionTable from './SessionTable.jsx';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faClock } from '@fortawesome/free-solid-svg-icons';
 
 const StudentHoursModal = (props) => {
   const userId = props.info._id;
@@ -30,6 +32,7 @@ const StudentHoursModal = (props) => {
          duration-150 "
         type="button"
         onClick={() => setShowModal(true)}>
+        <FontAwesomeIcon icon={faClock} className="w-4 h-4 mr-2" />
         Hours
       </button>
       <Modal

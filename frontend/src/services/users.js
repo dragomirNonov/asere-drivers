@@ -42,7 +42,8 @@ const register = (rejisterObj) => apiClient.post(`register`, rejisterObj);
 const login = (loginObj) => apiClient.post(`login`, loginObj);
 const getUserById = (userId) => apiClient.get(`${userId}`);
 const getAllStudents = () => apiClient.get(``);
-const editStudent = (updatedData) => apiClient.put('', updatedData);
+const editStudent = (updatedData, userId) =>
+  apiClient.put(`${userId}`, updatedData);
 const deleteStudent = (studentId) => apiClient.delete(`${studentId}`);
 const addStudent = (studentObj) => apiClient.post('', studentObj);
 
