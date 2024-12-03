@@ -8,6 +8,7 @@ import {
   faChevronDown,
   faClock,
   faGraduationCap,
+  faGear,
 } from '@fortawesome/free-solid-svg-icons';
 
 const Student = ({ student, refresh }) => {
@@ -52,14 +53,16 @@ const Student = ({ student, refresh }) => {
           <div className="">
             <FontAwesomeIcon
               icon={faGraduationCap}
-              className="w-6 h-6 text-white"
+              className="w-6 h-6 text-gray-200"
             />
           </div>
           <div className="flex flex-col text-left">
-            <span className="text-lg font-semibold text-gray-900">
+            <span className="text-lg  text-black font-bold">
               {student.firstName} {student.lastName}
             </span>
-            <span className="text-sm text-gray-700">Class {student.clas}</span>
+            <span className="text-sm text-black font-semibold ">
+              Class {student.clas}
+            </span>
           </div>
         </div>
         <FontAwesomeIcon
@@ -76,14 +79,18 @@ const Student = ({ student, refresh }) => {
         } overflow-hidden`}>
         <div className="p-4 bg-gray-100 space-y-3">
           {/* Contact Info */}
-          <div className="flex items-center px-2 space-x-3 text-gray-600">
+          <div className="flex items-center px-2 space-x-3 text-black">
             <FontAwesomeIcon icon={faPhone} className="w-4 h-4" />
             <span>{student.phone}</span>
           </div>
 
-          <div className="flex items-center px-2 space-x-3 text-gray-600">
+          <div className="flex items-center px-2 space-x-3 text-black">
             <FontAwesomeIcon icon={faEnvelope} className="w-4 h-4" />
             <span>{student.email}</span>
+          </div>
+          <div className="flex items-center px-2 space-x-3 text-black">
+            <FontAwesomeIcon icon={faGear} className="w-4 h-4" />
+            <span>{student.transmission}</span>
           </div>
 
           {/* Permit Status */}
