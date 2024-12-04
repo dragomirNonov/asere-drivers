@@ -10,7 +10,6 @@ const {
 } = require("../utils/dateTimeUtils.js");
 
 const validateSession = [
-  check("userId").if(body("userId").exists()).notEmpty(),
   check("clockedIn").if(body("clockedIn").exists()).notEmpty(),
   check("clockedOut").if(body("clockedOut").exists()).notEmpty(),
   check("date").if(body("date").exists()).notEmpty(),
@@ -29,6 +28,7 @@ const validateSession = [
       }
 
       const { userId, clockedIn, clockedOut, date } = req.body;
+      const sessionId = req.params.id;
 
       if (!dayjs(date, "YYYY-MM-DD", true).isValid()) {
         return res.status(400).json({
@@ -38,8 +38,6 @@ const validateSession = [
       }
 
       const utcDate = dayjs(date).utc().toDate();
-
-      // Extract start and end of the day
       const { startOfDay, endOfDay } = getStartAndEndOfDay(utcDate);
 
       const WORK_START_TIME = process.env.WORK_START_TIME || "09:00";
@@ -73,20 +71,40 @@ const validateSession = [
         });
       }
 
-      // Fetch existing sessions for the same user and date range
+      // For edit operations, get the current session's userId
+      let checkUserId = userId;
+      if (sessionId) {
+        const currentSession = await Session.findById(sessionId);
+        if (!currentSession) {
+          return res.status(404).json({
+            title: "Not Found",
+            message: "Session not found",
+          });
+        }
+        checkUserId = currentSession.user;
+      }
+
+      // Fetch existing sessions for the same user and date range, excluding current session
       const existingSessions = await Session.find({
-        user: userId,
+        user: checkUserId,
         date: {
           $gte: startOfDay,
           $lte: endOfDay,
         },
+        _id: { $ne: sessionId }, // This will exclude the current session if sessionId exists
       });
 
       // Check for time conflicts
-      if (isTimeConflict(newStartMinutes, newEndMinutes, existingSessions)) {
+      const hasConflict = isTimeConflict(
+        newStartMinutes,
+        newEndMinutes,
+        existingSessions
+      );
+
+      if (hasConflict) {
         return res.status(400).json({
           title: "Validation Error",
-          message: `Session between '${clockedIn}' and '${clockedOut}' already exist for date:'${dayjs(
+          message: `Session between '${clockedIn}' and '${clockedOut}' conflicts with an existing session for date:'${dayjs(
             date
           ).format("MM/DD/YYYY")}'.`,
         });

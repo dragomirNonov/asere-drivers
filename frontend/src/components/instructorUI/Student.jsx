@@ -6,11 +6,10 @@ import {
   faEnvelope,
   faIdCard,
   faChevronDown,
-  faClock,
   faGraduationCap,
   faGear,
 } from '@fortawesome/free-solid-svg-icons';
-import { formatDate } from '../../utils/utils';
+import dayjs from 'dayjs';
 
 const Student = ({ student, refresh }) => {
   const [accordionOpen, setAccordionOpen] = useState(false);
@@ -103,7 +102,7 @@ const Student = ({ student, refresh }) => {
                 Permit Status: {permitStatus.text}
               </span>
               <span className="text-sm">
-                Expires: {formatDate(student.permitExpiryDate)}
+                Expires: {dayjs(student.permitExpiryDate).format('MM-DD-YYYY')}
               </span>
             </div>
           </div>

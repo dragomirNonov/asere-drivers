@@ -13,10 +13,8 @@ import {
   faGraduationCap,
   faBirthdayCake,
   faCalendarAlt,
-  faPencilAlt,
-  faUserClock,
 } from '@fortawesome/free-solid-svg-icons';
-import { formatDate } from '../../../utils/utils';
+import dayjs from 'dayjs';
 
 const Student = ({ student, toast, refresh }) => {
   const [showStudentHours, setShowStudentHours] = useState(false);
@@ -85,7 +83,7 @@ const Student = ({ student, toast, refresh }) => {
         <div className="p-4 bg-white space-y-3">
           <div className="flex items-center space-x-3 text-black">
             <FontAwesomeIcon icon={faBirthdayCake} className="w-4 h-4" />
-            <span>DOB: {formatDate(student.DOB)}</span>
+            <span>DOB: {dayjs(student.DOB).format('MM-DD-YYYY')}</span>
           </div>
 
           <div className="flex items-center space-x-3 text-black">
@@ -111,7 +109,7 @@ const Student = ({ student, toast, refresh }) => {
                 Permit Status: {permitStatus.text}
               </span>
               <span className="text-sm">
-                Expires: {formatDate(student.permitExpiryDate)}
+                Expires: {dayjs(student.permitExpiryDate).format('MM-DD-YYYY')}
               </span>
             </div>
           </div>
