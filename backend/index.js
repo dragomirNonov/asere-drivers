@@ -5,6 +5,7 @@ const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const errorHandler = require("./middlewares/errorHandler");
 const logger = require("./utils/logger");
+const requestLogger = require("./middlewares/requestLogger");
 
 dotenv.config();
 
@@ -17,6 +18,7 @@ connectDB();
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(requestLogger);
 
 // Routes
 const userRoutes = require("./routes/userRoutes");

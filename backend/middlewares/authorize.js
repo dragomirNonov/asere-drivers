@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const logger = require("../utils/logger");
 
 const authorize = (roles) => (req, res, next) => {
   const token = req.headers.token;
